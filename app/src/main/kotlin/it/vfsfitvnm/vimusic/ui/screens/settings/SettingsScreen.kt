@@ -58,8 +58,9 @@ fun SettingsScreen() {
                     item(1, "Player", R.drawable.play)
                     item(2, "Cache", R.drawable.server)
                     item(3, "Database", R.drawable.server)
-                    item(4, "Other", R.drawable.shapes)
-                    item(5, "About", R.drawable.information)
+                    item(4, "Sync", R.drawable.sync)
+                    item(5, "Other", R.drawable.shapes)
+                    item(6, "About", R.drawable.information)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(currentTabIndex) {
@@ -68,8 +69,9 @@ fun SettingsScreen() {
                         1 -> PlayerSettings()
                         2 -> CacheSettings()
                         3 -> DatabaseSettings()
-                        4 -> OtherSettings()
-                        5 -> About()
+                        4 -> SyncSettings()
+                        5 -> OtherSettings()
+                        6 -> About()
                     }
                 }
             }

@@ -58,6 +58,10 @@ android {
     kotlinOptions {
         freeCompilerArgs = freeCompilerArgs + listOf("-Xcontext-receivers")
     }
+
+    packaging {
+        resources.excludes.add("META-INF/**/*")
+    }
 }
 
 kotlin {
@@ -89,9 +93,10 @@ dependencies {
     implementation(libs.room)
     ksp(libs.room.compiler)
 
-    implementation(projects.innertube)
-    implementation(projects.kugou)
-    implementation(projects.lrclib)
+    implementation(projects.providers.innertube)
+    implementation(projects.providers.kugou)
+    implementation(projects.providers.lrclib)
+    implementation(projects.providers.piped)
     implementation(projects.core.data)
     implementation(projects.core.ui)
 

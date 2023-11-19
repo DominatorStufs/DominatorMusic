@@ -32,6 +32,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
+import io.ktor.http.Url
 import it.vfsfitvnm.vimusic.enums.AlbumSortBy
 import it.vfsfitvnm.vimusic.enums.ArtistSortBy
 import it.vfsfitvnm.vimusic.enums.PlaylistSortBy
@@ -43,6 +44,7 @@ import it.vfsfitvnm.vimusic.models.Event
 import it.vfsfitvnm.vimusic.models.Format
 import it.vfsfitvnm.vimusic.models.Info
 import it.vfsfitvnm.vimusic.models.Lyrics
+import it.vfsfitvnm.vimusic.models.PipedSession
 import it.vfsfitvnm.vimusic.models.Playlist
 import it.vfsfitvnm.vimusic.models.PlaylistPreview
 import it.vfsfitvnm.vimusic.models.PlaylistWithSongs
@@ -226,6 +228,9 @@ interface Database {
     @Query("UPDATE Song SET totalPlayTimeMs = totalPlayTimeMs + :addition WHERE id = :id")
     fun incrementTotalPlayTimeMs(id: String, addition: Long)
 
+    @Query("SELECT * FROM PipedSession")
+    fun pipedSessions(): Flow<List<PipedSession>>
+
     @Transaction
     @Query("SELECT * FROM Playlist WHERE id = :id")
     fun playlistWithSongs(id: Long): Flow<PlaylistWithSongs?>
@@ -383,6 +388,9 @@ interface Database {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(artists: List<Artist>, songArtistMaps: List<SongArtistMap>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(pipedSession: PipedSession)
+
     @Transaction
     fun insert(mediaItem: MediaItem, block: (Song) -> Song = { it }) {
         val song = Song(
@@ -445,6 +453,9 @@ interface Database {
     @Delete
     fun delete(songPlaylistMap: SongPlaylistMap)
 
+    @Delete
+    fun delete(pipedSession: PipedSession)
+
     @RawQuery
     fun raw(supportSQLiteQuery: SupportSQLiteQuery): Int
 
@@ -467,11 +478,12 @@ interface Database {
         Format::class,
         Event::class,
         Lyrics::class,
+        PipedSession::class
     ],
     views = [
         SortedSongPlaylistMap::class
     ],
-    version = 25,
+    version = 26,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -493,7 +505,8 @@ interface Database {
         AutoMigration(from = 20, to = 21, spec = DatabaseInitializer.From20To21Migration::class),
         AutoMigration(from = 21, to = 22, spec = DatabaseInitializer.From21To22Migration::class),
         AutoMigration(from = 23, to = 24),
-        AutoMigration(from = 24, to = 25)
+        AutoMigration(from = 24, to = 25),
+        AutoMigration(from = 25, to = 26)
     ],
 )
 @TypeConverters(Converters::class)
@@ -710,6 +723,12 @@ object Converters {
             bytes
         }
     }
+
+    @TypeConverter
+    fun urlToString(url: Url) = url.toString()
+
+    @TypeConverter
+    fun stringToUrl(string: String) = Url(string)
 }
 
 @Suppress("UnusedReceiverParameter")
