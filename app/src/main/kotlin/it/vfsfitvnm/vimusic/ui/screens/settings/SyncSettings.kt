@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.TextField
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.semiBold
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -67,7 +69,7 @@ fun SyncSettings() {
 
         when {
             hasError -> BasicText(
-                text = "There was an unknown error linking your Piped account. Please try again.",
+                text = stringResource(R.string.error_piped_link),
                 style = typography.xs.semiBold.center,
                 modifier = Modifier.padding(all = 24.dp)
             )
@@ -91,17 +93,17 @@ fun SyncSettings() {
                 }
 
                 BasicText(
-                    text = "Piped",
+                    text = stringResource(R.string.piped),
                     style = typography.m.semiBold
                 )
 
                 ValueSelectorSettingsEntry(
-                    title = "Instance",
+                    title = stringResource(R.string.instance),
                     selectedValue = selectedInstance,
-                    values = instances.indices.toList(),
+                    values = instances.indices.toImmutableList(),
                     onValueSelected = { selectedInstance = it },
                     valueText = { idx ->
-                        idx?.let { instances.getOrNull(it)?.name } ?: "Click to select"
+                        idx?.let { instances.getOrNull(it)?.name } ?: stringResource(R.string.click_to_select)
                     },
                     isEnabled = canSelect,
                     trailingContent = if (loadingInstances) {
@@ -112,7 +114,7 @@ fun SyncSettings() {
                 TextField(
                     value = username,
                     onValueChange = { username = it },
-                    hintText = "Username",
+                    hintText = stringResource(R.string.username),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -120,13 +122,13 @@ fun SyncSettings() {
                 TextField(
                     value = password,
                     onValueChange = { password = it },
-                    hintText = "Password",
+                    hintText = stringResource(R.string.password),
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 DialogTextButton(
-                    text = "Login",
+                    text = stringResource(R.string.login),
                     primary = true,
                     enabled = selectedInstance != null,
                     onClick = {
@@ -175,26 +177,26 @@ fun SyncSettings() {
                     .asPaddingValues()
             )
     ) {
-        Header(title = "Sync")
+        Header(title = stringResource(R.string.sync))
 
-        SettingsDescription(text = "You can host playlists elsewhere and synchronize them with ViMusic. Currently only supports Piped.")
+        SettingsDescription(text = stringResource(R.string.sync_description))
         SettingsGroupSpacer()
 
-        SettingsEntryGroupText(title = "PIPED")
+        SettingsEntryGroupText(title = stringResource(R.string.piped))
 
         SettingsEntry(
-            title = "Add account",
-            text = "Link a Piped account with your instance, username and password.",
+            title = stringResource(R.string.add_account),
+            text = stringResource(R.string.add_account_description),
             onClick = { linkingPiped = true }
         )
         SettingsEntry(
-            title = "Learn more",
-            text = "Don't know what Piped is or don't have an account? Click here to get redirected to their docs",
+            title = stringResource(R.string.learn_more),
+            text = stringResource(R.string.learn_more_description),
             onClick = { uriHandler.openUri("https://github.com/TeamPiped/Piped/blob/master/README.md") }
         )
 
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = "PIPED SESSIONS")
+        SettingsEntryGroupText(title = stringResource(R.string.piped_sessions))
 
         pipedSessions.forEach {
             SettingsEntry(

@@ -117,6 +117,7 @@
     <string name="error_server_restrictions">This song cannot be played due to server restrictions</string>
     <string name="error_id_mismatch">The returned video id doesn\'t match the requested one</string>
     <string name="error_unknown_playback">An unknown playback error has occurred</string>
+    <string name="error_piped_link">There was an unknown error linking your Piped account. Please try again.</string>
 
     <string name="media_permission_declined">Permission declined, please grant media permissions in the settings of your device.</string>
     <string name="open_settings">Open settings</string>
@@ -307,6 +308,19 @@
     <string name="player_layout">Player layout</string>
     <string name="classic_player_layout_name">Classic</string>
     <string name="new_player_layout_name">Modern (new)</string>
+
+    <string name="piped">Piped</string>
+    <string name="instance">Instance</string>
+    <string name="click_to_select">Click to select</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sync_description">You can host playlists elsewhere and synchronize them with ViMusic. Currently only supports Piped.</string>
+    <string name="add_account">Add account</string>
+    <string name="add_account_description">Link a Piped account with your instance, username and password.</string>
+    <string name="learn_more">Learn more</string>
+    <string name="learn_more_description">Don\'t know what Piped is or don\'t have an account? Click here to get redirected to their docs</string>
+    <string name="piped_sessions">Piped sessions</string>
 
     <plurals name="song_count_plural">
         <item quantity="one">%1$d song</item>
