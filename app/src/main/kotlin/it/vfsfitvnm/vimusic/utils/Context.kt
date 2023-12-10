@@ -16,18 +16,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import it.vfsfitvnm.vimusic.BuildConfig
 
-inline fun <reified T> Context.intent(): Intent =
-    Intent(this@Context, T::class.java)
+inline fun <reified T> Context.intent(): Intent = Intent(this@Context, T::class.java)
 
-inline fun <reified T : BroadcastReceiver> Context.broadCastPendingIntent(
+inline fun <reified T : BroadcastReceiver> Context.broadcastPendingIntent(
     requestCode: Int = 0,
-    flags: Int = if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0,
+    flags: Int = if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0
 ): PendingIntent = PendingIntent.getBroadcast(this, requestCode, intent<T>(), flags)
 
 inline fun <reified T : Activity> Context.activityPendingIntent(
     requestCode: Int = 0,
     flags: Int = 0,
-    block: Intent.() -> Unit = {},
+    block: Intent.() -> Unit = {}
 ): PendingIntent = PendingIntent.getActivity(
     this,
     requestCode,
@@ -35,10 +34,9 @@ inline fun <reified T : Activity> Context.activityPendingIntent(
     (if (isAtLeastAndroid6) PendingIntent.FLAG_IMMUTABLE else 0) or flags
 )
 
-val Context.isIgnoringBatteryOptimizations: Boolean
-    get() = !isAtLeastAndroid6 || getSystemService<PowerManager>()?.isIgnoringBatteryOptimizations(
-        packageName
-    ) ?: true
+val Context.isIgnoringBatteryOptimizations
+    get() = !isAtLeastAndroid6 ||
+            getSystemService<PowerManager>()?.isIgnoringBatteryOptimizations(packageName) ?: true
 
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
@@ -80,7 +78,7 @@ fun Context.findActivity(): Activity {
         if (context is Activity) return context
         context = context.baseContext
     }
-    throw IllegalStateException("Should be called in the context of an Activity")
+    error("Should be called in the context of an Activity")
 }
 
 fun Context.hasPermission(permission: String) = ContextCompat.checkSelfPermission(

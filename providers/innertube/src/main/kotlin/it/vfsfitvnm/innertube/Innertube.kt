@@ -27,11 +27,13 @@ object Innertube {
 
         install(ContentNegotiation) {
             @OptIn(ExperimentalSerializationApi::class)
-            json(Json {
-                ignoreUnknownKeys = true
-                explicitNulls = false
-                encodeDefaults = true
-            })
+            json(
+                Json {
+                    ignoreUnknownKeys = true
+                    explicitNulls = false
+                    encodeDefaults = true
+                }
+            )
         }
 
         install(ContentEncoding) {
@@ -165,7 +167,7 @@ object Innertube {
         val albums: List<AlbumItem>?,
         val albumsEndpoint: NavigationEndpoint.Endpoint.Browse?,
         val singles: List<AlbumItem>?,
-        val singlesEndpoint: NavigationEndpoint.Endpoint.Browse?,
+        val singlesEndpoint: NavigationEndpoint.Endpoint.Browse?
     )
 
     data class PlaylistOrAlbumPage(
@@ -189,7 +191,7 @@ object Innertube {
         val songs: List<SongItem>? = null,
         val playlists: List<PlaylistItem>? = null,
         val albums: List<AlbumItem>? = null,
-        val artists: List<ArtistItem>? = null,
+        val artists: List<ArtistItem>? = null
     )
 
     data class DiscoverPage(
@@ -208,6 +210,7 @@ object Innertube {
         )
     }
 
+    @Suppress("ReturnCount")
     fun MusicNavigationButtonRenderer.toMood(): Mood.Item? {
         return Mood.Item(
             title = buttonText.runs.firstOrNull()?.text ?: return null,

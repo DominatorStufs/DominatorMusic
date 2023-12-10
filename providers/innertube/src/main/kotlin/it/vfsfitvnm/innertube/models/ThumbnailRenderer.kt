@@ -23,15 +23,15 @@ data class ThumbnailRenderer(
 
 @Serializable
 data class ThumbnailOverlay(
-    val musicItemThumbnailOverlayRenderer: MusicItemThumbnailOverlayRenderer,
+    val musicItemThumbnailOverlayRenderer: MusicItemThumbnailOverlayRenderer
 ) {
     @Serializable
     data class MusicItemThumbnailOverlayRenderer(
-        val content: Content,
+        val content: Content
     ) {
         @Serializable
         data class Content(
-            val musicPlayButtonRenderer: MusicPlayButtonRenderer,
+            val musicPlayButtonRenderer: MusicPlayButtonRenderer
         ) {
             @Serializable
             data class MusicPlayButtonRenderer(

@@ -60,7 +60,8 @@ fun Scaffold(
                 slideIntoContainer(slideDirection, animationSpec) togetherWith
                         slideOutOfContainer(slideDirection, animationSpec)
             },
-            content = content, label = ""
+            content = content,
+            label = ""
         )
     }
 }

@@ -66,7 +66,8 @@ inline fun NavigationRail(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
                 .size(
-                    width = if (isLandscape) Dimensions.navigationRailWidthLandscape else Dimensions.navigationRailWidth,
+                    width = if (isLandscape) Dimensions.navigationRailWidthLandscape
+                    else Dimensions.navigationRailWidth,
                     height = Dimensions.headerHeight
                 )
         ) {

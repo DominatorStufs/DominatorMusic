@@ -11,5 +11,5 @@ data class Artist(
     val name: String? = null,
     val thumbnailUrl: String? = null,
     val timestamp: Long? = null,
-    val bookmarkedAt: Long? = null,
+    val bookmarkedAt: Long? = null
 )

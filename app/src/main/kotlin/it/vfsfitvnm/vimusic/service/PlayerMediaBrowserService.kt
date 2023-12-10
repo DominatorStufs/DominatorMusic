@@ -59,8 +59,8 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ) = if (clientUid == Process.myUid() || clientUid == Process.SYSTEM_UID
-        || clientPackageName == "com.google.android.projection.gearhead"
+    ) = if (clientUid == Process.myUid() || clientUid == Process.SYSTEM_UID ||
+        clientPackageName == "com.google.android.projection.gearhead"
     ) {
         bindService(intent<PlayerService>(), this, Context.BIND_AUTO_CREATE)
         BrowserRoot(
@@ -81,32 +81,35 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                     albumsBrowserMediaItem
                 )
 
-                MediaId.SONGS -> Database
-                    .songsByPlayTimeDesc()
-                    .first()
-                    .take(30)
-                    .also { lastSongs = it }
-                    .map { it.asBrowserMediaItem }
-                    .toMutableList()
-                    .apply {
-                        if (isNotEmpty()) add(0, shuffleBrowserMediaItem)
-                    }
+                MediaId.SONGS ->
+                    Database
+                        .songsByPlayTimeDesc()
+                        .first()
+                        .take(30)
+                        .also { lastSongs = it }
+                        .map { it.asBrowserMediaItem }
+                        .toMutableList()
+                        .apply {
+                            if (isNotEmpty()) add(0, shuffleBrowserMediaItem)
+                        }
 
-                MediaId.PLAYLISTS -> Database
-                    .playlistPreviewsByDateAddedDesc()
-                    .first()
-                    .map { it.asBrowserMediaItem }
-                    .toMutableList()
-                    .apply {
-                        add(0, favoritesBrowserMediaItem)
-                        add(1, offlineBrowserMediaItem)
-                    }
+                MediaId.PLAYLISTS ->
+                    Database
+                        .playlistPreviewsByDateAddedDesc()
+                        .first()
+                        .map { it.asBrowserMediaItem }
+                        .toMutableList()
+                        .apply {
+                            add(0, favoritesBrowserMediaItem)
+                            add(1, offlineBrowserMediaItem)
+                        }
 
-                MediaId.ALBUMS -> Database
-                    .albumsByRowIdDesc()
-                    .first()
-                    .map { it.asBrowserMediaItem }
-                    .toMutableList()
+                MediaId.ALBUMS ->
+                    Database
+                        .albumsByRowIdDesc()
+                        .first()
+                        .map { it.asBrowserMediaItem }
+                        .toMutableList()
 
                 else -> mutableListOf()
             }
@@ -124,7 +127,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         inline get() = BrowserMediaItem(
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.SHUFFLE)
-                .setTitle("Shuffle")
+                .setTitle(getString(R.string.shuffle))
                 .setIconUri(uriFor(R.drawable.shuffle))
                 .build(),
             BrowserMediaItem.FLAG_PLAYABLE
@@ -134,18 +137,17 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         inline get() = BrowserMediaItem(
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.SONGS)
-                .setTitle("Songs")
+                .setTitle(getString(R.string.songs))
                 .setIconUri(uriFor(R.drawable.musical_notes))
                 .build(),
             BrowserMediaItem.FLAG_BROWSABLE
         )
 
-
     private val playlistsBrowserMediaItem
         inline get() = BrowserMediaItem(
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.PLAYLISTS)
-                .setTitle("Playlists")
+                .setTitle(getString(R.string.playlists))
                 .setIconUri(uriFor(R.drawable.playlist))
                 .build(),
             BrowserMediaItem.FLAG_BROWSABLE
@@ -155,7 +157,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         inline get() = BrowserMediaItem(
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.ALBUMS)
-                .setTitle("Albums")
+                .setTitle(getString(R.string.albums))
                 .setIconUri(uriFor(R.drawable.disc))
                 .build(),
             BrowserMediaItem.FLAG_BROWSABLE
@@ -165,7 +167,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         inline get() = BrowserMediaItem(
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.FAVORITES)
-                .setTitle("Favorites")
+                .setTitle(getString(R.string.favorites))
                 .setIconUri(uriFor(R.drawable.heart))
                 .build(),
             BrowserMediaItem.FLAG_PLAYABLE
@@ -175,7 +177,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         inline get() = BrowserMediaItem(
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.OFFLINE)
-                .setTitle("Offline")
+                .setTitle(getString(R.string.offline))
                 .setIconUri(uriFor(R.drawable.airplane))
                 .build(),
             BrowserMediaItem.FLAG_PLAYABLE
@@ -197,7 +199,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
             BrowserMediaDescription.Builder()
                 .setMediaId(MediaId.forPlaylist(playlist.id))
                 .setTitle(playlist.name)
-                .setSubtitle("$songCount songs")
+                .setSubtitle(resources.getQuantityString(R.plurals.song_count_plural, songCount, songCount))
                 .setIconUri(uriFor(R.drawable.playlist))
                 .build(),
             BrowserMediaItem.FLAG_PLAYABLE
@@ -234,26 +236,27 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                 val mediaItems = when (data.getOrNull(0)) {
                     MediaId.SHUFFLE -> lastSongs
 
-                    MediaId.SONGS -> data
-                        .getOrNull(1)
-                        ?.let { songId ->
-                            index = lastSongs.indexOfFirst { it.id == songId }
-                            lastSongs
-                        }
+                    MediaId.SONGS -> data.getOrNull(1)?.let { songId ->
+                        index = lastSongs.indexOfFirst { it.id == songId }
+                        lastSongs
+                    }
 
-                    MediaId.FAVORITES -> Database
+                    MediaId.FAVORITES ->
+                        Database
                         .favorites()
                         .first()
                         .shuffled()
 
-                    MediaId.OFFLINE -> Database
+                    MediaId.OFFLINE ->
+                        Database
                         .songsWithContentLength()
                         .first()
                         .filter { binder.isCached(it) }
                         .map(SongWithContentLength::song)
                         .shuffled()
 
-                    MediaId.PLAYLISTS -> data
+                    MediaId.PLAYLISTS ->
+                        data
                         .getOrNull(1)
                         ?.toLongOrNull()
                         ?.let(Database::playlistWithSongs)
@@ -261,7 +264,8 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                         ?.songs
                         ?.shuffled()
 
-                    MediaId.ALBUMS -> data
+                    MediaId.ALBUMS ->
+                        data
                         .getOrNull(1)
                         ?.let(Database::albumSongs)
                         ?.first()

@@ -55,7 +55,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.coerceAtLeast
-import androidx.compose.ui.unit.coerceIn
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
@@ -103,14 +102,12 @@ import kotlinx.coroutines.withContext
 class MainActivity : ComponentActivity() {
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service is PlayerService.Binder) {
-                this@MainActivity.binder = service
-            }
+            if (service is PlayerService.Binder) this@MainActivity.binder = service
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
             binder = null
-            // Try to rebind, otherwise die
+            // Try to rebind, otherwise fail
             unbindService(this)
             bindService(intent<PlayerService>(), this, Context.BIND_AUTO_CREATE)
         }
@@ -123,6 +120,7 @@ class MainActivity : ComponentActivity() {
         bindService(intent<PlayerService>(), serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
+    @Suppress("CyclomaticComplexMethod")
     @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,13 +134,14 @@ class MainActivity : ComponentActivity() {
             val isSystemInDarkTheme = isSystemInDarkTheme()
 
             var appearance by rememberSaveable(
-                isSystemInDarkTheme, isCompositionLaunched(),
+                isSystemInDarkTheme,
+                isCompositionLaunched(),
                 stateSaver = Appearance.AppearanceSaver
             ) {
                 with(AppearancePreferences) {
                     val colorPalette = colorPaletteOf(
-                        colorPaletteName = colorPaletteName,
-                        colorPaletteMode = colorPaletteMode,
+                        name = colorPaletteName,
+                        mode = colorPaletteMode,
                         isSystemInDarkMode = isSystemInDarkTheme
                     )
 
@@ -168,14 +167,14 @@ class MainActivity : ComponentActivity() {
 
                 fun setDynamicPalette(colorPaletteMode: ColorPaletteMode) {
                     val isDark = colorPaletteMode == ColorPaletteMode.Dark ||
-                            (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
+                        colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme
 
                     binder?.setBitmapListener { bitmap: Bitmap? ->
                         if (bitmap == null) {
                             val colorPalette = colorPaletteOf(
-                                ColorPaletteName.Dynamic,
-                                colorPaletteMode,
-                                isSystemInDarkTheme
+                                name = ColorPaletteName.Dynamic,
+                                mode = colorPaletteMode,
+                                isSystemInDarkMode = isSystemInDarkTheme
                             )
 
                             setSystemBarAppearance(colorPalette.isDark)
@@ -212,23 +211,25 @@ class MainActivity : ComponentActivity() {
                                     bitmapListenerJob?.cancel()
                                     binder?.setBitmapListener(null)
 
-                                    val colorPalette =
-                                        colorPaletteOf(name, mode, isSystemInDarkTheme)
+                                    val colorPalette = colorPaletteOf(
+                                        name = name,
+                                        mode = mode,
+                                        isSystemInDarkMode = isSystemInDarkTheme
+                                    )
 
                                     setSystemBarAppearance(colorPalette.isDark)
 
                                     appearance = appearance.copy(
                                         colorPalette = colorPalette,
-                                        typography = appearance.typography.copy(colorPalette.text),
+                                        typography = appearance.typography.copy(colorPalette.text)
                                     )
                                 }
                             }
                         }
                         launch {
-                            snapshotFlow { thumbnailRoundness }
-                                .collectLatest {
-                                    appearance = appearance.copy(thumbnailShapeCorners = it.dp)
-                                }
+                            snapshotFlow { thumbnailRoundness }.collectLatest {
+                                appearance = appearance.copy(thumbnailShapeCorners = it.dp)
+                            }
                         }
                         launch {
                             snapshotFlow { useSystemFont to applyFontPadding }.collectLatest { (system, padding) ->
@@ -251,22 +252,24 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            val rippleTheme =
-                remember(appearance.colorPalette.text, appearance.colorPalette.isDark) {
-                    object : RippleTheme {
-                        @Composable
-                        override fun defaultColor(): Color = RippleTheme.defaultRippleColor(
-                            contentColor = appearance.colorPalette.text,
-                            lightTheme = !appearance.colorPalette.isDark
-                        )
+            val rippleTheme = remember(
+                appearance.colorPalette.text,
+                appearance.colorPalette.isDark
+            ) {
+                object : RippleTheme {
+                    @Composable
+                    override fun defaultColor(): Color = RippleTheme.defaultRippleColor(
+                        contentColor = appearance.colorPalette.text,
+                        lightTheme = !appearance.colorPalette.isDark
+                    )
 
-                        @Composable
-                        override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
-                            contentColor = appearance.colorPalette.text,
-                            lightTheme = !appearance.colorPalette.isDark
-                        )
-                    }
+                    @Composable
+                    override fun rippleAlpha(): RippleAlpha = RippleTheme.defaultRippleAlpha(
+                        contentColor = appearance.colorPalette.text,
+                        lightTheme = !appearance.colorPalette.isDark
+                    )
                 }
+            }
 
             val shimmerTheme = remember {
                 defaultShimmerTheme.copy(
@@ -274,14 +277,14 @@ class MainActivity : ComponentActivity() {
                         animation = tween(
                             durationMillis = 800,
                             easing = LinearEasing,
-                            delayMillis = 250,
+                            delayMillis = 250
                         ),
                         repeatMode = RepeatMode.Restart
                     ),
                     shaderColors = listOf(
                         Color.Unspecified.copy(alpha = 0.25f),
                         Color.White.copy(alpha = 0.50f),
-                        Color.Unspecified.copy(alpha = 0.25f),
+                        Color.Unspecified.copy(alpha = 0.25f)
                     )
                 )
             }
@@ -305,7 +308,7 @@ class MainActivity : ComponentActivity() {
                 val playerBottomSheetState = rememberBottomSheetState(
                     dismissedBound = 0.dp,
                     collapsedBound = Dimensions.collapsedPlayer + bottomDp,
-                    expandedBound = maxHeight,
+                    expandedBound = maxHeight
                 )
 
                 val playerAwareWindowInsets by remember(
@@ -319,8 +322,7 @@ class MainActivity : ComponentActivity() {
                         val bottom =
                             if (imeVisible) imeBottomDp.coerceAtLeast(playerBottomSheetState.value)
                             else playerBottomSheetState.value.coerceIn(
-                                animatedBottomDp,
-                                playerBottomSheetState.collapsedBound
+                                animatedBottomDp..playerBottomSheetState.collapsedBound
                             )
 
                         windowsInsets
@@ -363,17 +365,13 @@ class MainActivity : ComponentActivity() {
                     val player = binder?.player ?: return@DisposableEffect onDispose { }
 
                     if (player.currentMediaItem == null) {
-                        if (!playerBottomSheetState.isDismissed) {
-                            playerBottomSheetState.dismiss()
-                        }
+                        if (!playerBottomSheetState.isDismissed) playerBottomSheetState.dismiss()
                     } else {
                         if (playerBottomSheetState.isDismissed) {
                             if (launchedFromNotification) {
                                 intent.replaceExtras(Bundle())
                                 playerBottomSheetState.expand(tween(700))
-                            } else {
-                                playerBottomSheetState.collapse(tween(700))
-                            }
+                            } else playerBottomSheetState.collapse(tween(700))
                         }
                     }
 
@@ -382,9 +380,7 @@ class MainActivity : ComponentActivity() {
                             if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
                                 if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
                                     playerBottomSheetState.expand(tween(500))
-                                } else {
-                                    playerBottomSheetState.collapse(tween(700))
-                                }
+                                } else playerBottomSheetState.collapse(tween(700))
                             }
                         }
                     }
@@ -399,6 +395,7 @@ class MainActivity : ComponentActivity() {
         onNewIntent(intent)
     }
 
+    @Suppress("CyclomaticComplexMethod")
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
@@ -407,7 +404,7 @@ class MainActivity : ComponentActivity() {
         intent?.data = null
         this.intent = null
 
-        Log.d("MainActivity", "Opening url $uri")
+        Log.d("MainActivity", "Opening url: $uri")
 
         lifecycleScope.launch(Dispatchers.IO) {
             when (val path = uri.pathSegments.firstOrNull()) {
@@ -460,18 +457,15 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightNavigationBars = !isDark
         }
 
-        if (!isAtLeastAndroid6) {
-            window.statusBarColor =
-                (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
-        }
+        if (!isAtLeastAndroid6) window.statusBarColor =
+            (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
 
-        if (!isAtLeastAndroid8) {
-            window.navigationBarColor =
-                (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
-        }
+        if (!isAtLeastAndroid8) window.navigationBarColor =
+            (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
     }
 }
 
 val LocalPlayerServiceBinder = staticCompositionLocalOf<PlayerService.Binder?> { null }
 
-val LocalPlayerAwareWindowInsets = staticCompositionLocalOf<WindowInsets> { TODO() }
+val LocalPlayerAwareWindowInsets =
+    staticCompositionLocalOf<WindowInsets> { error("No player insets provided") }

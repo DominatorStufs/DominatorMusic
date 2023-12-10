@@ -20,7 +20,7 @@ fun DialogTextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    primary: Boolean = false,
+    primary: Boolean = false
 ) {
     val (colorPalette, typography) = LocalAppearance.current
 

@@ -18,12 +18,10 @@ import kotlin.random.Random
 fun TextPlaceholder(
     modifier: Modifier = Modifier,
     color: Color = LocalAppearance.current.colorPalette.shimmer
-) {
-    Spacer(
-        modifier = modifier
-            .padding(vertical = 4.dp)
-            .background(color)
-            .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
-            .height(16.dp)
-    )
-}
+) = Spacer(
+    modifier = modifier
+        .padding(vertical = 4.dp)
+        .background(color)
+        .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
+        .height(16.dp)
+)

@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
@@ -48,6 +49,7 @@ fun ArtistLocalSongs(
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val binder = LocalPlayerServiceBinder.current
     val (colorPalette) = LocalAppearance.current
@@ -64,7 +66,10 @@ fun ArtistLocalSongs(
 
     val lazyListState = rememberLazyListState()
 
-    LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
+    LayoutWithAdaptiveThumbnail(
+        thumbnailContent = thumbnailContent,
+        modifier = modifier
+    ) {
         Box {
             LazyColumn(
                 state = lazyListState,
@@ -81,7 +86,7 @@ fun ArtistLocalSongs(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         headerContent {
                             SecondaryTextButton(
-                                text = "Enqueue",
+                                text = stringResource(R.string.enqueue),
                                 enabled = !songs.isNullOrEmpty(),
                                 onClick = {
                                     binder?.player?.enqueue(songs!!.map(Song::asMediaItem))
@@ -99,24 +104,23 @@ fun ArtistLocalSongs(
                         key = { _, song -> song.id }
                     ) { index, song ->
                         SongItem(
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onLongClick = {
-                                        menuState.display {
-                                            NonQueuedMediaItemMenu(
-                                                onDismiss = menuState::hide,
-                                                mediaItem = song.asMediaItem,
-                                            )
-                                        }
-                                    },
-                                    onClick = {
-                                        binder?.stopRadio()
-                                        binder?.player?.forcePlayAtIndex(
-                                            songs.map(Song::asMediaItem),
-                                            index
+                            modifier = Modifier.combinedClickable(
+                                onLongClick = {
+                                    menuState.display {
+                                        NonQueuedMediaItemMenu(
+                                            onDismiss = menuState::hide,
+                                            mediaItem = song.asMediaItem
                                         )
                                     }
-                                ),
+                                },
+                                onClick = {
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayAtIndex(
+                                        items = songs.map(Song::asMediaItem),
+                                        index = index
+                                    )
+                                }
+                            ),
                             song = song,
                             thumbnailSizePx = songThumbnailSizePx,
                             thumbnailSizeDp = songThumbnailSizeDp

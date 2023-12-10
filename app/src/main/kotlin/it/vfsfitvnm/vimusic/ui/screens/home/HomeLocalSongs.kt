@@ -23,14 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.vimusic.Database
+import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.preferences.OrderPreferences
 import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
-import it.vfsfitvnm.vimusic.service.isLocal
 import it.vfsfitvnm.vimusic.transaction
 import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.get
 import it.vfsfitvnm.vimusic.utils.hasPermission
@@ -47,7 +49,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
@@ -57,10 +58,9 @@ import kotlin.time.Duration.Companion.seconds
 private val permission = if (isAtLeastAndroid13) Manifest.permission.READ_MEDIA_AUDIO
 else Manifest.permission.READ_EXTERNAL_STORAGE
 
+@Route
 @Composable
-fun HomeLocalSongs(
-    onSearchClick: () -> Unit
-) = with(OrderPreferences) {
+fun HomeLocalSongs(onSearchClick: () -> Unit) = with(OrderPreferences) {
     val context = LocalContext.current
     val (_, typography) = LocalAppearance.current
 
@@ -83,13 +83,13 @@ fun HomeLocalSongs(
                 sortBy = localSongSortBy,
                 sortOrder = localSongSortOrder,
                 isLocal = true
-            ).map { songs -> songs.filter { it.isLocal } }
+            )
         },
         sortBy = localSongSortBy,
         setSortBy = { localSongSortBy = it },
         sortOrder = localSongSortOrder,
         setSortOrder = { localSongSortOrder = it },
-        title = "Local"
+        title = stringResource(R.string.local)
     ) else {
         LaunchedEffect(Unit) { launcher.launch(permission) }
 
@@ -99,16 +99,18 @@ fun HomeLocalSongs(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BasicText(
-                text = "Permission declined, please grant media permissions in the settings of your device.",
+                text = stringResource(R.string.media_permission_declined),
                 modifier = Modifier.fillMaxWidth(0.5f),
                 style = typography.s
             )
             SecondaryTextButton(
-                text = "Open settings",
+                text = stringResource(R.string.open_settings),
                 onClick = {
-                    context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        setData(Uri.fromParts("package", context.packageName, null))
-                    })
+                    context.startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            setData(Uri.fromParts("package", context.packageName, null))
+                        }
+                    )
                 }
             )
         }

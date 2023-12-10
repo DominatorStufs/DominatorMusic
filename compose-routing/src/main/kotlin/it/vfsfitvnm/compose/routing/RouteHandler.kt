@@ -2,7 +2,10 @@ package it.vfsfitvnm.compose.routing
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -88,7 +91,7 @@ fun RouteHandler(
     updateTransition(targetState = scope, label = null).AnimatedContent(
         transitionSpec = transitionSpec,
         contentKey = RouteHandlerScope::route,
-        modifier = modifier,
+        modifier = modifier
     ) {
         it.content()
     }

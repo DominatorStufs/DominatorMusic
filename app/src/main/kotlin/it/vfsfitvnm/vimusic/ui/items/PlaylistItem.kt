@@ -52,27 +52,25 @@ fun PlaylistItem(
     songCount: Int?,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false,
-) {
-    PlaylistItem(
-        thumbnailContent = {
-            Image(
-                painter = painterResource(icon),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(colorTint),
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(24.dp)
-            )
-        },
-        songCount = songCount,
-        name = name,
-        channelName = null,
-        thumbnailSizeDp = thumbnailSizeDp,
-        modifier = modifier,
-        alternative = alternative
-    )
-}
+    alternative: Boolean = false
+) = PlaylistItem(
+    thumbnailContent = {
+        Image(
+            painter = painterResource(icon),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(colorTint),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(24.dp)
+        )
+    },
+    songCount = songCount,
+    name = name,
+    channelName = null,
+    thumbnailSizeDp = thumbnailSizeDp,
+    modifier = modifier,
+    alternative = alternative
+)
 
 @Composable
 fun PlaylistItem(
@@ -80,7 +78,7 @@ fun PlaylistItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false,
+    alternative: Boolean = false
 ) {
     val thumbnails by remember {
         Database.playlistThumbnailUrls(playlist.playlist.id).distinctUntilChanged().map {
@@ -92,33 +90,26 @@ fun PlaylistItem(
 
     PlaylistItem(
         thumbnailContent = {
-            if (thumbnails.toSet().size == 1) {
-                AsyncImage(
-                    model = thumbnails.first().thumbnail(thumbnailSizePx),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = it
-                )
-            } else {
-                Box(
-                    modifier = it
-                        .fillMaxSize()
-                ) {
-                    listOf(
-                        Alignment.TopStart,
-                        Alignment.TopEnd,
-                        Alignment.BottomStart,
-                        Alignment.BottomEnd
-                    ).forEachIndexed { index, alignment ->
-                        AsyncImage(
-                            model = thumbnails.getOrNull(index),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .align(alignment)
-                                .size(thumbnailSizeDp / 2)
-                        )
-                    }
+            if (thumbnails.toSet().size == 1) AsyncImage(
+                model = thumbnails.first().thumbnail(thumbnailSizePx),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = it
+            ) else Box(modifier = it.fillMaxSize()) {
+                listOf(
+                    Alignment.TopStart,
+                    Alignment.TopEnd,
+                    Alignment.BottomStart,
+                    Alignment.BottomEnd
+                ).forEachIndexed { index, alignment ->
+                    AsyncImage(
+                        model = thumbnails.getOrNull(index),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .align(alignment)
+                            .size(thumbnailSizeDp / 2)
+                    )
                 }
             }
         },
@@ -137,19 +128,17 @@ fun PlaylistItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false,
-) {
-    PlaylistItem(
-        thumbnailUrl = playlist.thumbnail?.url,
-        songCount = playlist.songCount,
-        name = playlist.info?.name,
-        channelName = playlist.channel?.name,
-        thumbnailSizePx = thumbnailSizePx,
-        thumbnailSizeDp = thumbnailSizeDp,
-        modifier = modifier,
-        alternative = alternative
-    )
-}
+    alternative: Boolean = false
+) = PlaylistItem(
+    thumbnailUrl = playlist.thumbnail?.url,
+    songCount = playlist.songCount,
+    name = playlist.info?.name,
+    channelName = playlist.channel?.name,
+    thumbnailSizePx = thumbnailSizePx,
+    thumbnailSizeDp = thumbnailSizeDp,
+    modifier = modifier,
+    alternative = alternative
+)
 
 @Composable
 fun PlaylistItem(
@@ -160,25 +149,23 @@ fun PlaylistItem(
     thumbnailSizePx: Int,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false,
-) {
-    PlaylistItem(
-        thumbnailContent = {
-            AsyncImage(
-                model = thumbnailUrl?.thumbnail(thumbnailSizePx),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = it
-            )
-        },
-        songCount = songCount,
-        name = name,
-        channelName = channelName,
-        thumbnailSizeDp = thumbnailSizeDp,
-        modifier = modifier,
-        alternative = alternative,
-    )
-}
+    alternative: Boolean = false
+) = PlaylistItem(
+    thumbnailContent = {
+        AsyncImage(
+            model = thumbnailUrl?.thumbnail(thumbnailSizePx),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = it
+        )
+    },
+    songCount = songCount,
+    name = name,
+    channelName = channelName,
+    thumbnailSizeDp = thumbnailSizeDp,
+    modifier = modifier,
+    alternative = alternative
+)
 
 @Composable
 fun PlaylistItem(
@@ -188,56 +175,57 @@ fun PlaylistItem(
     channelName: String?,
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false,
-) {
-    val (colorPalette, typography, _, thumbnailShape) = LocalAppearance.current
+    alternative: Boolean = false
+) = ItemContainer(
+    alternative = alternative,
+    thumbnailSizeDp = thumbnailSizeDp,
+    modifier = modifier
+) { centeredModifier ->
+    val colorPalette = LocalAppearance.current.colorPalette
+    val typography = LocalAppearance.current.typography
+    val thumbnailShape = LocalAppearance.current.thumbnailShape
 
-    ItemContainer(
-        alternative = alternative,
-        thumbnailSizeDp = thumbnailSizeDp,
-        modifier = modifier
-    ) { centeredModifier ->
-        Box(
-            modifier = centeredModifier
-                .clip(thumbnailShape)
-                .background(color = colorPalette.background1)
-                .requiredSize(thumbnailSizeDp)
-        ) {
-            thumbnailContent(Modifier.fillMaxSize())
+    Box(
+        modifier = centeredModifier
+            .clip(thumbnailShape)
+            .background(color = colorPalette.background1)
+            .requiredSize(thumbnailSizeDp)
+    ) {
+        thumbnailContent(Modifier.fillMaxSize())
 
-            songCount?.let {
-                BasicText(
-                    text = "$songCount",
-                    style = typography.xxs.medium.color(colorPalette.onOverlay),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(all = 4.dp)
-                        .background(color = colorPalette.overlay, shape = RoundedCornerShape(2.dp))
-                        .padding(horizontal = 4.dp, vertical = 2.dp)
-                        .align(Alignment.BottomEnd)
-                )
-            }
-        }
-
-        ItemInfoContainer(
-            horizontalAlignment = if (alternative && channelName == null) Alignment.CenterHorizontally else Alignment.Start,
-        ) {
+        songCount?.let {
             BasicText(
-                text = name ?: "",
-                style = typography.xs.semiBold,
-                maxLines = 2,
+                text = "$songCount",
+                style = typography.xxs.medium.color(colorPalette.onOverlay),
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .padding(all = 4.dp)
+                    .background(color = colorPalette.overlay, shape = RoundedCornerShape(2.dp))
+                    .padding(horizontal = 4.dp, vertical = 2.dp)
+                    .align(Alignment.BottomEnd)
             )
+        }
+    }
 
-            channelName?.let {
-                BasicText(
-                    text = channelName,
-                    style = typography.xs.semiBold.secondary,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+    ItemInfoContainer(
+        horizontalAlignment = if (alternative && channelName == null) Alignment.CenterHorizontally
+        else Alignment.Start
+    ) {
+        BasicText(
+            text = name.orEmpty(),
+            style = typography.xs.semiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        channelName?.let {
+            BasicText(
+                text = channelName,
+                style = typography.xs.semiBold.secondary,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -246,26 +234,25 @@ fun PlaylistItem(
 fun PlaylistItemPlaceholder(
     thumbnailSizeDp: Dp,
     modifier: Modifier = Modifier,
-    alternative: Boolean = false,
+    alternative: Boolean = false
+) = ItemContainer(
+    alternative = alternative,
+    thumbnailSizeDp = thumbnailSizeDp,
+    modifier = modifier
 ) {
-    val (colorPalette, _, _, thumbnailShape) = LocalAppearance.current
+    val colorPalette = LocalAppearance.current.colorPalette
+    val thumbnailShape = LocalAppearance.current.thumbnailShape
 
-    ItemContainer(
-        alternative = alternative,
-        thumbnailSizeDp = thumbnailSizeDp,
-        modifier = modifier
+    Spacer(
+        modifier = Modifier
+            .background(color = colorPalette.shimmer, shape = thumbnailShape)
+            .size(thumbnailSizeDp)
+    )
+
+    ItemInfoContainer(
+        horizontalAlignment = if (alternative) Alignment.CenterHorizontally else Alignment.Start
     ) {
-        Spacer(
-            modifier = Modifier
-                .background(color = colorPalette.shimmer, shape = thumbnailShape)
-                .size(thumbnailSizeDp)
-        )
-
-        ItemInfoContainer(
-            horizontalAlignment = if (alternative) Alignment.CenterHorizontally else Alignment.Start,
-        ) {
-            TextPlaceholder()
-            TextPlaceholder()
-        }
+        TextPlaceholder()
+        TextPlaceholder()
     }
 }

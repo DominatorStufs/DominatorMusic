@@ -49,6 +49,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
@@ -101,9 +102,11 @@ private fun onDismiss(binder: PlayerService.Binder) {
 }
 
 @kotlin.OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
-@OptIn(UnstableApi::class)
 @Composable
-fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
+fun Player(
+    layoutState: BottomSheetState,
+    modifier: Modifier = Modifier
+) {
     val menuState = LocalMenuState.current
 
     val (colorPalette, typography, thumbnailCornerSize) = LocalAppearance.current
@@ -205,7 +208,7 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
                         .weight(1f)
                 ) {
                     AnimatedContent(
-                        targetState = mediaItem.mediaMetadata.title?.toString() ?: "",
+                        targetState = mediaItem.mediaMetadata.title?.toString().orEmpty(),
                         label = "",
                         transitionSpec = { fadeIn() togetherWith fadeOut() }
                     ) { text ->
@@ -213,12 +216,12 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
                             text = text,
                             style = typography.xs.semiBold,
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                     AnimatedVisibility(visible = mediaItem.mediaMetadata.artist != null) {
                         AnimatedContent(
-                            targetState = mediaItem.mediaMetadata.artist?.toString() ?: "",
+                            targetState = mediaItem.mediaMetadata.artist?.toString().orEmpty(),
                             label = "",
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { text ->
@@ -226,7 +229,7 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
                                 text = text,
                                 style = typography.xs.semiBold.secondary,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
@@ -254,12 +257,8 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
                         icon = if (shouldBePlaying) R.drawable.pause else R.drawable.play,
                         color = colorPalette.text,
                         onClick = {
-                            if (shouldBePlaying) {
-                                binder.player.pause()
-                            } else {
-                                if (binder.player.playbackState == Player.STATE_IDLE) {
-                                    binder.player.prepare()
-                                }
+                            if (shouldBePlaying) binder.player.pause() else {
+                                if (binder.player.playbackState == Player.STATE_IDLE) binder.player.prepare()
                                 binder.player.play()
                             }
                         },
@@ -285,8 +284,8 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
         var isShowingStatsForNerds by rememberSaveable { mutableStateOf(false) }
 
         val playerBottomSheetState = rememberBottomSheetState(
-            64.dp + horizontalBottomPaddingValues.calculateBottomPadding(),
-            layoutState.expandedBound
+            dismissedBound = 64.dp + horizontalBottomPaddingValues.calculateBottomPadding(),
+            expandedBound = layoutState.expandedBound
         )
 
         val containerModifier = Modifier
@@ -298,23 +297,34 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
             )
             .padding(bottom = playerBottomSheetState.collapsedBound)
 
-        val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
+        val thumbnailContent: @Composable (modifier: Modifier) -> Unit = { innerModifier ->
             Thumbnail(
                 isShowingLyrics = PlayerPreferences.isShowingLyrics,
                 onShowLyrics = { PlayerPreferences.isShowingLyrics = it },
                 isShowingStatsForNerds = isShowingStatsForNerds,
                 onShowStatsForNerds = { isShowingStatsForNerds = it },
-                modifier = modifier.nestedScroll(layoutState.preUpPostDownNestedScrollConnection)
+                modifier = innerModifier.nestedScroll(layoutState.preUpPostDownNestedScrollConnection)
             )
         }
 
-        val controlsContent: @Composable (modifier: Modifier) -> Unit = { modifier ->
-            Controls(
-                media = mediaItem.toUiMedia(positionAndDuration.second),
-                shouldBePlaying = shouldBePlaying,
-                position = positionAndDuration.first,
-                modifier = modifier
-            )
+        val controlsContent: @Composable (modifier: Modifier) -> Unit = { innerModifier ->
+            val media = mediaItem.toUiMedia(positionAndDuration.second)
+
+            when (PlayerPreferences.playerLayout) {
+                PlayerPreferences.PlayerLayout.Classic -> ClassicControls(
+                    media = media,
+                    shouldBePlaying = shouldBePlaying,
+                    position = positionAndDuration.first,
+                    modifier = innerModifier
+                )
+
+                PlayerPreferences.PlayerLayout.New -> Controls(
+                    media = media,
+                    shouldBePlaying = shouldBePlaying,
+                    position = positionAndDuration.first,
+                    modifier = innerModifier
+                )
+            }
         }
 
         if (isLandscape) Row(
@@ -359,20 +369,26 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
 
         if (speedDialogOpen) SliderDialog(
             onDismiss = { speedDialogOpen = false },
-            title = "Playback speed",
+            title = stringResource(R.string.playback_speed),
             initialValue = PlayerPreferences.speed * 100f,
             onSlide = { },
             onSlideCompleted = { PlayerPreferences.speed = it.roundToInt() / 100f },
             min = 0f,
             max = 200f,
-            toDisplay = { if (it <= 1f) "Why would you do this?!" else "${"%.2f".format(it.roundToInt() / 100f)}x" }
+            toDisplay = {
+                if (it <= 1f) stringResource(R.string.minimum_speed_value)
+                else stringResource(
+                    R.string.format_speed_multiplier,
+                    "%.2f".format(it.roundToInt() / 100f)
+                )
+            }
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 SecondaryTextButton(
-                    text = "Reset",
+                    text = stringResource(R.string.reset),
                     onClick = {
                         PlayerPreferences.speed = 1f
                         speedDialogOpen = false
@@ -396,21 +412,23 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
                     boostDialogOpen = false
                     submit()
                 },
-                title = "Song volume boost",
+                title = stringResource(R.string.song_volume_boost),
                 state = newValue * 100f,
                 setState = { newValue = it / 100f },
                 onSlide = { },
                 onSlideCompleted = { submit() },
                 min = -2000f,
                 max = 2000f,
-                toDisplay = { "${"%.2f".format(it.roundToInt() / 100f)} dB" }
+                toDisplay = {
+                    stringResource(R.string.format_db, "%.2f".format(it.roundToInt() / 100f))
+                }
             ) {
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     SecondaryTextButton(
-                        text = "Reset",
+                        text = stringResource(R.string.reset),
                         onClick = {
                             newValue = 0f
                             submit()
@@ -421,33 +439,42 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
         }
 
         with(PlayerPreferences) {
+            @Composable
+            fun Actions() {
+                IconButton(
+                    onClick = { speedDialogOpen = true },
+                    icon = R.drawable.speed,
+                    color = colorPalette.text,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .size(20.dp)
+                )
+
+                IconButton(
+                    onClick = { boostDialogOpen = true },
+                    icon = R.drawable.volume_up,
+                    color = colorPalette.text,
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .size(20.dp)
+                )
+            }
+
             Queue(
                 layoutState = playerBottomSheetState,
                 beforeContent = {
-                    TextToggle(
-                        state = trackLoopEnabled,
-                        toggleState = { trackLoopEnabled = !trackLoopEnabled },
-                        name = "Song loop"
-                    )
+                    when (playerLayout) {
+                        PlayerPreferences.PlayerLayout.Classic -> Actions()
+
+                        PlayerPreferences.PlayerLayout.New -> TextToggle(
+                            state = trackLoopEnabled,
+                            toggleState = { trackLoopEnabled = !trackLoopEnabled },
+                            name = stringResource(R.string.song_loop)
+                        )
+                    }
                 },
                 afterContent = {
-                    IconButton(
-                        onClick = { speedDialogOpen = true },
-                        icon = R.drawable.speed,
-                        color = colorPalette.text,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                            .size(20.dp)
-                    )
-
-                    IconButton(
-                        onClick = { boostDialogOpen = true },
-                        icon = R.drawable.volume_up,
-                        color = colorPalette.text,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                            .size(20.dp)
-                    )
+                    if (playerLayout == PlayerPreferences.PlayerLayout.New) Actions()
 
                     IconButton(
                         icon = R.drawable.ellipsis_horizontal,
@@ -462,11 +489,9 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
                             }
                         },
                         modifier = Modifier
-                            .padding(start = 8.dp, end = 4.dp, top = 8.dp, bottom = 8.dp)
+                            .padding(vertical = 8.dp)
                             .size(20.dp)
                     )
-
-                    Spacer(modifier = Modifier.width(4.dp))
                 },
                 backgroundColorProvider = { colorPalette.background2 },
                 modifier = Modifier.align(Alignment.BottomCenter)
@@ -475,7 +500,7 @@ fun Player(layoutState: BottomSheetState, modifier: Modifier = Modifier) {
     }
 }
 
-@ExperimentalAnimationApi
+@kotlin.OptIn(ExperimentalAnimationApi::class)
 @Composable
 @OptIn(UnstableApi::class)
 private fun PlayerMenu(
@@ -505,7 +530,7 @@ private fun PlayerMenu(
                     }
                 )
             } catch (e: ActivityNotFoundException) {
-                context.toast("Couldn't find an application to equalize audio")
+                context.toast(context.getString(R.string.no_equalizer_installed))
             }
         },
         onShowSleepTimer = {},

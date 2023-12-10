@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persistList
 import it.vfsfitvnm.vimusic.Database
@@ -40,15 +41,17 @@ import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScr
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.items.ArtistItem
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun HomeArtistList(
     onArtistClick: (Artist) -> Unit,
-    onSearchClick: () -> Unit,
+    onSearchClick: () -> Unit
 ) = with(OrderPreferences) {
     val (colorPalette) = LocalAppearance.current
 
@@ -63,7 +66,8 @@ fun HomeArtistList(
 
     val sortOrderIconRotation by animateFloatAsState(
         targetValue = if (artistSortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
+        animationSpec = tween(durationMillis = 400, easing = LinearEasing),
+        label = ""
     )
 
     val lazyGridState = rememberLazyGridState()
@@ -88,7 +92,7 @@ fun HomeArtistList(
                 contentType = 0,
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                Header(title = "Artists") {
+                Header(title = stringResource(R.string.artists)) {
                     HeaderIconButton(
                         icon = R.drawable.text,
                         color = if (artistSortBy == ArtistSortBy.Name) colorPalette.text else colorPalette.textDisabled,
@@ -97,21 +101,18 @@ fun HomeArtistList(
 
                     HeaderIconButton(
                         icon = R.drawable.time,
-                        color = if (artistSortBy == ArtistSortBy.DateAdded) colorPalette.text else colorPalette.textDisabled,
+                        color = if (artistSortBy == ArtistSortBy.DateAdded) colorPalette.text
+                        else colorPalette.textDisabled,
                         onClick = { artistSortBy = ArtistSortBy.DateAdded }
                     )
 
-                    Spacer(
-                        modifier = Modifier
-                            .width(2.dp)
-                    )
+                    Spacer(modifier = Modifier.width(2.dp))
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
                         color = colorPalette.text,
                         onClick = { artistSortOrder = !artistSortOrder },
-                        modifier = Modifier
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
+                        modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
                 }
             }

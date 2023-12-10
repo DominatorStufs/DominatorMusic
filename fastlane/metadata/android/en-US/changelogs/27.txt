@@ -1,0 +1,9 @@
+* Added Dutch translations
+* Fixed inconsistency with synchronized lyrics: empty lrc lines are allowed again
+* Added the possibility to choose the source for 'Quick Picks'
+* Localized YouTube API: moods, genres and recommendations are now in your own language
+* Fixed infinite loading with some playlists
+* Added classic UI back: easier to use for smaller screens, enable in settings
+* Added shadow to the album cover in the player
+* Fixed typo in Dutch language
+* Adjusted settings icon to more suitable icon

@@ -11,11 +11,11 @@ import it.vfsfitvnm.innertube.models.bodies.ContinuationBody
 import it.vfsfitvnm.innertube.models.bodies.NextBody
 import it.vfsfitvnm.innertube.utils.from
 
-
 suspend fun Innertube.nextPage(body: NextBody): Result<Innertube.NextPage>? =
     runCatchingCancellable {
         val response = client.post(NEXT) {
             setBody(body)
+            @Suppress("all")
             mask("contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs.tabRenderer.content.musicQueueRenderer.content.playlistPanelRenderer(continuations,contents(automixPreviewVideoRenderer,$PLAYLIST_PANEL_VIDEO_RENDERER_MASK))")
         }.body<NextResponse>()
 
@@ -64,6 +64,7 @@ suspend fun Innertube.nextPage(body: NextBody): Result<Innertube.NextPage>? =
 suspend fun Innertube.nextPage(body: ContinuationBody) = runCatchingCancellable {
     val response = client.post(NEXT) {
         setBody(body)
+        @Suppress("all")
         mask("continuationContents.playlistPanelContinuation(continuations,contents.$PLAYLIST_PANEL_VIDEO_RENDERER_MASK)")
     }.body<ContinuationResponse>()
 
@@ -77,8 +78,10 @@ private fun NextResponse.MusicQueueRenderer.Content.PlaylistPanelRenderer?.toSon
     Innertube.ItemsPage(
         items = this
             ?.contents
-            ?.mapNotNull(NextResponse.MusicQueueRenderer.Content.PlaylistPanelRenderer.Content::playlistPanelVideoRenderer)
-            ?.mapNotNull(Innertube.SongItem::from),
+            ?.mapNotNull(
+                NextResponse.MusicQueueRenderer.Content.PlaylistPanelRenderer.Content
+                ::playlistPanelVideoRenderer
+            )?.mapNotNull(Innertube.SongItem::from),
         continuation = this
             ?.continuations
             ?.firstOrNull()

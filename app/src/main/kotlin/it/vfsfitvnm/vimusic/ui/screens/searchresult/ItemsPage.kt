@@ -20,11 +20,13 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.utils.plus
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
+import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.ui.components.ShimmerHost
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
@@ -43,8 +45,8 @@ inline fun <T : Innertube.Item> ItemsPage(
     modifier: Modifier = Modifier,
     initialPlaceholderCount: Int = 8,
     continuationPlaceholderCount: Int = 3,
-    emptyItemsText: String = "No items found",
-    noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
+    emptyItemsText: String = stringResource(R.string.no_items_found),
+    noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null
 ) {
     val (_, typography) = LocalAppearance.current
 
@@ -75,17 +77,16 @@ inline fun <T : Innertube.Item> ItemsPage(
             }
     }
 
-    Box {
+    Box(modifier = modifier) {
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
-            modifier = modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             item(
                 key = "header",
-                contentType = "header",
+                contentType = "header"
             ) {
                 headerContent(null)
             }
@@ -111,11 +112,11 @@ inline fun <T : Innertube.Item> ItemsPage(
             if (!(itemsPage != null && itemsPage?.continuation == null)) {
                 item(key = "loading") {
                     val isFirstLoad = itemsPage?.items.isNullOrEmpty()
+
                     ShimmerHost(
-                        modifier = Modifier
-                            .run {
-                                if (isFirstLoad) fillParentMaxSize() else this
-                            }
+                        modifier = Modifier.let {
+                            if (isFirstLoad) it.fillParentMaxSize() else it
+                        }
                     ) {
                         repeat(if (isFirstLoad) initialPlaceholderCount else continuationPlaceholderCount) {
                             itemPlaceholderContent()

@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.lint) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.detekt)
 }
 
 val clean by tasks.registering(Delete::class) {
@@ -17,14 +19,35 @@ val clean by tasks.registering(Delete::class) {
 subprojects {
     tasks.withType<KotlinCompile>().configureEach {
         kotlinOptions {
-            if (project.findProperty("enableComposeCompilerReports") == "true")
-                arrayOf("reports", "metrics").forEach {
-                    @Suppress("DEPRECATION")
-                    freeCompilerArgs = freeCompilerArgs + listOf(
-                        "-P",
-                        "plugin:androidx.compose.compiler.plugins.kotlin:${it}Destination=${project.buildDir.absolutePath}/compose_metrics"
-                    )
-                }
+            if (project.findProperty("enableComposeCompilerReports") != "true") return@kotlinOptions
+            arrayOf("reports", "metrics").forEach {
+                freeCompilerArgs = freeCompilerArgs + listOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:${it}Destination=${
+                        layout.buildDirectory.asFile.get().absolutePath
+                    }/compose_metrics"
+                )
+            }
+        }
+    }
+}
+
+allprojects {
+    group = "it.vfsfitvnm.vimusic"
+    version = "0.5.11"
+
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+
+    detekt {
+        buildUponDefaultConfig = true
+        allRules = false
+        config.setFrom("$rootDir/detekt.yml")
+    }
+
+    tasks.withType<Detekt>().configureEach {
+        jvmTarget = "11"
+        reports {
+            html.required = true
         }
     }
 }

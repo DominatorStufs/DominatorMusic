@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.vimusic.Database
@@ -36,15 +37,17 @@ import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScr
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.items.AlbumItem
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun HomeAlbums(
     onAlbumClick: (Album) -> Unit,
-    onSearchClick: () -> Unit,
+    onSearchClick: () -> Unit
 ) = with(OrderPreferences) {
     val (colorPalette) = LocalAppearance.current
 
@@ -59,7 +62,8 @@ fun HomeAlbums(
 
     val sortOrderIconRotation by animateFloatAsState(
         targetValue = if (albumSortOrder == SortOrder.Ascending) 0f else 180f,
-        animationSpec = tween(durationMillis = 400, easing = LinearEasing), label = ""
+        animationSpec = tween(durationMillis = 400, easing = LinearEasing),
+        label = ""
     )
 
     val lazyListState = rememberLazyListState()
@@ -77,7 +81,7 @@ fun HomeAlbums(
                 key = "header",
                 contentType = 0
             ) {
-                Header(title = "Albums") {
+                Header(title = stringResource(R.string.albums)) {
                     HeaderIconButton(
                         icon = R.drawable.calendar,
                         color = if (albumSortBy == AlbumSortBy.Year) colorPalette.text else colorPalette.textDisabled,
@@ -92,21 +96,18 @@ fun HomeAlbums(
 
                     HeaderIconButton(
                         icon = R.drawable.time,
-                        color = if (albumSortBy == AlbumSortBy.DateAdded) colorPalette.text else colorPalette.textDisabled,
+                        color = if (albumSortBy == AlbumSortBy.DateAdded) colorPalette.text
+                        else colorPalette.textDisabled,
                         onClick = { albumSortBy = AlbumSortBy.DateAdded }
                     )
 
-                    Spacer(
-                        modifier = Modifier
-                            .width(2.dp)
-                    )
+                    Spacer(modifier = Modifier.width(2.dp))
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
                         color = colorPalette.text,
                         onClick = { albumSortOrder = !albumSortOrder },
-                        modifier = Modifier
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
+                        modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
                 }
             }

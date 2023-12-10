@@ -6,6 +6,9 @@ plugins {
 dependencies {
     implementation(libs.ktor.client.encoding)
     implementation(libs.brotli)
+
+    detektPlugins(libs.detekt.compose)
+    detektPlugins(libs.detekt.formatting)
 }
 
 kotlin {

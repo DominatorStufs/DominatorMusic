@@ -14,11 +14,11 @@ data class Tabs(
         data class TabRenderer(
             val content: Content?,
             val title: String?,
-            val tabIdentifier: String?,
+            val tabIdentifier: String?
         ) {
             @Serializable
             data class Content(
-                val sectionListRenderer: SectionListRenderer?,
+                val sectionListRenderer: SectionListRenderer?
             )
         }
     }

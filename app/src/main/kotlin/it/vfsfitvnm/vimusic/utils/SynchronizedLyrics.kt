@@ -26,8 +26,6 @@ class SynchronizedLyrics(
         return if (newIndex != index) {
             index = newIndex
             true
-        } else {
-            false
-        }
+        } else false
     }
 }

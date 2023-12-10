@@ -43,7 +43,6 @@ data class YouTubeRadio(
                 mediaItems = songsPage.items?.map(Innertube.SongItem::asMediaItem)
                 songsPage.continuation?.takeUnless { nextContinuation == it }
             }
-
         }
 
         return mediaItems ?: emptyList()

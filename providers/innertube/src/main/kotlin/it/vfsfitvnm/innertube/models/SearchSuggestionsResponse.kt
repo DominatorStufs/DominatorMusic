@@ -20,7 +20,7 @@ data class SearchSuggestionsResponse(
             ) {
                 @Serializable
                 data class SearchSuggestionRenderer(
-                    val navigationEndpoint: NavigationEndpoint?,
+                    val navigationEndpoint: NavigationEndpoint?
                 )
             }
         }

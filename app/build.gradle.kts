@@ -8,11 +8,14 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "it.vfsfitvnm.vimusic"
+        applicationId = project.group.toString()
+
         minSdk = 21
         targetSdk = 34
-        versionCode = 23
-        versionName = "0.5.7"
+
+        versionCode = System.getenv("ANDROID_VERSION_CODE")?.toIntOrNull() ?: 27
+        versionName = project.version.toString()
+
         multiDexEnabled = true
     }
 
@@ -23,7 +26,16 @@ android {
         }
     }
 
-    namespace = "it.vfsfitvnm.vimusic"
+    signingConfigs {
+        create("ci") {
+            storeFile = System.getenv("ANDROID_NIGHTLY_KEYSTORE")?.let { file(it) }
+            storePassword = System.getenv("ANDROID_NIGHTLY_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("ANDROID_NIGHTLY_KEYSTORE_ALIAS")
+            keyPassword = System.getenv("ANDROID_NIGHTLY_KEYSTORE_PASSWORD")
+        }
+    }
+
+    namespace = project.group.toString()
 
     buildTypes {
         debug {
@@ -39,6 +51,16 @@ android {
             manifestPlaceholders["appName"] = "ViMusic"
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("String", "RELEASE_HACK", "\"AndroidWhyTfDidYouMakeMeDoThis\"")
+        }
+
+        create("nightly") {
+            initWith(getByName("release"))
+            matchingFallbacks += "release"
+
+            applicationIdSuffix = ".nightly"
+            versionNameSuffix = "-NIGHTLY"
+            manifestPlaceholders["appName"] = "ViMusic Nightly"
+            signingConfig = signingConfigs.findByName("ci")
         }
     }
 
@@ -77,6 +99,7 @@ dependencies {
     implementation(projects.composeRouting)
     implementation(projects.composeReordering)
 
+    implementation(platform(libs.compose.bom))
     implementation(libs.compose.activity)
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
@@ -90,6 +113,8 @@ dependencies {
 
     implementation(libs.exoplayer)
 
+    implementation(libs.kotlin.immutable)
+
     implementation(libs.room)
     ksp(libs.room.compiler)
 
@@ -101,4 +126,7 @@ dependencies {
     implementation(projects.core.ui)
 
     coreLibraryDesugaring(libs.desugaring)
+
+    detektPlugins(libs.detekt.compose)
+    detektPlugins(libs.detekt.formatting)
 }

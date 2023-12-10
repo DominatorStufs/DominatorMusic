@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +28,7 @@ import it.vfsfitvnm.innertube.models.NavigationEndpoint
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
+import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
 import it.vfsfitvnm.vimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -48,7 +50,8 @@ import it.vfsfitvnm.vimusic.utils.medium
 fun LocalSongSearch(
     textFieldValue: TextFieldValue,
     onTextFieldValueChanged: (TextFieldValue) -> Unit,
-    decorationBox: @Composable (@Composable () -> Unit) -> Unit
+    decorationBox: @Composable (@Composable () -> Unit) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -57,9 +60,8 @@ fun LocalSongSearch(
     var items by persistList<Song>("search/local/songs")
 
     LaunchedEffect(textFieldValue.text) {
-        if (textFieldValue.text.length > 1) {
+        if (textFieldValue.text.length > 1)
             Database.search("%${textFieldValue.text}%").collect { items = it }
-        }
     }
 
     val thumbnailSizeDp = Dimensions.thumbnails.song
@@ -67,13 +69,12 @@ fun LocalSongSearch(
 
     val lazyListState = rememberLazyListState()
 
-    Box {
+    Box(modifier = modifier) {
         LazyColumn(
             state = lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             item(
                 key = "header",
@@ -93,19 +94,17 @@ fun LocalSongSearch(
                         )
                     },
                     actionsContent = {
-                        if (textFieldValue.text.isNotEmpty()) {
-                            SecondaryTextButton(
-                                text = "Clear",
-                                onClick = { onTextFieldValueChanged(TextFieldValue()) }
-                            )
-                        }
+                        if (textFieldValue.text.isNotEmpty()) SecondaryTextButton(
+                            text = stringResource(R.string.clear),
+                            onClick = { onTextFieldValueChanged(TextFieldValue()) }
+                        )
                     }
                 )
             }
 
             items(
                 items = items,
-                key = Song::id,
+                key = Song::id
             ) { song ->
                 SongItem(
                     modifier = Modifier

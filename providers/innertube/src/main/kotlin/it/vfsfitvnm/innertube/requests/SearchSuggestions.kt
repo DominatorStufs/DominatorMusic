@@ -11,6 +11,7 @@ import it.vfsfitvnm.innertube.models.bodies.SearchSuggestionsBody
 suspend fun Innertube.searchSuggestions(body: SearchSuggestionsBody) = runCatchingCancellable {
     val response = client.post(SEARCH_SUGGESTIONS) {
         setBody(body)
+        @Suppress("all")
         mask("contents.searchSuggestionsSectionRenderer.contents.searchSuggestionRenderer.navigationEndpoint.searchEndpoint.query")
     }.body<SearchSuggestionsResponse>()
 

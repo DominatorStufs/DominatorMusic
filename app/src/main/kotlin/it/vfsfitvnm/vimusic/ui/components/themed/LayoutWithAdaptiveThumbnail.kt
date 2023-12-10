@@ -1,6 +1,7 @@
 package it.vfsfitvnm.vimusic.ui.components.themed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,26 +24,23 @@ import it.vfsfitvnm.vimusic.utils.thumbnail
 @Composable
 inline fun LayoutWithAdaptiveThumbnail(
     thumbnailContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
+) = if (isLandscape) Row(
+    verticalAlignment = Alignment.CenterVertically,
+    modifier = modifier
 ) {
-    val isLandscape = isLandscape
-
-    if (isLandscape) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            thumbnailContent()
-            content()
-        }
-    } else {
-        content()
-    }
-}
+    thumbnailContent()
+    content()
+} else Box(modifier = modifier) { content() }
 
 fun adaptiveThumbnailContent(
     isLoading: Boolean,
     url: String?,
     shape: Shape? = null
 ): @Composable () -> Unit = {
-    val (colorPalette, _, _, thumbnailShape) = LocalAppearance.current
+    val colorPalette = LocalAppearance.current.colorPalette
+    val thumbnailShape = LocalAppearance.current.thumbnailShape
 
     BoxWithConstraints(contentAlignment = Alignment.Center) {
         val thumbnailSizeDp = if (isLandscape) (maxHeight - 128.dp) else (maxWidth - 64.dp)
@@ -53,18 +51,14 @@ fun adaptiveThumbnailContent(
             .clip(shape ?: thumbnailShape)
             .size(thumbnailSizeDp)
 
-        if (isLoading) {
-            Spacer(
-                modifier = modifier
-                    .shimmer()
-                    .background(colorPalette.shimmer)
-            )
-        } else {
-            AsyncImage(
-                model = url?.thumbnail(thumbnailSizePx),
-                contentDescription = null,
-                modifier = modifier
-            )
-        }
+        if (isLoading) Spacer(
+            modifier = modifier
+                .shimmer()
+                .background(colorPalette.shimmer)
+        ) else AsyncImage(
+            model = url?.thumbnail(thumbnailSizePx),
+            contentDescription = null,
+            modifier = modifier
+        )
     }
 }

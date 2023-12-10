@@ -40,7 +40,7 @@ suspend fun Innertube.player(body: PlayerBody) = runCatchingCancellable {
                         thirdParty = Context.ThirdParty(
                             embedUrl = "https://www.youtube.com/watch?v=${body.videoId}"
                         )
-                    ),
+                    )
                 )
             )
             mask("playabilityStatus.status,playerConfig.audioConfig,streamingData.adaptiveFormats,videoDetails.videoId")

@@ -10,7 +10,7 @@ data class MusicResponsiveListItemRenderer(
     val fixedColumns: List<FlexColumn>?,
     val flexColumns: List<FlexColumn>,
     val thumbnail: ThumbnailRenderer?,
-    val navigationEndpoint: NavigationEndpoint?,
+    val navigationEndpoint: NavigationEndpoint?
 ) {
     @Serializable
     data class FlexColumn(

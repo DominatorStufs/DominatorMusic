@@ -1,7 +1,5 @@
 package it.vfsfitvnm.vimusic.ui.screens.mood
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -22,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import it.vfsfitvnm.compose.persist.persist
@@ -30,6 +29,7 @@ import it.vfsfitvnm.innertube.models.bodies.BrowseBody
 import it.vfsfitvnm.innertube.requests.BrowseResult
 import it.vfsfitvnm.innertube.requests.browse
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
+import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Mood
 import it.vfsfitvnm.vimusic.ui.components.ShimmerHost
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
@@ -49,17 +49,18 @@ import it.vfsfitvnm.vimusic.utils.center
 import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 
-internal const val defaultBrowseId = "FEmusic_moods_and_genres_category"
+internal const val DEFAULT_BROWSE_ID = "FEmusic_moods_and_genres_category"
 
-@ExperimentalFoundationApi
-@ExperimentalAnimationApi
 @Composable
-fun MoodList(mood: Mood) {
+fun MoodList(
+    mood: Mood,
+    modifier: Modifier = Modifier
+) {
     val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
 
-    val browseId = mood.browseId ?: defaultBrowseId
-    var moodPage by persist<Result<BrowseResult>>("playlist/$browseId${mood.params?.let { "/$it" } ?: ""}")
+    val browseId = mood.browseId ?: DEFAULT_BROWSE_ID
+    var moodPage by persist<Result<BrowseResult>>("playlist/$browseId${mood.params?.let { "/$it" }.orEmpty()}")
 
     LaunchedEffect(Unit) {
         moodPage = Innertube.browse(BrowseBody(browseId = browseId, params = mood.params))
@@ -77,7 +78,7 @@ fun MoodList(mood: Mood) {
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
-    Column {
+    Column(modifier = modifier) {
         moodPage?.getOrNull()?.let { moodResult ->
             LazyColumn(
                 state = lazyListState,
@@ -107,7 +108,7 @@ fun MoodList(mood: Mood) {
                     item {
                         LazyRow {
                             items(items = item.items, key = { it.key }) { childItem ->
-                                if (childItem.key == defaultBrowseId) return@items
+                                if (childItem.key == DEFAULT_BROWSE_ID) return@items
                                 when (childItem) {
                                     is Innertube.AlbumItem -> AlbumItem(
                                         album = childItem,
@@ -116,9 +117,7 @@ fun MoodList(mood: Mood) {
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                albumRoute.global(
-                                                    it
-                                                )
+                                                albumRoute.global(it)
                                             }
                                         }
                                     )
@@ -130,9 +129,7 @@ fun MoodList(mood: Mood) {
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                artistRoute.global(
-                                                    it
-                                                )
+                                                artistRoute.global(it)
                                             }
                                         }
                                     )
@@ -144,11 +141,7 @@ fun MoodList(mood: Mood) {
                                         alternative = true,
                                         modifier = Modifier.clickable {
                                             childItem.info?.endpoint?.browseId?.let {
-                                                playlistRoute.global(
-                                                    it,
-                                                    null,
-                                                    1
-                                                )
+                                                playlistRoute.global(it, null, 1)
                                             }
                                         }
                                     )
@@ -162,7 +155,7 @@ fun MoodList(mood: Mood) {
             }
         } ?: moodPage?.exceptionOrNull()?.let {
             BasicText(
-                text = "An error has occurred",
+                text = stringResource(R.string.error_message),
                 style = typography.s.secondary.center,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

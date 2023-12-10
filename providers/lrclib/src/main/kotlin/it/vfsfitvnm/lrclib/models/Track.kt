@@ -15,5 +15,5 @@ data class Track(
 )
 
 internal fun List<Track>.bestMatchingFor(title: String, duration: Duration) =
-    (firstOrNull { it.duration == duration.inWholeSeconds }
-        ?: minByOrNull { abs(it.trackName.length - title.length) })
+    firstOrNull { it.duration == duration.inWholeSeconds }
+        ?: minByOrNull { abs(it.trackName.length - title.length) }

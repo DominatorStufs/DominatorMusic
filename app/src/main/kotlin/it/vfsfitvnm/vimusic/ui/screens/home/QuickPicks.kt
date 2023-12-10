@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.innertube.Innertube
@@ -48,6 +49,7 @@ import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.LocalPlayerServiceBinder
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.models.Song
+import it.vfsfitvnm.vimusic.preferences.DataPreferences
 import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.ui.components.LocalMenuState
 import it.vfsfitvnm.vimusic.ui.components.ShimmerHost
@@ -63,6 +65,7 @@ import it.vfsfitvnm.vimusic.ui.items.PlaylistItem
 import it.vfsfitvnm.vimusic.ui.items.PlaylistItemPlaceholder
 import it.vfsfitvnm.vimusic.ui.items.SongItem
 import it.vfsfitvnm.vimusic.ui.items.SongItemPlaceholder
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
@@ -76,12 +79,13 @@ import it.vfsfitvnm.vimusic.utils.semiBold
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun QuickPicks(
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
     onPlaylistClick: (String) -> Unit,
-    onSearchClick: () -> Unit,
+    onSearchClick: () -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -92,13 +96,28 @@ fun QuickPicks(
 
     var relatedPageResult by persist<Result<Innertube.RelatedPage?>?>(tag = "home/relatedPageResult")
 
-    LaunchedEffect(Unit) {
-        Database.trending().distinctUntilChanged().collect { songs ->
-            val song = songs.firstOrNull()
-            if (relatedPageResult == null || trending?.id != song?.id) {
-                relatedPageResult = Innertube.relatedPage(NextBody(videoId = (song?.id ?: "J7p4bzqLvCw")))
-            }
+    LaunchedEffect(DataPreferences.quickPicksSource) {
+        suspend fun handleSong(song: Song?) {
+            if (relatedPageResult == null || trending?.id != song?.id) relatedPageResult =
+                Innertube.relatedPage(
+                    NextBody(
+                        videoId = (song?.id ?: "J7p4bzqLvCw")
+                    )
+                )
             trending = song
+        }
+        when (DataPreferences.quickPicksSource) {
+            DataPreferences.QuickPicksSource.Trending ->
+                Database
+                    .trending()
+                    .distinctUntilChanged()
+                    .collect { handleSong(it.firstOrNull()) }
+
+            DataPreferences.QuickPicksSource.LastInteraction ->
+                Database
+                    .events()
+                    .distinctUntilChanged()
+                    .collect { handleSong(it.firstOrNull()?.song) }
         }
     }
 
@@ -122,11 +141,8 @@ fun QuickPicks(
         .padding(endPaddingValues)
 
     BoxWithConstraints {
-        val quickPicksLazyGridItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) {
-            0.475f
-        } else {
-            0.9f
-        }
+        val quickPicksLazyGridItemWidthFactor =
+            if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
 
         val snapLayoutInfoProvider = remember(quickPicksLazyGridState) {
             SnapLayoutInfoProvider(
@@ -151,9 +167,8 @@ fun QuickPicks(
                 )
         ) {
             Header(
-                title = "Quick picks",
-                modifier = Modifier
-                    .padding(endPaddingValues)
+                title = stringResource(R.string.quick_picks),
+                modifier = Modifier.padding(endPaddingValues)
             )
 
             relatedPageResult?.getOrNull()?.let { related ->
@@ -203,8 +218,7 @@ fun QuickPicks(
                                     painter = painterResource(R.drawable.star),
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(colorPalette.accent),
-                                    modifier = Modifier
-                                        .size(16.dp)
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         }
@@ -246,7 +260,7 @@ fun QuickPicks(
 
                 related.albums?.let { albums ->
                     BasicText(
-                        text = "Related albums",
+                        text = stringResource(R.string.related_albums),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -261,8 +275,7 @@ fun QuickPicks(
                                 thumbnailSizePx = albumThumbnailSizePx,
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 alternative = true,
-                                modifier = Modifier
-                                    .clickable(onClick = { onAlbumClick(album.key) })
+                                modifier = Modifier.clickable(onClick = { onAlbumClick(album.key) })
                             )
                         }
                     }
@@ -270,7 +283,7 @@ fun QuickPicks(
 
                 related.artists?.let { artists ->
                     BasicText(
-                        text = "Similar artists",
+                        text = stringResource(R.string.similar_artists),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -278,15 +291,14 @@ fun QuickPicks(
                     LazyRow(contentPadding = endPaddingValues) {
                         items(
                             items = artists,
-                            key = Innertube.ArtistItem::key,
+                            key = Innertube.ArtistItem::key
                         ) { artist ->
                             ArtistItem(
                                 artist = artist,
                                 thumbnailSizePx = artistThumbnailSizePx,
                                 thumbnailSizeDp = artistThumbnailSizeDp,
                                 alternative = true,
-                                modifier = Modifier
-                                    .clickable(onClick = { onArtistClick(artist.key) })
+                                modifier = Modifier.clickable(onClick = { onArtistClick(artist.key) })
                             )
                         }
                     }
@@ -294,7 +306,7 @@ fun QuickPicks(
 
                 related.playlists?.let { playlists ->
                     BasicText(
-                        text = "Playlists you might like",
+                        text = stringResource(R.string.recommended_playlists),
                         style = typography.m.semiBold,
                         modifier = Modifier
                             .padding(horizontal = 16.dp)
@@ -304,15 +316,14 @@ fun QuickPicks(
                     LazyRow(contentPadding = endPaddingValues) {
                         items(
                             items = playlists,
-                            key = Innertube.PlaylistItem::key,
+                            key = Innertube.PlaylistItem::key
                         ) { playlist ->
                             PlaylistItem(
                                 playlist = playlist,
                                 thumbnailSizePx = playlistThumbnailSizePx,
                                 thumbnailSizeDp = playlistThumbnailSizeDp,
                                 alternative = true,
-                                modifier = Modifier
-                                    .clickable(onClick = { onPlaylistClick(playlist.key) })
+                                modifier = Modifier.clickable(onClick = { onPlaylistClick(playlist.key) })
                             )
                         }
                     }
@@ -321,7 +332,7 @@ fun QuickPicks(
                 Unit
             } ?: relatedPageResult?.exceptionOrNull()?.let {
                 BasicText(
-                    text = "An error has occurred",
+                    text = stringResource(R.string.error_message),
                     style = typography.s.secondary.center,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
@@ -329,9 +340,7 @@ fun QuickPicks(
                 )
             } ?: ShimmerHost {
                 repeat(4) {
-                    SongItemPlaceholder(
-                        thumbnailSizeDp = songThumbnailSizeDp,
-                    )
+                    SongItemPlaceholder(thumbnailSizeDp = songThumbnailSizeDp)
                 }
 
                 TextPlaceholder(modifier = sectionTextModifier)

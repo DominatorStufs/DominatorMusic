@@ -32,16 +32,14 @@ inline fun ItemContainer(
     ) {
         content(Modifier.align(Alignment.CenterHorizontally))
     }
-} else {
-    Row(
-        verticalAlignment = verticalAlignment,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = modifier
-            .padding(vertical = Dimensions.itemsVerticalPadding, horizontal = 16.dp)
-            .fillMaxWidth()
-    ) {
-        content(Modifier.align(Alignment.CenterVertically))
-    }
+} else Row(
+    verticalAlignment = verticalAlignment,
+    horizontalArrangement = Arrangement.spacedBy(12.dp),
+    modifier = modifier
+        .padding(vertical = Dimensions.itemsVerticalPadding, horizontal = 16.dp)
+        .fillMaxWidth()
+) {
+    content(Modifier.align(Alignment.CenterVertically))
 }
 
 @Composable

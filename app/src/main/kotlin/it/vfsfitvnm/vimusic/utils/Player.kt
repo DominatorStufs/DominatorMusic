@@ -31,14 +31,12 @@ fun Player.seamlessPlay(mediaItem: MediaItem) {
             currentMediaItemIndex + 1,
             mediaItemCount
         )
-    } else {
-        forcePlay(mediaItem)
-    }
+    } else forcePlay(mediaItem)
 }
 
 fun Player.shuffleQueue() {
-    val mediaItems =
-        currentTimeline.mediaItems.toMutableList().apply { removeAt(currentMediaItemIndex) }
+    val mediaItems = currentTimeline.mediaItems.toMutableList()
+        .apply { removeAt(currentMediaItemIndex) }
     if (currentMediaItemIndex > 0) removeMediaItems(0, currentMediaItemIndex)
     if (currentMediaItemIndex < mediaItemCount - 1) removeMediaItems(
         currentMediaItemIndex + 1,
@@ -53,22 +51,21 @@ fun Player.forcePlay(mediaItem: MediaItem) {
     prepare()
 }
 
-fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
-    if (mediaItems.isEmpty()) return
+fun Player.forcePlayAtIndex(items: List<MediaItem>, index: Int) {
+    if (items.isEmpty()) return
 
-    setMediaItems(mediaItems, mediaItemIndex, C.TIME_UNSET)
+    setMediaItems(items, index, C.TIME_UNSET)
     playWhenReady = true
     prepare()
 }
 
-fun Player.forcePlayFromBeginning(mediaItems: List<MediaItem>) =
-    forcePlayAtIndex(mediaItems, 0)
+fun Player.forcePlayFromBeginning(items: List<MediaItem>) =
+    forcePlayAtIndex(items, 0)
 
 fun Player.forceSeekToPrevious() {
-    if (hasPreviousMediaItem() || currentPosition > maxSeekToPreviousPosition) {
-        seekToPrevious()
-    } else if (mediaItemCount > 0) {
-        seekTo(mediaItemCount - 1, C.TIME_UNSET)
+    when {
+        hasPreviousMediaItem() || currentPosition > maxSeekToPreviousPosition -> seekToPrevious()
+        mediaItemCount > 0 -> seekTo(mediaItemCount - 1, C.TIME_UNSET)
     }
 }
 
@@ -76,34 +73,29 @@ fun Player.forceSeekToNext() =
     if (hasNextMediaItem()) seekToNext() else seekTo(0, C.TIME_UNSET)
 
 fun Player.addNext(mediaItem: MediaItem) {
-    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
-        forcePlay(mediaItem)
-    } else {
-        addMediaItem(currentMediaItemIndex + 1, mediaItem)
-    }
+    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) forcePlay(
+        mediaItem
+    )
+    else addMediaItem(currentMediaItemIndex + 1, mediaItem)
 }
 
 fun Player.enqueue(mediaItem: MediaItem) {
-    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
-        forcePlay(mediaItem)
-    } else {
-        addMediaItem(mediaItemCount, mediaItem)
-    }
+    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) forcePlay(
+        mediaItem
+    )
+    else addMediaItem(mediaItemCount, mediaItem)
 }
 
 fun Player.enqueue(mediaItems: List<MediaItem>) {
-    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) {
-        forcePlayFromBeginning(mediaItems)
-    } else {
-        addMediaItems(mediaItemCount, mediaItems)
-    }
+    if (playbackState == Player.STATE_IDLE || playbackState == Player.STATE_ENDED) forcePlayFromBeginning(
+        mediaItems
+    )
+    else addMediaItems(mediaItemCount, mediaItems)
 }
 
 fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
     for (i in currentMediaItemIndex until mediaItemCount) {
-        if (getMediaItemAt(i).mediaId == mediaId) {
-            return getMediaItemAt(i)
-        }
+        if (getMediaItemAt(i).mediaId == mediaId) return getMediaItemAt(i)
     }
     return null
 }

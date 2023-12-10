@@ -22,7 +22,7 @@ fun PrimaryButton(
     onClick: () -> Unit,
     @DrawableRes iconId: Int,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabled: Boolean = true
 ) {
     val (colorPalette) = LocalAppearance.current
 

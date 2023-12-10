@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.compose.reordering.draggedItem
@@ -74,6 +75,7 @@ import kotlinx.coroutines.runBlocking
 fun LocalPlaylistSongs(
     playlistId: Long,
     onDelete: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (colorPalette) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -100,13 +102,11 @@ fun LocalPlaylistSongs(
         extraItemCount = 1
     )
 
-    var isRenaming by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var isRenaming by rememberSaveable { mutableStateOf(false) }
 
     if (isRenaming) TextFieldDialog(
-        hintText = "Enter the playlist name",
-        initialTextInput = playlistWithSongs?.playlist?.name ?: "",
+        hintText = stringResource(R.string.enter_playlist_name_prompt),
+        initialTextInput = playlistWithSongs?.playlist?.name.orEmpty(),
         onDismiss = { isRenaming = false },
         onDone = { text ->
             query {
@@ -115,12 +115,10 @@ fun LocalPlaylistSongs(
         }
     )
 
-    var isDeleting by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var isDeleting by rememberSaveable { mutableStateOf(false) }
 
     if (isDeleting) ConfirmationDialog(
-        text = "Do you really want to delete this playlist?",
+        text = stringResource(R.string.confirm_delete_playlist),
         onDismiss = { isDeleting = false },
         onConfirm = {
             query {
@@ -135,7 +133,7 @@ fun LocalPlaylistSongs(
 
     val rippleIndication = rememberRipple(bounded = false)
 
-    Box {
+    Box(modifier = modifier) {
         LazyColumn(
             state = reorderingState.lazyListState,
             contentPadding = LocalPlayerAwareWindowInsets.current
@@ -149,19 +147,16 @@ fun LocalPlaylistSongs(
                 contentType = 0
             ) {
                 Header(
-                    title = playlistWithSongs?.playlist?.name ?: "Unknown",
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
+                    title = playlistWithSongs?.playlist?.name ?: stringResource(R.string.unknown),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     SecondaryTextButton(
-                        text = "Enqueue",
+                        text = stringResource(R.string.enqueue),
                         enabled = playlistWithSongs?.songs?.isNotEmpty() == true,
                         onClick = {
-                            playlistWithSongs?.songs
-                                ?.map(Song::asMediaItem)
-                                ?.let { mediaItems ->
-                                    binder?.player?.enqueue(mediaItems)
-                                }
+                            playlistWithSongs?.songs?.map(Song::asMediaItem)?.let { mediaItems ->
+                                binder?.player?.enqueue(mediaItems)
+                            }
                         }
                     )
 
@@ -176,7 +171,7 @@ fun LocalPlaylistSongs(
                                     playlistWithSongs?.playlist?.browseId?.let { browseId ->
                                         MenuEntry(
                                             icon = R.drawable.sync,
-                                            text = "Sync",
+                                            text = stringResource(R.string.sync),
                                             onClick = {
                                                 menuState.hide()
                                                 transaction {
@@ -205,12 +200,12 @@ fun LocalPlaylistSongs(
                                         playlistWithSongs?.songs?.firstOrNull()?.id?.let { firstSongId ->
                                             MenuEntry(
                                                 icon = R.drawable.play,
-                                                text = "Watch playlist on YouTube",
+                                                text = stringResource(R.string.watch_playlist_on_youtube),
                                                 onClick = {
                                                     menuState.hide()
                                                     binder?.player?.pause()
                                                     uriHandler.openUri(
-                                                        "https://youtube.com/watch?v=${firstSongId}&list=${
+                                                        "https://youtube.com/watch?v=$firstSongId&list=${
                                                             playlistWithSongs?.playlist?.browseId
                                                                 ?.drop(2)
                                                         }"
@@ -220,18 +215,21 @@ fun LocalPlaylistSongs(
 
                                             MenuEntry(
                                                 icon = R.drawable.musical_notes,
-                                                text = "Open in YouTube Music",
+                                                text = stringResource(R.string.open_in_youtube_music),
                                                 onClick = {
                                                     menuState.hide()
                                                     binder?.player?.pause()
-                                                    if (!launchYouTubeMusic(
+                                                    if (
+                                                        !launchYouTubeMusic(
                                                             context = context,
-                                                            endpoint = "watch?v=${firstSongId}&list=${
+                                                            endpoint = "watch?v=$firstSongId&list=${
                                                                 playlistWithSongs?.playlist?.browseId
                                                                     ?.drop(2)
                                                             }"
                                                         )
-                                                    ) context.toast("YouTube Music is not installed on your device!")
+                                                    ) context.toast(
+                                                        context.getString(R.string.youtube_music_not_installed)
+                                                    )
                                                 }
                                             )
                                         }
@@ -239,7 +237,7 @@ fun LocalPlaylistSongs(
 
                                     MenuEntry(
                                         icon = R.drawable.pencil,
-                                        text = "Rename",
+                                        text = stringResource(R.string.rename),
                                         onClick = {
                                             menuState.hide()
                                             isRenaming = true
@@ -248,7 +246,7 @@ fun LocalPlaylistSongs(
 
                                     MenuEntry(
                                         icon = R.drawable.trash,
-                                        text = "Delete",
+                                        text = stringResource(R.string.delete),
                                         onClick = {
                                             menuState.hide()
                                             isDeleting = true
@@ -264,7 +262,7 @@ fun LocalPlaylistSongs(
             itemsIndexed(
                 items = playlistWithSongs?.songs ?: emptyList(),
                 key = { _, song -> song.id },
-                contentType = { _, song -> song },
+                contentType = { _, song -> song }
             ) { index, song ->
                 SongItem(
                     modifier = Modifier

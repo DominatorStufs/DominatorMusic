@@ -6,6 +6,7 @@ import io.ktor.client.request.setBody
 import it.vfsfitvnm.extensions.runCatchingCancellable
 import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.models.BrowseResponse
+import it.vfsfitvnm.innertube.models.Context
 import it.vfsfitvnm.innertube.models.MusicCarouselShelfRenderer
 import it.vfsfitvnm.innertube.models.NextResponse
 import it.vfsfitvnm.innertube.models.bodies.BrowseBody
@@ -16,8 +17,11 @@ import it.vfsfitvnm.innertube.utils.from
 
 suspend fun Innertube.relatedPage(body: NextBody) = runCatchingCancellable {
     val nextResponse = client.post(NEXT) {
-        setBody(body)
-        mask("contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs.tabRenderer(endpoint,title)")
+        setBody(body.copy(context = Context.DefaultWebNoLang))
+        @Suppress("all")
+        mask(
+            "contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs.tabRenderer(endpoint,title)"
+        )
     }.body<NextResponse>()
 
     val browseId = nextResponse
@@ -34,8 +38,16 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingCancellable {
         ?: return@runCatchingCancellable null
 
     val response = client.post(BROWSE) {
-        setBody(BrowseBody(browseId = browseId))
-        mask("contents.sectionListRenderer.contents.musicCarouselShelfRenderer(header.musicCarouselShelfBasicHeaderRenderer(title,strapline),contents($MUSIC_RESPONSIVE_LIST_ITEM_RENDERER_MASK,$MUSIC_TWO_ROW_ITEM_RENDERER_MASK))")
+        setBody(
+            BrowseBody(
+                browseId = browseId,
+                context = Context.DefaultWebNoLang
+            )
+        )
+        @Suppress("all")
+        mask(
+            "contents.sectionListRenderer.contents.musicCarouselShelfRenderer(header.musicCarouselShelfBasicHeaderRenderer(title,strapline),contents($MUSIC_RESPONSIVE_LIST_ITEM_RENDERER_MASK,$MUSIC_TWO_ROW_ITEM_RENDERER_MASK))"
+        )
     }.body<BrowseResponse>()
 
     val sectionListRenderer = response
@@ -67,6 +79,6 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingCancellable {
             ?.musicCarouselShelfRenderer
             ?.contents
             ?.mapNotNull(MusicCarouselShelfRenderer.Content::musicTwoRowItemRenderer)
-            ?.mapNotNull(Innertube.ArtistItem::from),
+            ?.mapNotNull(Innertube.ArtistItem::from)
     )
 }

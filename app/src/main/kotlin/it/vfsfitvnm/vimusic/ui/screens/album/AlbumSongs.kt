@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import it.vfsfitvnm.compose.persist.persistList
 import it.vfsfitvnm.vimusic.Database
@@ -54,6 +55,7 @@ fun AlbumSongs(
     browseId: String,
     headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
     thumbnailContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -69,7 +71,10 @@ fun AlbumSongs(
 
     val lazyListState = rememberLazyListState()
 
-    LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
+    LayoutWithAdaptiveThumbnail(
+        thumbnailContent = thumbnailContent,
+        modifier = modifier
+    ) {
         Box {
             LazyColumn(
                 state = lazyListState,
@@ -86,7 +91,7 @@ fun AlbumSongs(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         headerContent {
                             SecondaryTextButton(
-                                text = "Enqueue",
+                                text = stringResource(R.string.enqueue),
                                 enabled = songs.isNotEmpty(),
                                 onClick = {
                                     binder?.player?.enqueue(songs.map(Song::asMediaItem))
@@ -94,9 +99,7 @@ fun AlbumSongs(
                             )
                         }
 
-                        if (!isLandscape) {
-                            thumbnailContent()
-                        }
+                        if (!isLandscape) thumbnailContent()
                     }
                 }
 
@@ -120,36 +123,30 @@ fun AlbumSongs(
                                     .align(Alignment.Center)
                             )
                         },
-                        modifier = Modifier
-                            .combinedClickable(
-                                onLongClick = {
-                                    menuState.display {
-                                        NonQueuedMediaItemMenu(
-                                            onDismiss = menuState::hide,
-                                            mediaItem = song.asMediaItem,
-                                        )
-                                    }
-                                },
-                                onClick = {
-                                    binder?.stopRadio()
-                                    binder?.player?.forcePlayAtIndex(
-                                        songs.map(Song::asMediaItem),
-                                        index
+                        modifier = Modifier.combinedClickable(
+                            onLongClick = {
+                                menuState.display {
+                                    NonQueuedMediaItemMenu(
+                                        onDismiss = menuState::hide,
+                                        mediaItem = song.asMediaItem
                                     )
                                 }
-                            )
+                            },
+                            onClick = {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayAtIndex(
+                                    items = songs.map(Song::asMediaItem),
+                                    index = index
+                                )
+                            }
+                        )
                     )
                 }
 
-                if (songs.isEmpty()) {
-                    item(key = "loading") {
-                        ShimmerHost(
-                            modifier = Modifier
-                                .fillParentMaxSize()
-                        ) {
-                            repeat(4) {
-                                SongItemPlaceholder(thumbnailSizeDp = Dimensions.thumbnails.song)
-                            }
+                if (songs.isEmpty()) item(key = "loading") {
+                    ShimmerHost(modifier = Modifier.fillParentMaxSize()) {
+                        repeat(4) {
+                            SongItemPlaceholder(thumbnailSizeDp = Dimensions.thumbnails.song)
                         }
                     }
                 }

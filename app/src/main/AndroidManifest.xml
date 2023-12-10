@@ -5,6 +5,7 @@
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -25,9 +26,11 @@
         <intent>
             <action android:name="android.media.action.DISPLAY_AUDIO_EFFECT_CONTROL_PANEL" />
         </intent>
+
         <intent>
             <action android:name="android.intent.action.WEB_SEARCH" />
         </intent>
+
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:mimeType="*/*" />
@@ -73,46 +76,55 @@
                     android:pathPrefix="/playlist"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="www.youtube.com"
                     android:pathPrefix="/playlist"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="m.youtube.com"
                     android:pathPrefix="/playlist"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="music.youtube.com"
                     android:pathPrefix="/watch"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="www.youtube.com"
                     android:pathPrefix="/watch"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="m.youtube.com"
                     android:pathPrefix="/watch"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="youtu.be"
                     android:pathPrefix="/"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="music.youtube.com"
                     android:pathPrefix="/channel"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="www.youtube.com"
                     android:pathPrefix="/channel"
                     android:scheme="https"
                     tools:ignore="IntentFilterUniqueDataAttributes" />
+
                 <data
                     android:host="m.youtube.com"
                     android:pathPrefix="/c"
@@ -130,13 +142,14 @@
         <service
             android:name=".service.PlayerService"
             android:exported="false"
-            android:foregroundServiceType="mediaPlayback"></service>
+            android:foregroundServiceType="mediaPlayback" />
 
         <service
             android:name=".service.PlayerMediaBrowserService"
             android:enabled="false"
             android:exported="true"
             tools:ignore="ExportedService">
+
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>

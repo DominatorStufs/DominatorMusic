@@ -1,6 +1,5 @@
 package it.vfsfitvnm.vimusic.ui.screens.settings
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -14,13 +13,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import it.vfsfitvnm.vimusic.BuildConfig
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
+import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.secondary
 
-@ExperimentalAnimationApi
+@Route
 @Composable
 fun About() {
     val (colorPalette, typography) = LocalAppearance.current
@@ -37,20 +39,20 @@ fun About() {
                     .asPaddingValues()
             )
     ) {
-        Header(title = "About") {
+        Header(title = stringResource(R.string.about)) {
             BasicText(
-                text = "v${BuildConfig.VERSION_NAME} by vfsfitvnm",
+                text = stringResource(R.string.format_version_credits, BuildConfig.VERSION_NAME),
                 style = typography.s.secondary
             )
         }
 
         SettingsGroupSpacer()
 
-        SettingsEntryGroupText(title = "SOCIAL")
+        SettingsEntryGroupText(title = stringResource(R.string.social))
 
         SettingsEntry(
-            title = "GitHub",
-            text = "View the source code",
+            title = stringResource(R.string.github),
+            text = stringResource(R.string.view_source),
             onClick = {
                 uriHandler.openUri("https://github.com/25huizengek1/ViMusic")
             }
@@ -61,18 +63,23 @@ fun About() {
         SettingsEntryGroupText(title = "CONTACT")
 
         SettingsEntry(
-            title = "Report an issue",
-            text = "If you need help with a bug you can file an issue on GitHub (click to redirect)",
+            title = stringResource(R.string.report_bug),
+            text = stringResource(R.string.report_bug_description),
             onClick = {
-                uriHandler.openUri("https://github.com/25huizengek1/ViMusic/issues/new?assignees=&labels=bug&template=bug_report.yaml")
+                uriHandler.openUri(
+                    "https://github.com/25huizengek1/ViMusic/issues/new?assignees=&labels=bug&template=bug_report.yaml"
+                )
             }
         )
 
         SettingsEntry(
-            title = "Request a feature or suggest an idea",
-            text = "You will be redirected to GitHub",
+            title = stringResource(R.string.request_feature),
+            text = stringResource(R.string.request_feature_description),
             onClick = {
-                uriHandler.openUri("https://github.com/25huizengek1/ViMusic/issues/new?assignees=&labels=enhancement&template=feature_request.yaml")
+                uriHandler.openUri(
+                    @Suppress("MaximumLineLength")
+                    "https://github.com/25huizengek1/ViMusic/issues/new?assignees=&labels=enhancement&template=feature_request.md"
+                )
             }
         )
     }

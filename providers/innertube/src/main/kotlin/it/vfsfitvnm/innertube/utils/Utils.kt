@@ -33,7 +33,7 @@ internal fun SectionListRenderer.findSectionByStrapline(text: String) = contents
 
 infix operator fun <T : Innertube.Item> Innertube.ItemsPage<T>?.plus(other: Innertube.ItemsPage<T>) =
     other.copy(
-        items = (this?.items?.plus(other.items ?: emptyList())
-            ?: other.items)?.distinctBy(Innertube.Item::key),
+        items = (this?.items?.plus(other.items ?: emptyList()) ?: other.items)
+            ?.distinctBy(Innertube.Item::key),
         continuation = other.continuation ?: this?.continuation
     )

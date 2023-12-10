@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
 import it.vfsfitvnm.compose.persist.PersistMapCleanup
@@ -37,6 +37,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.adaptiveThumbnailContent
 import it.vfsfitvnm.vimusic.ui.items.AlbumItem
 import it.vfsfitvnm.vimusic.ui.items.AlbumItemPlaceholder
 import it.vfsfitvnm.vimusic.ui.screens.GlobalRoutes
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
 import it.vfsfitvnm.vimusic.ui.screens.searchresult.ItemsPage
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
@@ -47,6 +48,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun AlbumScreen(browseId: String) {
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -65,7 +67,7 @@ fun AlbumScreen(browseId: String) {
             .collect { (currentAlbum, tabIndex) ->
                 album = currentAlbum
 
-                if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
+                if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1))
                     withContext(Dispatchers.IO) {
                         Innertube.albumPage(BrowseBody(browseId = browseId))
                             ?.onSuccess { currentAlbumPage ->
@@ -74,18 +76,18 @@ fun AlbumScreen(browseId: String) {
                                 Database.clearAlbum(browseId)
 
                                 Database.upsert(
-                                    Album(
+                                    album = Album(
                                         id = browseId,
                                         title = currentAlbumPage.title,
                                         thumbnailUrl = currentAlbumPage.thumbnail?.url,
                                         year = currentAlbumPage.year,
                                         authorsText = currentAlbumPage.authors
-                                            ?.joinToString("") { it.name ?: "" },
+                                            ?.joinToString("") { it.name.orEmpty() },
                                         shareUrl = currentAlbumPage.url,
                                         timestamp = System.currentTimeMillis(),
                                         bookmarkedAt = album?.bookmarkedAt
                                     ),
-                                    currentAlbumPage
+                                    songAlbumMaps = currentAlbumPage
                                         .songsPage
                                         ?.items
                                         ?.map(Innertube.SongItem::asMediaItem)
@@ -100,40 +102,28 @@ fun AlbumScreen(browseId: String) {
                                 )
                             }
                     }
-
-                }
             }
     }
 
     RouteHandler(listenToGlobalEmitter = true) {
         GlobalRoutes()
 
-        host {
+        NavHost {
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit =
                 { textButton ->
-                    if (album?.timestamp == null) {
-                        HeaderPlaceholder(
-                            modifier = Modifier
-                                .shimmer()
-                        )
-                    } else {
+                    if (album?.timestamp == null) HeaderPlaceholder(modifier = Modifier.shimmer())
+                    else {
                         val (colorPalette) = LocalAppearance.current
                         val context = LocalContext.current
 
-                        Header(title = album?.title ?: "Unknown") {
+                        Header(title = album?.title ?: stringResource(R.string.unknown)) {
                             textButton?.invoke()
 
-                            Spacer(
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
+                            Spacer(modifier = Modifier.weight(1f))
 
                             HeaderIconButton(
-                                icon = if (album?.bookmarkedAt == null) {
-                                    R.drawable.bookmark_outline
-                                } else {
-                                    R.drawable.bookmark
-                                },
+                                icon = if (album?.bookmarkedAt == null) R.drawable.bookmark_outline
+                                else R.drawable.bookmark,
                                 color = colorPalette.accent,
                                 onClick = {
                                     val bookmarkedAt =
@@ -159,10 +149,7 @@ fun AlbumScreen(browseId: String) {
                                         }
 
                                         context.startActivity(
-                                            Intent.createChooser(
-                                                sendIntent,
-                                                null
-                                            )
+                                            Intent.createChooser(sendIntent, null)
                                         )
                                     }
                                 }
@@ -180,8 +167,8 @@ fun AlbumScreen(browseId: String) {
                 tabIndex = tabIndex,
                 onTabChanged = { tabIndex = it },
                 tabColumnContent = { item ->
-                    item(0, "Songs", R.drawable.musical_notes)
-                    item(1, "Other versions", R.drawable.disc)
+                    item(0, stringResource(R.string.songs), R.drawable.musical_notes)
+                    item(1, stringResource(R.string.other_versions), R.drawable.disc)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
@@ -189,7 +176,7 @@ fun AlbumScreen(browseId: String) {
                         0 -> AlbumSongs(
                             browseId = browseId,
                             headerContent = headerContent,
-                            thumbnailContent = thumbnailContent,
+                            thumbnailContent = thumbnailContent
                         )
 
                         1 -> {
@@ -201,24 +188,23 @@ fun AlbumScreen(browseId: String) {
                                 headerContent = headerContent,
                                 initialPlaceholderCount = 1,
                                 continuationPlaceholderCount = 1,
-                                emptyItemsText = "This album doesn't have any alternative version",
+                                emptyItemsText = stringResource(R.string.no_alternative_version),
                                 itemsPageProvider = albumPage?.let {
-                                    ({
+                                    {
                                         Result.success(
                                             Innertube.ItemsPage(
                                                 items = albumPage?.otherVersions,
                                                 continuation = null
                                             )
                                         )
-                                    })
+                                    }
                                 },
                                 itemContent = { album ->
                                     AlbumItem(
                                         album = album,
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
-                                        modifier = Modifier
-                                            .clickable { albumRoute(album.key) }
+                                        modifier = Modifier.clickable { albumRoute(album.key) }
                                     )
                                 },
                                 itemPlaceholderContent = {

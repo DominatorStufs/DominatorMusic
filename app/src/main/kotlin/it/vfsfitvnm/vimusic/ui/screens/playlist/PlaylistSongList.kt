@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.valentinilk.shimmer.shimmer
 import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.innertube.Innertube
@@ -68,7 +69,8 @@ import kotlinx.coroutines.withContext
 fun PlaylistSongList(
     browseId: String,
     params: String?,
-    maxDepth: Int?
+    maxDepth: Int?,
+    modifier: Modifier = Modifier
 ) {
     val (colorPalette) = LocalAppearance.current
     val binder = LocalPlayerServiceBinder.current
@@ -89,83 +91,72 @@ fun PlaylistSongList(
     val songThumbnailSizeDp = Dimensions.thumbnails.song
     val songThumbnailSizePx = songThumbnailSizeDp.px
 
-    var isImportingPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var isImportingPlaylist by rememberSaveable { mutableStateOf(false) }
 
-    if (isImportingPlaylist) {
-        TextFieldDialog(
-            hintText = "Enter the playlist name",
-            initialTextInput = playlistPage?.title ?: "",
-            onDismiss = { isImportingPlaylist = false },
-            onDone = { text ->
-                query {
-                    transaction {
-                        val playlistId = Database.insert(Playlist(name = text, browseId = browseId))
+    if (isImportingPlaylist) TextFieldDialog(
+        hintText = stringResource(R.string.enter_playlist_name_prompt),
+        initialTextInput = playlistPage?.title.orEmpty(),
+        onDismiss = { isImportingPlaylist = false },
+        onDone = { text ->
+            query {
+                transaction {
+                    val playlistId = Database.insert(Playlist(name = text, browseId = browseId))
 
-                        playlistPage?.songsPage?.items
-                            ?.map(Innertube.SongItem::asMediaItem)
-                            ?.onEach(Database::insert)
-                            ?.mapIndexed { index, mediaItem ->
-                                SongPlaylistMap(
-                                    songId = mediaItem.mediaId,
-                                    playlistId = playlistId,
-                                    position = index
-                                )
-                            }?.let(Database::insertSongPlaylistMaps)
-                    }
+                    playlistPage?.songsPage?.items
+                        ?.map(Innertube.SongItem::asMediaItem)
+                        ?.onEach(Database::insert)
+                        ?.mapIndexed { index, mediaItem ->
+                            SongPlaylistMap(
+                                songId = mediaItem.mediaId,
+                                playlistId = playlistId,
+                                position = index
+                            )
+                        }?.let(Database::insertSongPlaylistMaps)
                 }
             }
-        )
-    }
+        }
+    )
 
     val headerContent: @Composable () -> Unit = {
-        if (playlistPage == null) {
-            HeaderPlaceholder(
-                modifier = Modifier
-                    .shimmer()
-            )
-        } else {
-            Header(title = playlistPage?.title ?: "Unknown") {
-                SecondaryTextButton(
-                    text = "Enqueue",
-                    enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
-                    onClick = {
-                        playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)
-                            ?.let { mediaItems ->
-                                binder?.player?.enqueue(mediaItems)
-                            }
-                    }
-                )
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                HeaderIconButton(
-                    icon = R.drawable.add,
-                    color = colorPalette.text,
-                    onClick = { isImportingPlaylist = true }
-                )
-
-                HeaderIconButton(
-                    icon = R.drawable.share_social,
-                    color = colorPalette.text,
-                    onClick = {
-                        (playlistPage?.url
-                            ?: "https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}").let { url ->
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, url)
-                            }
-
-                            context.startActivity(Intent.createChooser(sendIntent, null))
+        if (playlistPage == null) HeaderPlaceholder(modifier = Modifier.shimmer())
+        else Header(title = playlistPage?.title ?: stringResource(R.string.unknown)) {
+            SecondaryTextButton(
+                text = stringResource(R.string.enqueue),
+                enabled = playlistPage?.songsPage?.items?.isNotEmpty() == true,
+                onClick = {
+                    playlistPage?.songsPage?.items?.map(Innertube.SongItem::asMediaItem)
+                        ?.let { mediaItems ->
+                            binder?.player?.enqueue(mediaItems)
                         }
+                }
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            HeaderIconButton(
+                icon = R.drawable.add,
+                color = colorPalette.text,
+                onClick = { isImportingPlaylist = true }
+            )
+
+            HeaderIconButton(
+                icon = R.drawable.share_social,
+                color = colorPalette.text,
+                onClick = {
+                    (
+                        playlistPage?.url
+                            ?: "https://music.youtube.com/playlist?list=${browseId.removePrefix("VL")}"
+                        ).let { url ->
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, url)
+                        }
+
+                        context.startActivity(Intent.createChooser(sendIntent, null))
                     }
-                )
-            }
+                }
+            )
         }
     }
 
@@ -174,7 +165,10 @@ fun PlaylistSongList(
 
     val lazyListState = rememberLazyListState()
 
-    LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
+    LayoutWithAdaptiveThumbnail(
+        thumbnailContent = thumbnailContent,
+        modifier = modifier
+    ) {
         Box {
             LazyColumn(
                 state = lazyListState,
@@ -205,7 +199,7 @@ fun PlaylistSongList(
                                     menuState.display {
                                         NonQueuedMediaItemMenu(
                                             onDismiss = menuState::hide,
-                                            mediaItem = song.asMediaItem,
+                                            mediaItem = song.asMediaItem
                                         )
                                     }
                                 },
@@ -220,15 +214,10 @@ fun PlaylistSongList(
                     )
                 }
 
-                if (playlistPage == null) {
-                    item(key = "loading") {
-                        ShimmerHost(
-                            modifier = Modifier
-                                .fillParentMaxSize()
-                        ) {
-                            repeat(4) {
-                                SongItemPlaceholder(thumbnailSizeDp = songThumbnailSizeDp)
-                            }
+                if (playlistPage == null) item(key = "loading") {
+                    ShimmerHost(modifier = Modifier.fillParentMaxSize()) {
+                        repeat(4) {
+                            SongItemPlaceholder(thumbnailSizeDp = songThumbnailSizeDp)
                         }
                     }
                 }

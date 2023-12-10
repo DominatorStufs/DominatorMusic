@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchResponse(
-    val contents: Contents?,
+    val contents: Contents?
 ) {
     @Serializable
     data class Contents(

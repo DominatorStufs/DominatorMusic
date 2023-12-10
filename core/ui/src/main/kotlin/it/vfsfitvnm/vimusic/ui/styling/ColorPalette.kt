@@ -80,22 +80,20 @@ val PureBlackColorPalette = DefaultDarkColorPalette.copy(
 )
 
 fun colorPaletteOf(
-    colorPaletteName: ColorPaletteName,
-    colorPaletteMode: ColorPaletteMode,
+    name: ColorPaletteName,
+    mode: ColorPaletteMode,
     isSystemInDarkMode: Boolean
-): ColorPalette {
-    return when (colorPaletteName) {
-        ColorPaletteName.Default, ColorPaletteName.Dynamic -> when (colorPaletteMode) {
-            ColorPaletteMode.Light -> DefaultLightColorPalette
-            ColorPaletteMode.Dark -> DefaultDarkColorPalette
-            ColorPaletteMode.System -> when (isSystemInDarkMode) {
-                true -> DefaultDarkColorPalette
-                false -> DefaultLightColorPalette
-            }
+) = when (name) {
+    ColorPaletteName.Default, ColorPaletteName.Dynamic -> when (mode) {
+        ColorPaletteMode.Light -> DefaultLightColorPalette
+        ColorPaletteMode.Dark -> DefaultDarkColorPalette
+        ColorPaletteMode.System -> when (isSystemInDarkMode) {
+            true -> DefaultDarkColorPalette
+            false -> DefaultLightColorPalette
         }
-
-        ColorPaletteName.PureBlack -> PureBlackColorPalette
     }
+
+    ColorPaletteName.PureBlack -> PureBlackColorPalette
 }
 
 fun dynamicColorPaletteOf(bitmap: Bitmap, isDark: Boolean): ColorPalette? {
@@ -140,46 +138,24 @@ fun dynamicColorPaletteOf(hsl: FloatArray, isDark: Boolean): ColorPalette {
         accent = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.5f), 0.5f),
         text = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.02f), if (isDark) 0.88f else 0.12f),
         textSecondary = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.1f), if (isDark) 0.65f else 0.40f),
-        textDisabled = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.2f), if (isDark) 0.40f else 0.65f),
+        textDisabled = Color.hsl(hsl[0], hsl[1].coerceAtMost(0.2f), if (isDark) 0.40f else 0.65f)
     )
 }
 
-inline val ColorPalette.collapsedPlayerProgressBar: Color
-    get() = if (this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette) {
-        text
-    } else {
-        accent
-    }
+inline val ColorPalette.isDefault get() =
+    this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette
 
-inline val ColorPalette.favoritesIcon: Color
-    get() = if (this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette) {
-        red
-    } else {
-        accent
-    }
-
-inline val ColorPalette.shimmer: Color
-    get() = if (this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette) {
-        Color(0xff838383)
-    } else {
-        accent
-    }
-
-inline val ColorPalette.primaryButton: Color
-    get() = if (this === PureBlackColorPalette) {
-        Color(0xFF272727)
-    } else {
-        background2
-    }
+inline val ColorPalette.collapsedPlayerProgressBar get() = if (isDefault) text else accent
+inline val ColorPalette.favoritesIcon get() = if (isDefault) red else accent
+inline val ColorPalette.shimmer get() = if (isDefault) Color(0xff838383) else accent
+inline val ColorPalette.primaryButton get() =
+    (if (this === PureBlackColorPalette) Color(0xFF272727) else background2)
 
 @Suppress("UnusedReceiverParameter")
-inline val ColorPalette.overlay: Color
-    get() = PureBlackColorPalette.background0.copy(alpha = 0.75f)
+inline val ColorPalette.overlay get() = PureBlackColorPalette.background0.copy(alpha = 0.75f)
 
 @Suppress("UnusedReceiverParameter")
-inline val ColorPalette.onOverlay: Color
-    get() = PureBlackColorPalette.text
+inline val ColorPalette.onOverlay get() = PureBlackColorPalette.text
 
 @Suppress("UnusedReceiverParameter")
-inline val ColorPalette.onOverlayShimmer: Color
-    get() = PureBlackColorPalette.shimmer
+inline val ColorPalette.onOverlayShimmer get() = PureBlackColorPalette.shimmer

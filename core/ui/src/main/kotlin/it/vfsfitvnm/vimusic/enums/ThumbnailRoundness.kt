@@ -5,12 +5,12 @@ import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.vimusic.roundedShape
 
 @Suppress("unused")
-enum class ThumbnailRoundness(val dp: Dp, val desc: ThumbnailRoundness.() -> String = { name }) {
+enum class ThumbnailRoundness(val dp: Dp) {
     None(0.dp),
     Light(2.dp),
     Medium(8.dp),
     Heavy(12.dp),
-    Heavier(dp = 16.dp, desc = { "Even heavier" }),
+    Heavier(16.dp),
     Heaviest(16.dp);
 
     val shape get() = dp.roundedShape

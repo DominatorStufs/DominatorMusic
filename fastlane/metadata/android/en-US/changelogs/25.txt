@@ -1,0 +1,8 @@
+* Improved searching songs in Songs and Local tab, now also searches for artist
+* Fixed a bug that made local songs inaccessible
+* Cleaned up some inconsistencies
+* Added more animations to settings
+* Swapped queue buttons for consistency with the buttons on the collapsed queue / player
+* Fixed a bug that caused the like button to be invisible on some Android versions
+* Added the like button directly in the player behind a setting in the Appearance settings
+* Added swiping in the queue to remove music from the playlist

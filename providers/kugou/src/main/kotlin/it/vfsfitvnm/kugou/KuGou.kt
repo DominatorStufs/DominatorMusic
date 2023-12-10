@@ -127,23 +127,17 @@ object KuGou {
         return "$newArtist - $newTitle"
     }
 
+    @Suppress("ReturnCount")
     private fun String.extract(startDelimiter: String, endDelimiter: Char): Pair<String, String> {
-        val startIndex = indexOf(startDelimiter)
+        val startIndex = indexOf(startDelimiter).takeIf { it != -1 } ?: return this to ""
+        val endIndex = indexOf(endDelimiter, startIndex).takeIf { it != -1 } ?: return this to ""
 
-        if (startIndex == -1) return this to ""
-
-        val endIndex = indexOf(endDelimiter, startIndex)
-
-        if (endIndex == -1) return this to ""
-
-        return removeRange(
-            startIndex,
-            endIndex + 1
-        ) to substring(startIndex + startDelimiter.length, endIndex)
+        return removeRange(startIndex, endIndex + 1) to substring(startIndex + startDelimiter.length, endIndex)
     }
 
     @JvmInline
     value class Lyrics(val value: String) {
+        @Suppress("CyclomaticComplexMethod")
         fun normalize(): Lyrics {
             var toDrop = 0
             var maybeToDrop = 0

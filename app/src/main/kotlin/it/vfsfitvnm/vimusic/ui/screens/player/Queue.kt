@@ -30,7 +30,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -52,6 +52,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -83,6 +86,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.TextFieldDialog
 import it.vfsfitvnm.vimusic.ui.components.themed.TextToggle
 import it.vfsfitvnm.vimusic.ui.items.SongItem
 import it.vfsfitvnm.vimusic.ui.items.SongItemPlaceholder
+import it.vfsfitvnm.vimusic.ui.modifiers.swipeToClose
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.onOverlay
@@ -97,6 +101,7 @@ import it.vfsfitvnm.vimusic.utils.smoothScrollToTop
 import it.vfsfitvnm.vimusic.utils.windows
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
@@ -104,11 +109,13 @@ import kotlinx.coroutines.launch
 fun Queue(
     backgroundColorProvider: () -> Color,
     layoutState: BottomSheetState,
-    modifier: Modifier = Modifier,
     beforeContent: @Composable RowScope.() -> Unit,
     afterContent: @Composable RowScope.() -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    val (colorPalette, typography, _, thumbnailShape) = LocalAppearance.current
+    val colorPalette = LocalAppearance.current.colorPalette
+    val typography = LocalAppearance.current.typography
+    val thumbnailShape = LocalAppearance.current.thumbnailShape
 
     val windowInsets = WindowInsets.systemBars
 
@@ -124,9 +131,10 @@ fun Queue(
                     .drawBehind { drawRect(backgroundColorProvider()) }
                     .fillMaxSize()
                     .padding(horizontalBottomPaddingValues),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 beforeContent()
                 Spacer(modifier = Modifier.weight(1f))
                 Image(
@@ -137,7 +145,7 @@ fun Queue(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 afterContent()
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(4.dp))
             }
         }
     ) {
@@ -155,13 +163,8 @@ fun Queue(
             mutableIntStateOf(if (player.mediaItemCount == 0) -1 else player.currentMediaItemIndex)
         }
 
-        var windows by remember {
-            mutableStateOf(player.currentTimeline.windows)
-        }
-
-        var shouldBePlaying by remember {
-            mutableStateOf(binder.player.shouldBePlaying)
-        }
+        var windows by remember { mutableStateOf(player.currentTimeline.windows) }
+        var shouldBePlaying by remember { mutableStateOf(player.shouldBePlaying) }
 
         player.DisposableListener {
             object : Player.Listener {
@@ -211,10 +214,10 @@ fun Queue(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.nestedScroll(layoutState.preUpPostDownNestedScrollConnection)
                 ) {
-                    items(
+                    itemsIndexed(
                         items = windows,
-                        key = { it.uid.hashCode() }
-                    ) { window ->
+                        key = { i, window -> i to window.uid.hashCode() }
+                    ) { i, window ->
                         val isPlayingThisMediaItem = mediaItemIndex == window.firstPeriodIndex
 
                         SongItem(
@@ -225,7 +228,7 @@ fun Queue(
                                 musicBarsTransition.AnimatedVisibility(
                                     visible = { it == window.firstPeriodIndex },
                                     enter = fadeIn(tween(800)),
-                                    exit = fadeOut(tween(800)),
+                                    exit = fadeOut(tween(800))
                                 ) {
                                     Box(
                                         contentAlignment = Alignment.Center,
@@ -257,7 +260,7 @@ fun Queue(
                                     modifier = Modifier
                                         .reorder(
                                             reorderingState = reorderingState,
-                                            index = window.firstPeriodIndex
+                                            index = i
                                         )
                                         .size(18.dp)
                                 )
@@ -268,7 +271,8 @@ fun Queue(
                                         menuState.display {
                                             QueuedMediaItemMenu(
                                                 mediaItem = window.mediaItem,
-                                                indexInQueue = if (isPlayingThisMediaItem) null else window.firstPeriodIndex,
+                                                indexInQueue = if (isPlayingThisMediaItem) null
+                                                else window.firstPeriodIndex,
                                                 onDismiss = menuState::hide
                                             )
                                         }
@@ -284,8 +288,17 @@ fun Queue(
                                 )
                                 .draggedItem(
                                     reorderingState = reorderingState,
-                                    index = window.firstPeriodIndex
+                                    index = i
                                 )
+                                .let {
+                                    if (!PlayerPreferences.horizontalSwipeToRemoveItem || isPlayingThisMediaItem) it
+                                    else it.swipeToClose(
+                                        delay = 100.milliseconds,
+                                        onClose = {
+                                            player.removeMediaItem(window.firstPeriodIndex)
+                                        }
+                                    )
+                                }
                         )
                     }
 
@@ -318,17 +331,39 @@ fun Queue(
                 )
             }
 
-            Box(
+            Row(
                 modifier = Modifier
                     .clickable(onClick = layoutState::collapseSoft)
                     .background(colorPalette.background2)
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp)
                     .padding(horizontalBottomPaddingValues)
-                    .height(64.dp)
+                    .height(64.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                TextToggle(
+                    state = PlayerPreferences.queueLoopEnabled,
+                    toggleState = {
+                        PlayerPreferences.queueLoopEnabled = !PlayerPreferences.queueLoopEnabled
+                    },
+                    name = stringResource(R.string.queue_loop)
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+                Image(
+                    painter = painterResource(R.drawable.chevron_down),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(colorPalette.text),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+
                 BasicText(
-                    text = "${windows.size} songs",
+                    text = pluralStringResource(
+                        id = R.plurals.song_count_plural,
+                        count = windows.size,
+                        windows.size
+                    ),
                     style = typography.xxs.medium,
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
@@ -338,8 +373,9 @@ fun Queue(
                                     .insert(playlist)
                                     .takeIf { it != -1L } ?: playlist.id
 
-                                windows.forEachIndexed { i, it ->
-                                    val mediaItem = it.mediaItem
+                                windows.forEachIndexed { i, window ->
+                                    val mediaItem = window.mediaItem
+
                                     Database.insert(mediaItem)
                                     Database.insert(
                                         SongPlaylistMap(
@@ -357,16 +393,14 @@ fun Queue(
                                 val playlistPreviews by remember {
                                     Database
                                         .playlistPreviews(
-                                            PlaylistSortBy.DateAdded,
-                                            SortOrder.Descending
+                                            sortBy = PlaylistSortBy.DateAdded,
+                                            sortOrder = SortOrder.Descending
                                         )
-                                        .onFirst {
-                                            isCreatingNewPlaylist = it.isEmpty()
-                                        }
+                                        .onFirst { isCreatingNewPlaylist = it.isEmpty() }
                                 }.collectAsState(initial = null, context = Dispatchers.IO)
 
                                 if (isCreatingNewPlaylist) TextFieldDialog(
-                                    hintText = "Enter the playlist name",
+                                    hintText = stringResource(R.string.enter_playlist_name_prompt),
                                     onDismiss = { isCreatingNewPlaylist = false },
                                     onDone = { text ->
                                         menuState.hide()
@@ -385,16 +419,20 @@ fun Queue(
                                             .fillMaxWidth()
                                     ) {
                                         BasicText(
-                                            text = "Add queue to playlist",
-                                            style = typography.m.semiBold
+                                            text = stringResource(R.string.add_queue_to_playlist),
+                                            style = typography.m.semiBold,
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 2,
+                                            modifier = Modifier.weight(weight = 2f, fill = false)
                                         )
 
-                                        Spacer(modifier = Modifier.weight(1f))
+                                        Spacer(modifier = Modifier.width(8.dp))
 
                                         SecondaryTextButton(
-                                            text = "New playlist",
+                                            text = stringResource(R.string.new_playlist),
                                             onClick = { isCreatingNewPlaylist = true },
-                                            alternative = true
+                                            alternative = true,
+                                            modifier = Modifier.weight(weight = 1f, fill = false)
                                         )
                                     }
 
@@ -405,7 +443,11 @@ fun Queue(
                                         MenuEntry(
                                             icon = R.drawable.playlist,
                                             text = playlistPreview.playlist.name,
-                                            secondaryText = "${playlistPreview.songCount} songs",
+                                            secondaryText = pluralStringResource(
+                                                id = R.plurals.song_count_plural,
+                                                count = playlistPreview.songCount,
+                                                playlistPreview.songCount
+                                            ),
                                             onClick = {
                                                 menuState.hide()
                                                 addToPlaylist(
@@ -419,26 +461,7 @@ fun Queue(
                             }
                         }
                         .background(colorPalette.background1)
-                        .align(Alignment.CenterStart)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                )
-
-                Image(
-                    painter = painterResource(R.drawable.chevron_down),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(colorPalette.text),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(18.dp)
-                )
-
-                TextToggle(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    state = PlayerPreferences.queueLoopEnabled,
-                    toggleState = {
-                        PlayerPreferences.queueLoopEnabled = !PlayerPreferences.queueLoopEnabled
-                    },
-                    name = "Queue loop"
                 )
             }
         }

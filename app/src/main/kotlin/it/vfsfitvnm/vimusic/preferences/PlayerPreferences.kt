@@ -1,6 +1,9 @@
 package it.vfsfitvnm.vimusic.preferences
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import it.vfsfitvnm.vimusic.GlobalPreferencesHolder
+import it.vfsfitvnm.vimusic.R
 
 object PlayerPreferences : GlobalPreferencesHolder() {
     var isInvincibilityEnabled by boolean(false)
@@ -20,6 +23,14 @@ object PlayerPreferences : GlobalPreferencesHolder() {
     var isShowingPrevButtonCollapsed by boolean(false)
     var stopWhenClosed by boolean(false)
     var horizontalSwipeToClose by boolean(false)
+    var horizontalSwipeToRemoveItem by boolean(false)
+    var playerLayout by enum(PlayerLayout.New)
+    var showLike by boolean(false)
+
+    enum class PlayerLayout(val displayName: @Composable () -> String) {
+        Classic(displayName = { stringResource(R.string.classic_player_layout_name) }),
+        New(displayName = { stringResource(R.string.new_player_layout_name) })
+    }
 
     val volumeNormalizationBaseGainRounded get() = (volumeNormalizationBaseGain * 100).toInt()
 }

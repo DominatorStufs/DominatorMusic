@@ -17,13 +17,12 @@ data class SectionListRenderer(
         @JsonNames("musicPlaylistShelfRenderer")
         val musicShelfRenderer: MusicShelfRenderer?,
         val gridRenderer: GridRenderer?,
-        val musicDescriptionShelfRenderer: MusicDescriptionShelfRenderer?,
+        val musicDescriptionShelfRenderer: MusicDescriptionShelfRenderer?
     ) {
 
         @Serializable
         data class MusicDescriptionShelfRenderer(
-            val description: Runs?,
+            val description: Runs?
         )
     }
-
 }

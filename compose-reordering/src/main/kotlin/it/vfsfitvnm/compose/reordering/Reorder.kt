@@ -10,25 +10,25 @@ import androidx.compose.ui.input.pointer.pointerInput
 private fun Modifier.reorder(
     reorderingState: ReorderingState,
     index: Int,
-    detectDragGestures: DetectDragGestures,
+    detectDragGestures: DetectDragGestures
 ) = this.pointerInput(reorderingState) {
     with(detectDragGestures) {
         detectDragGestures(
             onDragStart = { reorderingState.onDragStart(index) },
             onDrag = reorderingState::onDrag,
             onDragEnd = reorderingState::onDragEnd,
-            onDragCancel =  reorderingState::onDragEnd,
+            onDragCancel = reorderingState::onDragEnd
         )
     }
 }
 
 fun Modifier.reorder(
     reorderingState: ReorderingState,
-    index: Int,
+    index: Int
 ) = this.reorder(
     reorderingState = reorderingState,
     index = index,
-    detectDragGestures = PointerInputScope::detectDragGestures,
+    detectDragGestures = PointerInputScope::detectDragGestures
 )
 
 private fun interface DetectDragGestures {

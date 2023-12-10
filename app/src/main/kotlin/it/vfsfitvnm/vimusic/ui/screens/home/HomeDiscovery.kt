@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persist
@@ -53,6 +54,7 @@ import it.vfsfitvnm.vimusic.ui.components.themed.Header
 import it.vfsfitvnm.vimusic.ui.components.themed.TextPlaceholder
 import it.vfsfitvnm.vimusic.ui.items.AlbumItem
 import it.vfsfitvnm.vimusic.ui.items.AlbumItemPlaceholder
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
@@ -64,6 +66,7 @@ import it.vfsfitvnm.vimusic.utils.secondary
 import it.vfsfitvnm.vimusic.utils.semiBold
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun HomeDiscovery(
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
@@ -88,7 +91,7 @@ fun HomeDiscovery(
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discovery")
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(Unit) {
         discoverPage = Innertube.discoverPage()
     }
 
@@ -117,11 +120,15 @@ fun HomeDiscovery(
                         .asPaddingValues()
                 )
         ) {
-            Header(title = "Discover", modifier = Modifier.padding(endPaddingValues))
+            Header(
+                title = stringResource(R.string.discover),
+                modifier = Modifier.padding(endPaddingValues)
+            )
+
             discoverPage?.getOrNull()?.let { page ->
                 if (page.moods.isNotEmpty()) {
                     BasicText(
-                        text = "Moods and genres",
+                        text = stringResource(R.string.moods_and_genres),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -152,7 +159,7 @@ fun HomeDiscovery(
 
                 if (page.newReleaseAlbums.isNotEmpty()) {
                     BasicText(
-                        text = "New released albums",
+                        text = stringResource(R.string.new_released_albums),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -171,7 +178,7 @@ fun HomeDiscovery(
                 }
             } ?: discoverPage?.exceptionOrNull()?.let {
                 BasicText(
-                    text = "An error has occurred",
+                    text = stringResource(R.string.error_message),
                     style = typography.s.secondary.center,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
@@ -221,7 +228,8 @@ fun MoodItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val (_, typography, _, thumbnailShape) = LocalAppearance.current
+    val typography = LocalAppearance.current.typography
+    val thumbnailShape = LocalAppearance.current.thumbnailShape
 
     val moodColor by remember { derivedStateOf { Color(mood.stripeColor) } }
     val textColor by remember {
@@ -255,9 +263,11 @@ fun MoodItemPlaceholder(
     width: Dp,
     modifier: Modifier = Modifier
 ) {
-    val (colorPalette, _, _, thumbnailShape) = LocalAppearance.current
+    val colorPalette = LocalAppearance.current.colorPalette
+    val thumbnailShape = LocalAppearance.current.thumbnailShape
+
     Spacer(
-        modifier
+        modifier = modifier
             .background(color = colorPalette.shimmer, shape = thumbnailShape)
             .size(width, 64.dp)
     )

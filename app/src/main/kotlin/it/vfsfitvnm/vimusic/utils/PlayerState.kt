@@ -24,9 +24,7 @@ inline fun Player.DisposableListener(crossinline listenerProvider: () -> Player.
 
 @Composable
 fun Player.positionAndDurationState(): State<Pair<Long, Long>> {
-    val state = remember {
-        mutableStateOf(currentPosition to duration)
-    }
+    val state = remember { mutableStateOf(currentPosition to duration) }
 
     LaunchedEffect(this) {
         var isSeeking = false
@@ -59,9 +57,7 @@ fun Player.positionAndDurationState(): State<Pair<Long, Long>> {
         val pollJob = launch {
             while (isActive) {
                 delay(500)
-                if (!isSeeking) {
-                    state.value = currentPosition to duration
-                }
+                if (!isSeeking) state.value = currentPosition to duration
             }
         }
 

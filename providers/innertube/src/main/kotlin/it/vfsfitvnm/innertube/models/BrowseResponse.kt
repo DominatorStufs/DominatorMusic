@@ -13,21 +13,22 @@ data class BrowseResponse(
     @Serializable
     data class Contents(
         val singleColumnBrowseResultsRenderer: Tabs?,
-        val sectionListRenderer: SectionListRenderer?,
+        val sectionListRenderer: SectionListRenderer?
     )
 
     @Serializable
-    data class Header @OptIn(ExperimentalSerializationApi::class) constructor(
+    @OptIn(ExperimentalSerializationApi::class)
+    data class Header(
         @JsonNames("musicVisualHeaderRenderer")
         val musicImmersiveHeaderRenderer: MusicImmersiveHeaderRenderer?,
-        val musicDetailHeaderRenderer: MusicDetailHeaderRenderer?,
+        val musicDetailHeaderRenderer: MusicDetailHeaderRenderer?
     ) {
         @Serializable
         data class MusicDetailHeaderRenderer(
             val title: Runs?,
             val subtitle: Runs?,
             val secondSubtitle: Runs?,
-            val thumbnail: ThumbnailRenderer?,
+            val thumbnail: ThumbnailRenderer?
         )
 
         @Serializable

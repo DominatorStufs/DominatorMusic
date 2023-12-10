@@ -1,5 +1,6 @@
 package it.vfsfitvnm.vimusic.utils
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -42,9 +43,8 @@ abstract class InvincibleService : Service() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        if (isInvincibilityEnabled && isAllowedToStartForegroundServices) {
+        if (isInvincibilityEnabled && isAllowedToStartForegroundServices)
             invincibility = Invincibility()
-        }
         return true
     }
 
@@ -55,11 +55,7 @@ abstract class InvincibleService : Service() {
     }
 
     protected fun makeInvincible(isInvincible: Boolean = true) {
-        if (isInvincible) {
-            invincibility?.start()
-        } else {
-            invincibility?.stop()
-        }
+        if (isInvincible) invincibility?.start() else invincibility?.stop()
     }
 
     protected abstract fun shouldBeInvincible(): Boolean
@@ -80,36 +76,41 @@ abstract class InvincibleService : Service() {
             }
         }
 
+        @SuppressLint("UnspecifiedRegisterReceiverFlag")
         @Synchronized
         fun start() {
-            if (!isStarted) {
-                isStarted = true
-                handler.postDelayed(this, intervalMs)
-                registerReceiver(this, IntentFilter().apply {
+            if (isStarted) return
+
+            isStarted = true
+            handler.postDelayed(this, intervalMs)
+
+            registerReceiver(
+                this,
+                IntentFilter().apply {
                     addAction(Intent.ACTION_SCREEN_ON)
                     addAction(Intent.ACTION_SCREEN_OFF)
-                })
-            }
+                }
+            )
         }
 
         @Synchronized
         fun stop() {
-            if (isStarted) {
-                handler.removeCallbacks(this)
-                unregisterReceiver(this)
-                isStarted = false
-            }
+            if (!isStarted) return
+
+            handler.removeCallbacks(this)
+            unregisterReceiver(this)
+            isStarted = false
         }
 
         override fun run() {
-            if (shouldBeInvincible() && isAllowedToStartForegroundServices) {
-                notification()?.let { notification ->
-                    startForeground(notificationId, notification)
-                    @Suppress("DEPRECATION")
-                    stopForeground(false)
-                    handler.postDelayed(this, intervalMs)
-                }
-            }
+            if (!shouldBeInvincible() || !isAllowedToStartForegroundServices) return
+            val notification = notification() ?: return
+
+            startForeground(notificationId, notification)
+            @Suppress("DEPRECATION")
+            stopForeground(false)
+
+            handler.postDelayed(this, intervalMs)
         }
     }
 }

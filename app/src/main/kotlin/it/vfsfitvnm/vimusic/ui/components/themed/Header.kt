@@ -26,7 +26,7 @@ import kotlin.random.Random
 fun Header(
     title: String,
     modifier: Modifier = Modifier,
-    actionsContent: @Composable RowScope.() -> Unit = {},
+    actionsContent: @Composable RowScope.() -> Unit = {}
 ) {
     val typography = LocalAppearance.current.typography
 
@@ -46,9 +46,9 @@ fun Header(
 
 @Composable
 fun Header(
-    modifier: Modifier = Modifier,
     titleContent: @Composable () -> Unit,
     actionsContent: @Composable RowScope.() -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(
         contentAlignment = Alignment.CenterEnd,
@@ -65,15 +65,13 @@ fun Header(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .heightIn(min = 48.dp),
-            content = actionsContent,
+            content = actionsContent
         )
     }
 }
 
 @Composable
-fun HeaderPlaceholder(
-    modifier: Modifier = Modifier,
-) {
+fun HeaderPlaceholder(modifier: Modifier = Modifier) {
     val (colorPalette, typography) = LocalAppearance.current
 
     Box(

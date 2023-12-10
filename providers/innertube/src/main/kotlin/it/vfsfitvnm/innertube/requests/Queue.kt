@@ -16,7 +16,7 @@ suspend fun Innertube.queue(body: QueueBody) = runCatchingCancellable {
     }.body<GetQueueResponse>()
 
     response
-        .queueDatas
+        .queueData
         ?.mapNotNull { queueData ->
             queueData
                 .content

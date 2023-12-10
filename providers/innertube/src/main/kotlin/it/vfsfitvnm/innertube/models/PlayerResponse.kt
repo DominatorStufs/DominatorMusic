@@ -7,7 +7,7 @@ data class PlayerResponse(
     val playabilityStatus: PlayabilityStatus?,
     val playerConfig: PlayerConfig?,
     val streamingData: StreamingData?,
-    val videoDetails: VideoDetails?,
+    val videoDetails: VideoDetails?
 ) {
     @Serializable
     data class PlayabilityStatus(
@@ -47,7 +47,7 @@ data class PlayerResponse(
             val lastModified: Long?,
             val loudnessDb: Double?,
             val audioSampleRate: Int?,
-            val url: String?,
+            val url: String?
         )
     }
 

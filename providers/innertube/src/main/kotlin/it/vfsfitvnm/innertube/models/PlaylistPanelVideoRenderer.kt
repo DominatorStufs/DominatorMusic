@@ -9,5 +9,5 @@ data class PlaylistPanelVideoRenderer(
     val shortBylineText: Runs?,
     val lengthText: Runs?,
     val navigationEndpoint: NavigationEndpoint?,
-    val thumbnail: ThumbnailRenderer.MusicThumbnailRenderer.Thumbnail?,
+    val thumbnail: ThumbnailRenderer.MusicThumbnailRenderer.Thumbnail?
 )

@@ -3,6 +3,7 @@ package it.vfsfitvnm.vimusic.ui.screens.home
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.ui.res.stringResource
 import it.vfsfitvnm.compose.persist.PersistMapCleanup
 import it.vfsfitvnm.compose.routing.RouteHandler
 import it.vfsfitvnm.compose.routing.defaultStacking
@@ -20,6 +21,7 @@ import it.vfsfitvnm.vimusic.preferences.UIStatePreferences
 import it.vfsfitvnm.vimusic.query
 import it.vfsfitvnm.vimusic.ui.components.themed.Scaffold
 import it.vfsfitvnm.vimusic.ui.screens.GlobalRoutes
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.screens.albumRoute
 import it.vfsfitvnm.vimusic.ui.screens.artistRoute
 import it.vfsfitvnm.vimusic.ui.screens.builtInPlaylistRoute
@@ -36,6 +38,7 @@ import it.vfsfitvnm.vimusic.ui.screens.settings.SettingsScreen
 import it.vfsfitvnm.vimusic.ui.screens.settingsRoute
 
 @OptIn(ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
     val saveableStateHolder = rememberSaveableStateHolder()
@@ -90,30 +93,28 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
                     pop()
                     searchResultRoute(query)
 
-                    if (!DataPreferences.pauseSearchHistory) {
-                        query {
-                            Database.insert(SearchQuery(query = query))
-                        }
+                    if (!DataPreferences.pauseSearchHistory) query {
+                        Database.insert(SearchQuery(query = query))
                     }
                 },
                 onViewPlaylist = onPlaylistUrl
             )
         }
 
-        host {
+        NavHost {
             Scaffold(
-                topIconButtonId = R.drawable.equalizer,
+                topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = { settingsRoute() },
                 tabIndex = UIStatePreferences.homeScreenTabIndex,
                 onTabChanged = { UIStatePreferences.homeScreenTabIndex = it },
                 tabColumnContent = { item ->
-                    item(0, "Quick picks", R.drawable.sparkles)
-                    item(1, "Discover", R.drawable.globe)
-                    item(2, "Songs", R.drawable.musical_notes)
-                    item(3, "Playlists", R.drawable.playlist)
-                    item(4, "Artists", R.drawable.person)
-                    item(5, "Albums", R.drawable.disc)
-                    item(6, "Local", R.drawable.download)
+                    item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
+                    item(1, stringResource(R.string.discover), R.drawable.globe)
+                    item(2, stringResource(R.string.songs), R.drawable.musical_notes)
+                    item(3, stringResource(R.string.playlists), R.drawable.playlist)
+                    item(4, stringResource(R.string.artists), R.drawable.person)
+                    item(5, stringResource(R.string.albums), R.drawable.disc)
+                    item(6, stringResource(R.string.local), R.drawable.download)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {

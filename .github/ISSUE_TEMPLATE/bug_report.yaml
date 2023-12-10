@@ -63,7 +63,7 @@ body:
     attributes:
       label: ViMusic version
       placeholder: |
-        Example: "0.5.7"
+        Example: "0.5.10"
     validations:
       required: true
 

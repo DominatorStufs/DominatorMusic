@@ -17,11 +17,10 @@ import it.vfsfitvnm.innertube.models.bodies.ContinuationBody
 suspend fun <T : Innertube.Item> Innertube.itemsPage(
     body: BrowseBody,
     fromMusicResponsiveListItemRenderer: (MusicResponsiveListItemRenderer) -> T? = { null },
-    fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T? = { null },
+    fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T? = { null }
 ) = runCatchingCancellable {
     val response = client.post(BROWSE) {
         setBody(body)
-//        mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicPlaylistShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),gridRenderer(continuations,items.$musicTwoRowItemRendererMask))")
     }.body<BrowseResponse>()
 
     val sectionListRendererContent = response
@@ -41,18 +40,22 @@ suspend fun <T : Innertube.Item> Innertube.itemsPage(
         gridRenderer = sectionListRendererContent
             ?.gridRenderer,
         fromMusicResponsiveListItemRenderer = fromMusicResponsiveListItemRenderer,
-        fromMusicTwoRowItemRenderer = fromMusicTwoRowItemRenderer,
+        fromMusicTwoRowItemRenderer = fromMusicTwoRowItemRenderer
     )
 }
 
 suspend fun <T : Innertube.Item> Innertube.itemsPage(
     body: ContinuationBody,
     fromMusicResponsiveListItemRenderer: (MusicResponsiveListItemRenderer) -> T? = { null },
+<<<<<<< HEAD:providers/innertube/src/main/kotlin/it/vfsfitvnm/innertube/requests/ItemsPage.kt
     fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T? = { null },
 ) = runCatchingCancellable {
+=======
+    fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T? = { null }
+) = runCatchingNonCancellable {
+>>>>>>> af31bbe393b6aeae96ea00505cf3e0a9f75039a4:innertube/src/main/kotlin/it/vfsfitvnm/innertube/requests/ItemsPage.kt
     val response = client.post(BROWSE) {
         setBody(body)
-//        mask("contents.singleColumnBrowseResultsRenderer.tabs.tabRenderer.content.sectionListRenderer.contents(musicPlaylistShelfRenderer(continuations,contents.$musicResponsiveListItemRendererMask),gridRenderer(continuations,items.$musicTwoRowItemRendererMask))")
     }.body<ContinuationResponse>()
 
     itemsPageFromMusicShelRendererOrGridRenderer(
@@ -61,7 +64,7 @@ suspend fun <T : Innertube.Item> Innertube.itemsPage(
             ?.musicShelfContinuation,
         gridRenderer = null,
         fromMusicResponsiveListItemRenderer = fromMusicResponsiveListItemRenderer,
-        fromMusicTwoRowItemRenderer = fromMusicTwoRowItemRenderer,
+        fromMusicTwoRowItemRenderer = fromMusicTwoRowItemRenderer
     )
 }
 
@@ -69,7 +72,7 @@ private fun <T : Innertube.Item> itemsPageFromMusicShelRendererOrGridRenderer(
     musicShelfRenderer: MusicShelfRenderer?,
     gridRenderer: GridRenderer?,
     fromMusicResponsiveListItemRenderer: (MusicResponsiveListItemRenderer) -> T?,
-    fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T?,
+    fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T?
 ) = when {
     musicShelfRenderer != null -> Innertube.ItemsPage(
         continuation = musicShelfRenderer

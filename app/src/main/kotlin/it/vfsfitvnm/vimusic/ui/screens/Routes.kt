@@ -12,6 +12,14 @@ import it.vfsfitvnm.vimusic.ui.screens.artist.ArtistScreen
 import it.vfsfitvnm.vimusic.ui.screens.mood.MoodScreen
 import it.vfsfitvnm.vimusic.ui.screens.playlist.PlaylistScreen
 
+/**
+ * Marker class for linters that a composable is a route and should not be handled like a regular
+ * composable, but rather as an entrypoint.
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION)
+annotation class Route
+
 val albumRoute = Route1<String?>("albumRoute")
 val artistRoute = Route1<String?>("artistRoute")
 val builtInPlaylistRoute = Route1<BuiltInPlaylist>("builtInPlaylistRoute")

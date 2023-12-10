@@ -132,7 +132,7 @@ fun BoxScope.FloatingActions(
             transition.AnimatedVisibility(
                 visible = { it?.isScrollingDown == false && it.isFar },
                 enter = slideInVertically(tween(500, if (iconId == null) 0 else 100)) { it },
-                exit = slideOutVertically(tween(500, 0)) { it },
+                exit = slideOutVertically(tween(500, 0)) { it }
             ) {
                 val coroutineScope = rememberCoroutineScope()
 
@@ -156,7 +156,7 @@ fun BoxScope.FloatingActions(
                 transition.AnimatedVisibility(
                     visible = { it?.isScrollingDown == false },
                     enter = slideInVertically(tween(500, 0)) { it },
-                    exit = slideOutVertically(tween(500, 100)) { it },
+                    exit = slideOutVertically(tween(500, 100)) { it }
                 ) {
                     PrimaryButton(
                         iconId = iconId,

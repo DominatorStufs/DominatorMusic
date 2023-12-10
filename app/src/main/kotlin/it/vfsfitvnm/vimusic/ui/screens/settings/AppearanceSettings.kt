@@ -1,6 +1,6 @@
 package it.vfsfitvnm.vimusic.ui.screens.settings
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -15,16 +15,42 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
+import it.vfsfitvnm.vimusic.R
+import it.vfsfitvnm.vimusic.enums.ColorPaletteMode
 import it.vfsfitvnm.vimusic.enums.ColorPaletteName
+import it.vfsfitvnm.vimusic.enums.ThumbnailRoundness
 import it.vfsfitvnm.vimusic.preferences.AppearancePreferences
 import it.vfsfitvnm.vimusic.preferences.PlayerPreferences
 import it.vfsfitvnm.vimusic.ui.components.themed.Header
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid13
 
-@ExperimentalAnimationApi
+val ColorPaletteName.nameLocalized @Composable get() = when (this) {
+    ColorPaletteName.Default -> stringResource(R.string.theme_name_default)
+    ColorPaletteName.Dynamic -> stringResource(R.string.theme_name_dynamic)
+    ColorPaletteName.PureBlack -> stringResource(R.string.theme_name_pureblack)
+}
+
+val ColorPaletteMode.nameLocalized @Composable get() = when (this) {
+    ColorPaletteMode.Light -> stringResource(R.string.theme_mode_light)
+    ColorPaletteMode.Dark -> stringResource(R.string.theme_mode_dark)
+    ColorPaletteMode.System -> stringResource(R.string.theme_mode_system)
+}
+
+val ThumbnailRoundness.nameLocalized @Composable get() = when (this) {
+    ThumbnailRoundness.None -> stringResource(R.string.thumbnail_roundness_none)
+    ThumbnailRoundness.Light -> stringResource(R.string.thumbnail_roundness_light)
+    ThumbnailRoundness.Medium -> stringResource(R.string.thumbnail_roundness_medium)
+    ThumbnailRoundness.Heavy -> stringResource(R.string.thumbnail_roundness_heavy)
+    ThumbnailRoundness.Heavier -> stringResource(R.string.thumbnail_roundness_heavier)
+    ThumbnailRoundness.Heaviest -> stringResource(R.string.thumbnail_roundness_heaviest)
+}
+
+@Route
 @Composable
 fun AppearanceSettings() {
     val (colorPalette) = LocalAppearance.current
@@ -41,29 +67,31 @@ fun AppearanceSettings() {
                         .asPaddingValues()
                 )
         ) {
-            Header(title = "Appearance")
+            Header(title = stringResource(R.string.appearance))
 
-            SettingsEntryGroupText(title = "COLORS")
+            SettingsEntryGroupText(title = stringResource(R.string.colors))
 
             EnumValueSelectorSettingsEntry(
-                title = "Theme",
+                title = stringResource(R.string.theme),
                 selectedValue = colorPaletteName,
-                onValueSelected = { colorPaletteName = it }
+                onValueSelected = { colorPaletteName = it },
+                valueText = { it.nameLocalized }
             )
 
             EnumValueSelectorSettingsEntry(
-                title = "Theme mode",
+                title = stringResource(R.string.theme_mode),
                 selectedValue = colorPaletteMode,
                 isEnabled = colorPaletteName != ColorPaletteName.PureBlack,
-                onValueSelected = { colorPaletteMode = it }
+                onValueSelected = { colorPaletteMode = it },
+                valueText = { it.nameLocalized }
             )
 
             SettingsGroupSpacer()
 
-            SettingsEntryGroupText(title = "SHAPES")
+            SettingsEntryGroupText(title = stringResource(R.string.shapes))
 
             EnumValueSelectorSettingsEntry(
-                title = "Thumbnail roundness",
+                title = stringResource(R.string.thumbnail_roundness),
                 selectedValue = thumbnailRoundness,
                 onValueSelected = { thumbnailRoundness = it },
                 trailingContent = {
@@ -81,23 +109,23 @@ fun AppearanceSettings() {
                             .size(36.dp)
                     )
                 },
-                valueText = { it.desc(it) }
+                valueText = { it.nameLocalized }
             )
 
             SettingsGroupSpacer()
 
-            SettingsEntryGroupText(title = "TEXT")
+            SettingsEntryGroupText(title = stringResource(R.string.text))
 
             SwitchSettingEntry(
-                title = "Use system font",
-                text = "Use the font applied by the system",
+                title = stringResource(R.string.use_system_font),
+                text = stringResource(R.string.use_system_font_description),
                 isChecked = useSystemFont,
                 onCheckedChange = { useSystemFont = it }
             )
 
             SwitchSettingEntry(
-                title = "Apply font padding",
-                text = "Add spacing around texts",
+                title = stringResource(R.string.apply_font_padding),
+                text = stringResource(R.string.apply_font_padding_description),
                 isChecked = applyFontPadding,
                 onCheckedChange = { applyFontPadding = it }
             )
@@ -105,11 +133,11 @@ fun AppearanceSettings() {
             if (!isAtLeastAndroid13) {
                 SettingsGroupSpacer()
 
-                SettingsEntryGroupText(title = "LOCKSCREEN")
+                SettingsEntryGroupText(title = stringResource(R.string.lockscreen))
 
                 SwitchSettingEntry(
-                    title = "Show song cover",
-                    text = "Use the playing song cover as the lockscreen wallpaper",
+                    title = stringResource(R.string.show_song_cover),
+                    text = stringResource(R.string.show_song_cover_description),
                     isChecked = isShowingThumbnailInLockscreen,
                     onCheckedChange = { isShowingThumbnailInLockscreen = it }
                 )
@@ -117,20 +145,46 @@ fun AppearanceSettings() {
 
             SettingsGroupSpacer()
 
-            SettingsEntryGroupText(title = "PLAYER")
+            SettingsEntryGroupText(title = stringResource(R.string.player))
 
             SwitchSettingEntry(
-                title = "Previous button while collapsed",
-                text = "Shows the previous song button while the player is collapsed",
+                title = stringResource(R.string.previous_button_while_collapsed),
+                text = stringResource(R.string.previous_button_while_collapsed_description),
                 isChecked = PlayerPreferences.isShowingPrevButtonCollapsed,
                 onCheckedChange = { PlayerPreferences.isShowingPrevButtonCollapsed = it }
             )
 
             SwitchSettingEntry(
-                title = "Swipe horizontally to close",
-                text = "Closes the player when swiping left/right on the collapsed player. Useful for users with Android's one-handed mode enabled.",
+                title = stringResource(R.string.swipe_horizontally_to_close),
+                text = stringResource(R.string.swipe_horizontally_to_close_description),
                 isChecked = PlayerPreferences.horizontalSwipeToClose,
                 onCheckedChange = { PlayerPreferences.horizontalSwipeToClose = it }
+            )
+
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.player_layout),
+                selectedValue = PlayerPreferences.playerLayout,
+                onValueSelected = { PlayerPreferences.playerLayout = it },
+                valueText = { it.displayName() }
+            )
+
+            AnimatedVisibility(
+                visible = PlayerPreferences.playerLayout == PlayerPreferences.PlayerLayout.New,
+                label = ""
+            ) {
+                SwitchSettingEntry(
+                    title = stringResource(R.string.show_like_button),
+                    text = stringResource(R.string.show_like_button_description),
+                    isChecked = PlayerPreferences.showLike,
+                    onCheckedChange = { PlayerPreferences.showLike = it }
+                )
+            }
+
+            SwitchSettingEntry(
+                title = stringResource(R.string.swipe_to_remove_item),
+                text = stringResource(R.string.swipe_to_remove_item_description),
+                isChecked = PlayerPreferences.horizontalSwipeToRemoveItem,
+                onCheckedChange = { PlayerPreferences.horizontalSwipeToRemoveItem = it }
             )
         }
     }

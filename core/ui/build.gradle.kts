@@ -29,11 +29,20 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.compose)
+    implementation(projects.core.data)
+
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.animation)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.ripple)
+    implementation(libs.compose.shimmer)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.util)
     implementation(libs.compose.material3)
     implementation(libs.palette)
 
-    implementation(projects.core.data)
+    detektPlugins(libs.detekt.compose)
+    detektPlugins(libs.detekt.formatting)
 }
 
 kotlin {

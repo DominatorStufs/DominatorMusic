@@ -1,11 +1,12 @@
 package it.vfsfitvnm.innertube.models
 
 import kotlinx.serialization.Serializable
+import java.util.Locale
 
 @Serializable
 data class Context(
     val client: Client,
-    val thirdParty: ThirdParty? = null,
+    val thirdParty: ThirdParty? = null
 ) {
     @Serializable
     data class Client(
@@ -20,15 +21,24 @@ data class Context(
 
     @Serializable
     data class ThirdParty(
-        val embedUrl: String,
+        val embedUrl: String
     )
 
     companion object {
-        val DefaultWeb = Context(
+        val DefaultWeb get() = Context(
             client = Client(
                 clientName = "WEB_REMIX",
                 clientVersion = "1.20220918",
                 platform = "DESKTOP",
+                hl = Locale.getDefault().language
+            )
+        )
+
+        val DefaultWebNoLang = Context(
+            client = Client(
+                clientName = "WEB_REMIX",
+                clientVersion = "1.20220918",
+                platform = "DESKTOP"
             )
         )
 

@@ -6,7 +6,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-@Suppress("ClassName")
 object Dimensions {
     val itemsVerticalPadding = 8.dp
 
@@ -15,16 +14,19 @@ object Dimensions {
     val navigationRailIconOffset = 6.dp
     val headerHeight = 140.dp
 
-    object thumbnails {
+    val thumbnails = Thumbnails
+
+    object Thumbnails {
         val album = 108.dp
         val artist = 92.dp
         val song = 54.dp
         val playlist = album
 
-        object player {
-            val song: Dp
-                @Composable
-                get() = with(LocalConfiguration.current) {
+        val player = Player
+
+        object Player {
+            val song
+                @Composable get() = with(LocalConfiguration.current) {
                     minOf(screenHeightDp, screenWidthDp)
                 }.dp
         }

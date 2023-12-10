@@ -21,12 +21,12 @@ data class NextResponse(
             @Serializable
             data class PlaylistPanelRenderer(
                 val contents: List<Content>?,
-                val continuations: List<Continuation>?,
+                val continuations: List<Continuation>?
             ) {
                 @Serializable
                 data class Content(
                     val playlistPanelVideoRenderer: PlaylistPanelVideoRenderer?,
-                    val automixPreviewVideoRenderer: AutomixPreviewVideoRenderer?,
+                    val automixPreviewVideoRenderer: AutomixPreviewVideoRenderer?
                 ) {
 
                     @Serializable

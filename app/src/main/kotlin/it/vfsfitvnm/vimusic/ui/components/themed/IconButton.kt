@@ -24,18 +24,16 @@ fun HeaderIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     indication: Indication? = null
-) {
-    IconButton(
-        icon = icon,
-        color = color,
-        onClick = onClick,
-        enabled = enabled,
-        indication = indication,
-        modifier = modifier
-            .padding(all = 4.dp)
-            .size(18.dp)
-    )
-}
+) = IconButton(
+    icon = icon,
+    color = color,
+    onClick = onClick,
+    enabled = enabled,
+    indication = indication,
+    modifier = modifier
+        .padding(all = 4.dp)
+        .size(18.dp)
+)
 
 @Composable
 fun IconButton(
@@ -45,18 +43,16 @@ fun IconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     indication: Indication? = null
-) {
-    Image(
-        painter = painterResource(icon),
-        contentDescription = null,
-        colorFilter = ColorFilter.tint(color),
-        modifier = Modifier
-            .clickable(
-                indication = indication ?: rememberRipple(bounded = false),
-                interactionSource = remember { MutableInteractionSource() },
-                enabled = enabled,
-                onClick = onClick
-            )
-            .then(modifier)
-    )
-}
+) = Image(
+    painter = painterResource(icon),
+    contentDescription = null,
+    colorFilter = ColorFilter.tint(color),
+    modifier = Modifier
+        .clickable(
+            indication = indication ?: rememberRipple(bounded = false),
+            interactionSource = remember { MutableInteractionSource() },
+            enabled = enabled,
+            onClick = onClick
+        )
+        .then(modifier)
+)

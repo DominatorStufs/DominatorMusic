@@ -15,3 +15,8 @@ android {
 kotlin {
     jvmToolchain(libs.versions.jvm.get().toInt())
 }
+
+dependencies {
+    detektPlugins(libs.detekt.compose)
+    detektPlugins(libs.detekt.formatting)
+}

@@ -21,13 +21,15 @@ suspend fun Innertube.discoverPage() = runCatchingCancellable {
         newReleaseAlbums = response.contents?.singleColumnBrowseResultsRenderer?.tabs
             ?.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.find {
                 it.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer
-                    ?.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint?.browseId == "FEmusic_new_releases_albums"
+                    ?.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint
+                    ?.browseId == "FEmusic_new_releases_albums"
             }?.musicCarouselShelfRenderer?.contents?.mapNotNull { it.musicTwoRowItemRenderer?.toNewReleaseAlbumPage() }
             .orEmpty(),
         moods = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents?.find {
                 it.musicCarouselShelfRenderer?.header?.musicCarouselShelfBasicHeaderRenderer
-                    ?.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint?.browseId == "FEmusic_moods_and_genres"
+                    ?.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint
+                    ?.browseId == "FEmusic_moods_and_genres"
             }?.musicCarouselShelfRenderer?.contents?.mapNotNull { it.musicNavigationButtonRenderer?.toMood() }
             .orEmpty()
     )

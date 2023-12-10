@@ -30,27 +30,24 @@ import it.vfsfitvnm.vimusic.utils.secondary
 inline fun Menu(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
-) {
-    val (colorPalette) = LocalAppearance.current
-
-    Column(
-        modifier = modifier
-            .padding(top = 48.dp)
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .background(colorPalette.background1)
-            .padding(top = 2.dp)
-            .padding(vertical = 8.dp)
-            .navigationBarsPadding(),
-        content = content
-    )
-}
+) = Column(
+    modifier = modifier
+        .padding(top = 48.dp)
+        .verticalScroll(rememberScrollState())
+        .fillMaxWidth()
+        .background(LocalAppearance.current.colorPalette.background1)
+        .padding(top = 2.dp)
+        .padding(vertical = 8.dp)
+        .navigationBarsPadding(),
+    content = content
+)
 
 @Composable
 fun MenuEntry(
     @DrawableRes icon: Int,
     text: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     secondaryText: String? = null,
     enabled: Boolean = true,
     trailingContent: (@Composable () -> Unit)? = null
@@ -60,7 +57,7 @@ fun MenuEntry(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        modifier = Modifier
+        modifier = modifier
             .clickable(enabled = enabled, onClick = onClick)
             .fillMaxWidth()
             .alpha(if (enabled) 1f else 0.4f)
@@ -70,8 +67,7 @@ fun MenuEntry(
             painter = painterResource(icon),
             contentDescription = null,
             colorFilter = ColorFilter.tint(colorPalette.text),
-            modifier = Modifier
-                .size(15.dp)
+            modifier = Modifier.size(15.dp)
         )
 
         Column(

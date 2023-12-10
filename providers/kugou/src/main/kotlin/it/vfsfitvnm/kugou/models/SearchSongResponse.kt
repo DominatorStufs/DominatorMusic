@@ -7,7 +7,7 @@ internal data class SearchSongResponse(
     val data: Data
 ) {
     @Serializable
-    internal data  class Data(
+    internal data class Data(
         val info: List<Info>
     ) {
         @Serializable

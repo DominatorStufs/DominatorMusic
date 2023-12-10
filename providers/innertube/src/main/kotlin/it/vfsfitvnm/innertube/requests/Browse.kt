@@ -29,9 +29,18 @@ suspend fun Innertube.browse(body: BrowseBody) = runCatchingCancellable {
                     )
 
                     content.musicCarouselShelfRenderer != null -> BrowseResult.Item(
-                        title = content.musicCarouselShelfRenderer.header?.musicCarouselShelfBasicHeaderRenderer
-                            ?.title?.runs?.firstOrNull()?.text ?: return@mapNotNull null,
-                        items = content.musicCarouselShelfRenderer.contents?.mapNotNull { it.musicTwoRowItemRenderer?.toItem() }
+                        title = content
+                            .musicCarouselShelfRenderer
+                            .header
+                            ?.musicCarouselShelfBasicHeaderRenderer
+                            ?.title
+                            ?.runs
+                            ?.firstOrNull()
+                            ?.text ?: return@mapNotNull null,
+                        items = content
+                            .musicCarouselShelfRenderer
+                            .contents
+                            ?.mapNotNull { it.musicTwoRowItemRenderer?.toItem() }
                             .orEmpty()
                     )
 

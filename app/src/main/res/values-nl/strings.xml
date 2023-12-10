@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="format_minutes">%1$dm</string>
+    <string name="format_hours">%1$du</string>
+    <string name="format_days">%1$dd</string>
+    <string name="format_time_left">nog %1$s</string>
+    <string name="format_db">%1$s dB</string>
+    <string name="format_kbps">%1$s kb/s</string>
+    <string name="format_ms">%1$s ms</string>
+
+    <string name="format_go_to_artist">Meer van %1$s</string>
+    <string name="format_top_playlist">Top %1$s</string>
+    <string name="format_my_top_playlist">Mijn top %1$s</string>
+    <string name="format_view_top_of_header">Laat top %1$s zien van…</string>
+    <string name="format_speed_multiplier">%1$sx</string>
+
+    <string name="past_24_hours">Afgelopen 24 uur</string>
+    <string name="past_week">Afgelopen week</string>
+    <string name="past_month">Afgelopen maand</string>
+    <string name="past_year">Afgelopen jaar</string>
+    <string name="all_time">Sinds het begin</string>
+
+    <string name="songs">Songs</string>
+    <string name="playlists">Afspeellijsten</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artiesten</string>
+    <string name="singles">Singles</string>
+
+    <string name="favorites">Favorieten</string>
+    <string name="offline">Offline</string>
+    <string name="overview">Overzicht</string>
+    <string name="library">Bibliotheek</string>
+    <string name="discover">Ontdekken</string>
+    <string name="local">Lokaal</string>
+    <string name="quick_picks">Snelle keuzes</string>
+    <string name="mood">Stemming</string>
+    <string name="online">Online</string>
+    <string name="videos">Video\'s</string>
+    <string name="featured">Aanbevolen</string>
+    <string name="about">Over</string>
+    <string name="appearance">Uiterlijk</string>
+    <string name="colors">Kleuren</string>
+    <string name="shapes">Vormen</string>
+
+    <string name="skip_back">Spring terug</string>
+    <string name="skip_forward">Spring vooruit</string>
+    <string name="play">Afspelen</string>
+    <string name="pause">Pauzeren</string>
+    <string name="like">Like</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="sync">Synchroniseer</string>
+    <string name="start_radio">Start radio</string>
+    <string name="play_next">Als volgende afspelen</string>
+    <string name="enqueue">Zet in wachtrij</string>
+
+    <string name="sleep_timer">Slaaptimer</string>
+    <string name="sleep_timer_ended">Slaaptimer voorbij</string>
+    <string name="stop_sleep_timer_prompt">Wil je de timer stoppen?</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="set_sleep_timer">Slaaptimer instellen</string>
+
+    <string name="cancel">Annuleer</string>
+    <string name="done">Klaar</string>
+    <string name="confirm">Bevestigen</string>
+    <string name="no">Nee</string>
+    <string name="stop">Stop</string>
+    <string name="set">Instellen</string>
+    <string name="hide">Verbergen</string>
+    <string name="rename">Hernoemen</string>
+    <string name="delete">Verwijderen</string>
+    <string name="reset">Reset</string>
+    <string name="clear">Wissen</string>
+    <string name="view_all">Toon alles</string>
+
+    <string name="on_label">aan</string>
+    <string name="off_label">uit</string>
+    <string name="unknown">Onbekend</string>
+    <string name="now_playing">Speelt nu</string>
+
+    <string name="enter_playlist_name_prompt">Geef de naam van de afspeellijst</string>
+    <string name="new_playlist">Nieuwe afspeellijst</string>
+    <string name="add_to_playlist">Toevoegen aan afspeellijst</string>
+
+    <string name="go_to_album">Ga naar album</string>
+
+    <string name="watch_on_youtube">Bekijk op YouTube</string>
+    <string name="open_in_youtube_music">Open in YouTube Music</string>
+    <string name="watch_playlist_on_youtube">Bekijk playlist op YouTube</string>
+    <string name="youtube_music_not_installed">YouTube Music is niet geïnstalleerd op je apparaat!</string>
+
+    <string name="remove_from_queue">Verwijder van wachtrij</string>
+    <string name="remove_from_playlist">Verwijder van playlist</string>
+
+    <string name="hide_from_quick_picks">Verberg van \"Snelle keuzes\"</string>
+    <string name="confirm_hide_song">Wil je echt dit nummer verbergen? De afspeeltijd en cache worden weggegooid. Deze actie is onomkeerbaar.</string>
+    <string name="confirm_delete_playlist">Wil je deze afspeellijst echt verbergen?</string>
+
+    <string name="other_versions">Overige versies</string>
+    <string name="no_alternative_version">Dit album heeft geen alternatieve versies</string>
+
+    <string name="from_wikipedia">Van Wikipedia</string>
+    <string name="wikipedia_cc_by_sa">Van Wikipedia onder Creative Commons Naamsvermelding CC-BY-SA 3.0</string>
+    <string name="quote_open">“</string>
+    <string name="quote_close">„</string>
+
+    <string name="moods_and_genres">Stemmingen en genres</string>
+    <string name="new_released_albums">Nieuwe uitgebrachte albums</string>
+
+    <string name="artist_has_no_albums">Deze artiest heeft geen albums uitbebracht</string>
+    <string name="artist_has_no_singles">Deze artiest heeft geen singles uitbebracht</string>
+
+    <string name="error_message">Een error heeft zich voorgedaan</string>
+    <string name="error_local_music_deleted">Dit lokale muziekbestand bestaat niet meer</string>
+    <string name="error_network">Een netwerkfout heeft zich voorgedaan</string>
+    <string name="error_unplayable">Kon geen afspeelbaar audio formaat vinden</string>
+    <string name="error_source_deleted">De originele videobron van dit nummer is verwijderd</string>
+    <string name="error_server_restrictions">Dit nummer kan niet worden afgespeeld door server restricties</string>
+    <string name="error_id_mismatch">De teruggegeven video ID is niet dezelfde als de gevraagde ID</string>
+    <string name="error_unknown_playback">Een onbekende afspeelfout heeft zich voorgedaan</string>
+
+    <string name="media_permission_declined">Permissie afgewezen, verleen media permissie in de instellingen van je apparaat.</string>
+    <string name="open_settings">Open instellingen</string>
+    <string name="no_items_found">Geen items gevonden</string>
+    <string name="no_search_results">Geen resultaten gevonden. Probeer een andere zoekterm of categorie</string>
+
+    <string name="no_browser_installed">Kan geen applicatie vinden om het internet te browsen</string>
+    <string name="no_equalizer_installed">Kan geen applicatie vinden om audio bij te stellen</string>
+    <string name="no_file_chooser_installed">Kan geen applicatie vinden om bestanden te maken</string>
+    <string name="no_battery_optimization_settings_found">Kan geen batterij optimalisatie instellingen vinden, maak handmatig een uitzondering voor ViMusic</string>
+
+    <string name="related_albums">Gerelateerde albums</string>
+    <string name="similar_artists">Vergelijkbare artiesten</string>
+    <string name="recommended_playlists">Afspeelijsten die je misschien leuk vindt</string>
+
+    <string name="enter_lyrics">Voer de songtekst in</string>
+    <string name="no_lyrics_found">Geen songtekst gevonden</string>
+    <string name="choose_lyric_track">Kies songtekst</string>
+    <string name="error_load_synchronized_lyrics">Er heeft zich een error voorgedaan bij het laden van de gesynchroniseerde songtekst</string>
+    <string name="error_load_lyrics">Er heeft zich een error voorgedaan bij het laden van de songtekst</string>
+    <string name="synchronized_lyrics_not_available">Gesynchroniseerde songtekst niet beschikbaar</string>
+    <string name="lyrics_not_available">Songtekst niet beschikbaar</string>
+    <string name="invalid_synchronized_lyrics">Ongeldige gesynchroniseerde songtekst, laad opnieuw in of bewerk de songtekst en probeer het opnieuw</string>
+    <string name="show_unsynchronized_lyrics">Laat niet-gesynchroniseerde songtekst zien</string>
+    <string name="show_synchronized_lyrics">Laat gesynchroniseerde songtekst zien</string>
+    <string name="provided_lyrics_by">Verstrekt door lrclib.net &amp; kugou.com</string>
+    <string name="edit_lyrics">Bewerk songtekst</string>
+    <string name="search_lyrics_online">Zoek online naar songtekst</string>
+    <string name="refetch_lyrics">Laad songtekst opnieuw in</string>
+    <string name="pick_from_lrclib">Kies songtekst van lrclib.net</string>
+    <string name="set_lyrics_start_offset">Stel startpunt in</string>
+    <string name="set_lyrics_start_offset_description">Laat de gesynchroniseerde songtekst beginnen vanaf de huidige tijd</string>
+
+    <string name="playback_speed">Afspeelsnelheid</string>
+    <string name="minimum_speed_value">Waarom zou je dat doen?!</string>
+    <string name="song_volume_boost">Volume-boost</string>
+    <string name="song_loop">Nummer herhalen</string>
+    <string name="queue_loop">Wachtrij herhalen</string>
+    <string name="add_queue_to_playlist">Voeg wachtrij toe aan afspeellijst</string>
+
+    <string name="id">Id</string>
+    <string name="itag">Itag</string>
+    <string name="bitrate">Bitrate</string>
+    <string name="size">Grootte</string>
+    <string name="cached">Gecachet</string>
+    <string name="loudness">Luidheid</string>
+
+    <string name="view_album">Toon album</string>
+    <string name="view_playlist">Toon afspeellijst</string>
+
+    <string name="search_placeholder">Zoek…</string>
+    <string name="format_version_credits">v%1$s door vfsfitvnm</string>
+    <string name="social">Sociaal</string>
+    <string name="github">GitHub</string>
+    <string name="view_source">Toon broncode</string>
+    <string name="report_bug">Meld probleem</string>
+    <string name="report_bug_description">Als je hulp nodig hebt kun je een probleem melden op GitHub (klik om door te verwijzen)</string>
+    <string name="request_feature">Verzoek een functie of suggereer een idee</string>
+    <string name="request_feature_description">Je wordt doorverwezen naar GitHub</string>
+
+    <string name="theme">Thema</string>
+    <string name="theme_name_default">Standaard</string>
+    <string name="theme_name_dynamic">Dynamisch</string>
+    <string name="theme_name_pureblack">PuurZwart</string>
+
+    <string name="theme_mode">Modus</string>
+    <string name="theme_mode_light">Licht</string>
+    <string name="theme_mode_dark">Donker</string>
+    <string name="theme_mode_system">Systeem</string>
+
+    <string name="thumbnail_roundness">Rondheid van miniaturen</string>
+    <string name="thumbnail_roundness_none">Geen</string>
+    <string name="thumbnail_roundness_light">Licht</string>
+    <string name="thumbnail_roundness_medium">Gemiddeld</string>
+    <string name="thumbnail_roundness_heavy">Sterk</string>
+    <string name="thumbnail_roundness_heavier">Nog sterker</string>
+    <string name="thumbnail_roundness_heaviest">Sterkste</string>
+
+    <string name="text">Tekst</string>
+    <string name="use_system_font">Gebruik systeemlettertype</string>
+    <string name="use_system_font_description">Gebruik het lettertype van het systeem</string>
+    <string name="apply_font_padding">Gebruik marges rond lettertype</string>
+    <string name="apply_font_padding_description">Voegt afstand toe tussen de tekst</string>
+
+    <string name="lockscreen">Vergrendelscherm</string>
+    <string name="show_song_cover">Toon albumhoes</string>
+    <string name="show_song_cover_description">Gebruik de albumhoes van het afspelende nummer als achtergrond op het vergrendelscherm</string>
+
+    <string name="player">Speler</string>
+    <string name="previous_button_while_collapsed">Vorige knop op ingeklapte speler</string>
+    <string name="previous_button_while_collapsed_description">Laat de knop om naar het vorige nummer te gaan zien op de ingeklapte speler</string>
+    <string name="swipe_horizontally_to_close">Swipe horizontaal om te sluiten</string>
+    <string name="swipe_horizontally_to_close_description">Sluit de speler zodra je horizontaal swipet. Handig voor gebuiker met de één-hand modus van Android.</string>
+    <string name="show_like_button">Toon like knop</string>
+    <string name="show_like_button_description">Laat de like knop direct in de speler zien</string>
+    <string name="swipe_to_remove_item">Swipe om item te verwijderen</string>
+    <string name="swipe_to_remove_item_description">Swipe naar links om een nummer uit de wachtrij te halen</string>
+
+    <string name="cache">Cache</string>
+    <string name="cache_description">Wanneer de cache vol raakt worden de bestanden die het langst niet zijn gebruikt verwijderd</string>
+    <string name="image_cache">Afbeeldingcache</string>
+    <string name="max_size">Maximale grootte</string>
+    <string name="format_cache_space_used">%1$s gebruikt (%2$s%%)</string>
+    <string name="song_cache">Songcache</string>
+    <string name="used_word">gebruikt</string>
+    <string name="database">Database</string>
+
+    <string name="cleanup">Opruimen</string>
+    <string name="pause_playback_history">Pauzeer afspeelgeschiedenis</string>
+    <string name="pause_playback_history_description">Stopt de verzameling van afspeelgebeurtenissen voor Snelle keuzes</string>
+    <string name="pause_playback_history_warning">Let op: dit verandert niets aan offline cachen!</string>
+    <string name="reset_quick_picks">Reset Snelle keuzes</string>
+    <string name="format_reset_quick_picks_amount">Verwijder %1$s afspeelgebeurtenissen</string>
+    <string name="quick_picks_empty">Snelle keuzes geleegd</string>
+    <string name="pause_playback_time">Pauzeer afspeeltijd</string>
+    <string name="format_pause_playback_time_description">Stopt met het opslaan van afspeeltijd. Dit pauzeert de statistieken in de \'Mijn top %1$s\' afspeellijst</string>
+
+    <string name="backup">Back-up</string>
+    <string name="backup_description">Persoonlijke voorkeuren (bijvoorbeeld het thema) en de cache worden niet opgeslagen.</string>
+    <string name="backup_action_description">Exporteer de database naar de externe opslag</string>
+    <string name="restore">Herstellen</string>
+    <string name="restore_warning">Bestaande data zal worden vervangen. ViMusic sluit zichzelf automatisch nadat de database is hersteld.</string>
+    <string name="restore_description">Importeer de database van de externe opslag</string>
+
+    <string name="other">Overig</string>
+    <string name="android_auto">Android Auto</string>
+    <string name="android_auto_description">Zet Android Auto support aan</string>
+    <string name="android_auto_warning">Vergeet niet om \"Onbekende bronnen\" aan te zetten in de Developer Settings van Android Auto.</string>
+    <string name="search_history">Zoekgeschiedenis</string>
+    <string name="pause_search_history">Pauzeer zoekgeschiedenis</string>
+    <string name="pause_search_history_description">Sla nieuwe zoektermen niet op en toon geen geschiedenis</string>
+    <string name="clear_search_history">Verwijder zoekgeschiedenis</string>
+    <string name="format_clear_search_history_amount">Verwijder %1$s zoektermen</string>
+    <string name="empty_history">Geschiedenis is leeg</string>
+    <string name="built_in_playlists">Ingebouwde afspeellijsten</string>
+    <string name="top_list_length">Lengte Top afspeellijst</string>
+    <string name="top_list_length_description">Limiteert de lengte van de \'Mijn top x\' afspeellijst</string>
+
+    <string name="service_lifetime">Levensduur van de service</string>
+    <string name="service_lifetime_warning">Als batterijoptimalisatie is toegepast kan de afspeelnotificatie prompt verdwijnen wanneer de speler is gepauzeerd.</string>
+    <string name="service_lifetime_warning_android_12">Sinds Android 12 is het uitzetten van batterijoptimalisatie verplicht om de onaantastbare service aan te kunnen zetten.</string>
+    <string name="ignore_battery_optimizations">Zet batterijoptimalisatie uit</string>
+    <string name="ignoring_battery_optimizations">Restrictie opgeheven</string>
+    <string name="ignore_battery_optimizations_action">Zet achtergrondrestricties uit</string>
+    <string name="invincible_service">Onaantastbare service</string>
+    <string name="invincible_service_description">Dit zou het afspelen 99.99% van de tijd in stand moeten houden, voor wanneer het uitzetten van batterijoptimalisatie niet genoeg is</string>
+
+    <string name="need_help">Hulp nodig?</string>
+    <string name="need_help_description">Vaak is het niet de fout van de ontwikkelaar (zelfs na het aanzetten van de onaantastbare service) dat de app soms stopt goed te werken in de achtergrond. Controleer of jouw fabrikant jouw apps ongevraagd beëindigt (klik om door te sturen)</string>
+    <string name="service_lifetime_report_issue">Als je echt denkt dat er iets mis is met de app zelf, ga dan naar het Over tabblad</string>
+    <string name="troubleshooting">Foutopsporing</string>
+    <string name="troubleshooting_warning">Voorzichtig: gebruik deze knoppen alleen als een laatste hoop als het afspelen niet werkt</string>
+    <string name="reload_app_internals">Herlaad interne onderdelen van de app</string>
+    <string name="kill_app">Beëindig app</string>
+    <string name="show_troubleshoot_section">Laat foutopspring zien</string>
+
+    <string name="player_and_audio">Speler &amp; Audio</string>
+    <string name="persistent_queue">Blijvende wachtrij</string>
+    <string name="persistent_queue_description">Wachtrij opslaan en herstellen</string>
+    <string name="resume_playback">Hervat afspelen</string>
+    <string name="resume_playback_description">Zodra een bedraad of Bluetooth apparaat is aangesloten</string>
+    <string name="stop_when_closed">Stop bij sluiten</string>
+    <string name="stop_when_closed_description">Wanneer je de app afsluit stopt de muziek met afspelen</string>
+
+    <string name="audio">Audio</string>
+    <string name="skip_silence">Sla stilte over</string>
+    <string name="skip_silence_description">Sla stille gedeeltes over tijdens het afspelen</string>
+    <string name="minimum_silence_length">Minimale duur stilte</string>
+    <string name="minimum_silence_length_description">De minimale tijd dat de muziek stil moet zijn om over te worden geslagen</string>
+    <string name="minimum_silence_length_warning">De speler moet worden herstart om de wijzigingen te bevestigen.</string>
+    <string name="restart_service">Herstart service</string>
+    <string name="loudness_normalization">Normalisering</string>
+    <string name="loudness_normalization_description">Pas het volume van de audio aan naar een vast niveau</string>
+    <string name="loudness_base_gain">Basisversterking</string>
+    <string name="loudness_base_gain_description">De doelwaarde voor de normalisering</string>
+    <string name="bass_boost">Bass boost</string>
+    <string name="bass_boost_description">Versterk lage frequenties om luisterervaring te verbeteren</string>
+    <string name="bass_boost_level">Bass boost niveau</string>
+    <string name="bass_boost_level_description">Niveau (0–1000) van het versterken van lage frequenties; gebruik op eigen risico!</string>
+    <string name="equalizer_description">Gebruik de equalizer van het systeem</string>
+
+    <string name="filter_placeholder">Filteren…</string>
+
+    <string name="last_interaction">Laatst afgespeeld</string>
+    <string name="trending">Trending</string>
+    <string name="quick_picks_source">Bron voor Snelle keuzes</string>
+
+    <string name="player_layout">Lay-out van de speler</string>
+    <string name="classic_player_layout_name">Klassiek</string>
+    <string name="new_player_layout_name">Modern (nieuw)</string>
+
+    <plurals name="song_count_plural">
+        <item quantity="one">%1$d nummer</item>
+        <item quantity="other">%1$d nummers</item>
+    </plurals>
+</resources>

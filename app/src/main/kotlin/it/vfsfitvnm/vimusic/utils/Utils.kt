@@ -31,7 +31,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(info?.name)
-                .setArtist(authors?.joinToString("") { it.name ?: "" })
+                .setArtist(authors?.joinToString("") { it.name.orEmpty() })
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
@@ -40,7 +40,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
                         "durationText" to durationText,
                         "artistNames" to authors?.filter { it.endpoint != null }
                             ?.mapNotNull { it.name },
-                        "artistIds" to authors?.mapNotNull { it.endpoint?.browseId },
+                        "artistIds" to authors?.mapNotNull { it.endpoint?.browseId }
                     )
                 )
                 .build()
@@ -55,14 +55,15 @@ val Innertube.VideoItem.asMediaItem: MediaItem
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(info?.name)
-                .setArtist(authors?.joinToString("") { it.name ?: "" })
+                .setArtist(authors?.joinToString("") { it.name.orEmpty() })
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
                         "artistNames" to if (isOfficialMusicVideo) authors?.filter { it.endpoint != null }
                             ?.mapNotNull { it.name } else null,
-                        "artistIds" to if (isOfficialMusicVideo) authors?.mapNotNull { it.endpoint?.browseId } else null,
+                        "artistIds" to if (isOfficialMusicVideo) authors?.mapNotNull { it.endpoint?.browseId }
+                        else null
                     )
                 )
                 .build()
@@ -93,36 +94,32 @@ val Song.asMediaItem: MediaItem
         .setCustomCacheKey(id)
         .build()
 
-fun String?.thumbnail(size: Int): String? {
-    return when {
-        this?.startsWith("https://lh3.googleusercontent.com") == true -> "$this-w$size-h$size"
-        this?.startsWith("https://yt3.ggpht.com") == true -> "$this-w$size-h$size-s$size"
-        else -> this
-    }
+fun String?.thumbnail(size: Int) = when {
+    this?.startsWith("https://lh3.googleusercontent.com") == true -> "$this-w$size-h$size"
+    this?.startsWith("https://yt3.ggpht.com") == true -> "$this-w$size-h$size-s$size"
+    else -> this
 }
 
-fun Uri?.thumbnail(size: Int): Uri? {
-    return toString().thumbnail(size)?.toUri()
-}
+fun Uri?.thumbnail(size: Int) = toString().thumbnail(size)?.toUri()
 
 fun formatAsDuration(millis: Long) = DateUtils.formatElapsedTime(millis / 1000).removePrefix("0")
 
-suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(maxDepth: Int = Int.MAX_VALUE): Result<Innertube.PlaylistOrAlbumPage>? {
+suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
+    maxDepth: Int = Int.MAX_VALUE
+): Result<Innertube.PlaylistOrAlbumPage>? {
     var playlistPage = getOrNull() ?: return null
 
     var depth = 0
     while (playlistPage.songsPage?.continuation != null && depth++ < maxDepth) {
-        val continuation = playlistPage.songsPage?.continuation!!
-        val otherPlaylistPageResult =
-            Innertube.playlistPage(ContinuationBody(continuation = continuation)) ?: break
-
-        if (otherPlaylistPageResult.isFailure) break
-        val songs = otherPlaylistPageResult.getOrNull()?.takeIf { result ->
-            result.items?.let { items -> items.isNotEmpty() &&
-                    playlistPage.songsPage?.items?.none { it in items } != false } != false
+        val newSongs = Innertube.playlistPage(
+            body = ContinuationBody(continuation = playlistPage.songsPage?.continuation!!)
+        )?.getOrNull()?.takeIf { result ->
+            result.items?.let { items ->
+                items.isNotEmpty() && playlistPage.songsPage?.items?.none { it in items } != false
+            } != false
         } ?: break
 
-        playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + songs)
+        playlistPage = playlistPage.copy(songsPage = playlistPage.songsPage + newSongs)
     }
 
     return Result.success(playlistPage)
@@ -130,11 +127,12 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(maxDepth: Int = Int.
 
 fun <T> Flow<T>.onFirst(block: suspend (T) -> Unit): Flow<T> {
     var isFirst = true
+
     return onEach {
-        if (isFirst) {
-            block(it)
-            isFirst = false
-        }
+        if (!isFirst) return@onEach
+
+        block(it)
+        isFirst = false
     }
 }
 

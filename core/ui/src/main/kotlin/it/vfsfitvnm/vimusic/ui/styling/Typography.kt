@@ -19,7 +19,7 @@ data class Typography(
     val s: TextStyle,
     val m: TextStyle,
     val l: TextStyle,
-    val xxl: TextStyle,
+    val xxl: TextStyle
 ) {
     fun copy(color: Color) = Typography(
         xxs = xxs.copy(color = color),
@@ -37,47 +37,41 @@ data class Typography(
             value[2] as Boolean
         )
 
-        override fun SaverScope.save(value: Typography) =
-            listOf(
-                value.xxs.color.value.toLong(),
-                value.xxs.fontFamily == FontFamily.Default,
-                @Suppress("DEPRECATION")
-                value.xxs.platformStyle?.paragraphStyle?.includeFontPadding ?: false
-            )
+        override fun SaverScope.save(value: Typography) = listOf(
+            value.xxs.color.value.toLong(),
+            value.xxs.fontFamily == FontFamily.Default,
+            value.xxs.platformStyle?.paragraphStyle?.includeFontPadding ?: false
+        )
     }
 }
 
 fun typographyOf(color: Color, useSystemFont: Boolean, applyFontPadding: Boolean): Typography {
     val textStyle = TextStyle(
-        fontFamily = if (useSystemFont) {
-            FontFamily.Default
-        } else {
-            FontFamily(
-                Font(
-                    resId = R.font.poppins_w300,
-                    weight = FontWeight.Light
-                ),
-                Font(
-                    resId = R.font.poppins_w400,
-                    weight = FontWeight.Normal
-                ),
-                Font(
-                    resId = R.font.poppins_w500,
-                    weight = FontWeight.Medium
-                ),
-                Font(
-                    resId = R.font.poppins_w600,
-                    weight = FontWeight.SemiBold
-                ),
-                Font(
-                    resId = R.font.poppins_w700,
-                    weight = FontWeight.Bold
-                ),
+        fontFamily = if (useSystemFont) FontFamily.Default else FontFamily(
+            Font(
+                resId = R.font.poppins_w300,
+                weight = FontWeight.Light
+            ),
+            Font(
+                resId = R.font.poppins_w400,
+                weight = FontWeight.Normal
+            ),
+            Font(
+                resId = R.font.poppins_w500,
+                weight = FontWeight.Medium
+            ),
+            Font(
+                resId = R.font.poppins_w600,
+                weight = FontWeight.SemiBold
+            ),
+            Font(
+                resId = R.font.poppins_w700,
+                weight = FontWeight.Bold
             )
-        },
+        ),
         fontWeight = FontWeight.Normal,
         color = color,
-        platformStyle = @Suppress("DEPRECATION") (PlatformTextStyle(includeFontPadding = applyFontPadding))
+        platformStyle = PlatformTextStyle(includeFontPadding = applyFontPadding)
     )
 
     return Typography(

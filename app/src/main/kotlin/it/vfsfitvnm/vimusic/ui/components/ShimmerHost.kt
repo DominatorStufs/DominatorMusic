@@ -19,20 +19,18 @@ fun ShimmerHost(
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        horizontalAlignment = horizontalAlignment,
-        verticalArrangement = verticalArrangement,
-        modifier = modifier
-            .shimmer()
-            .graphicsLayer(alpha = 0.99f)
-            .drawWithContent {
-                drawContent()
-                drawRect(
-                    brush = Brush.verticalGradient(listOf(Color.Black, Color.Transparent)),
-                    blendMode = BlendMode.DstIn
-                )
-            },
-        content = content
-    )
-}
+) = Column(
+    horizontalAlignment = horizontalAlignment,
+    verticalArrangement = verticalArrangement,
+    modifier = modifier
+        .shimmer()
+        .graphicsLayer(alpha = 0.99f)
+        .drawWithContent {
+            drawContent()
+            drawRect(
+                brush = Brush.verticalGradient(listOf(Color.Black, Color.Transparent)),
+                blendMode = BlendMode.DstIn
+            )
+        },
+    content = content
+)

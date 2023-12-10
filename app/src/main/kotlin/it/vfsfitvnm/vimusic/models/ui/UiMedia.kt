@@ -11,7 +11,7 @@ data class UiMedia(
 
 fun MediaItem.toUiMedia(duration: Long) = UiMedia(
     id = mediaId,
-    title = mediaMetadata.title?.toString() ?: "",
-    artist = mediaMetadata.artist?.toString() ?: "",
+    title = mediaMetadata.title?.toString().orEmpty(),
+    artist = mediaMetadata.artist?.toString().orEmpty(),
     duration = duration
 )

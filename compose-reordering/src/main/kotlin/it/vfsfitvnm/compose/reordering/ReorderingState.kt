@@ -73,6 +73,7 @@ class ReorderingState(
         animatablesPool = AnimatablesPool(size / draggingItemSize + 2, 0, Int.VectorConverter)
     }
 
+    @Suppress("CyclomaticComplexMethod")
     fun onDrag(change: PointerInputChange, dragAmount: Offset) {
         if (!isDragging) return
         change.consume()
@@ -113,6 +114,7 @@ class ReorderingState(
                     }
                 }
             }
+
             targetOffset < previousItemSize -> {
                 if (reachedIndex > 0) {
                     reachedIndex -= 1
@@ -138,6 +140,7 @@ class ReorderingState(
                     }
                 }
             }
+
             else -> {
                 val offsetInViewPort = targetOffset + itemInfo.offset - overscrolled
 

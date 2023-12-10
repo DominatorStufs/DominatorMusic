@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import it.vfsfitvnm.compose.persist.persistList
 import it.vfsfitvnm.vimusic.Database
@@ -48,36 +49,32 @@ import it.vfsfitvnm.vimusic.ui.components.themed.HeaderIconButton
 import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
 import it.vfsfitvnm.vimusic.ui.components.themed.TextFieldDialog
 import it.vfsfitvnm.vimusic.ui.items.PlaylistItem
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun HomePlaylists(
     onBuiltInPlaylist: (BuiltInPlaylist) -> Unit,
     onPlaylistClick: (Playlist) -> Unit,
-    onSearchClick: () -> Unit,
+    onSearchClick: () -> Unit
 ) = with(OrderPreferences) {
     val (colorPalette) = LocalAppearance.current
 
-    var isCreatingANewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var isCreatingANewPlaylist by rememberSaveable { mutableStateOf(false) }
 
-    if (isCreatingANewPlaylist) {
-        TextFieldDialog(
-            hintText = "Enter the playlist name",
-            onDismiss = {
-                isCreatingANewPlaylist = false
-            },
-            onDone = { text ->
-                query {
-                    Database.insert(Playlist(name = text))
-                }
+    if (isCreatingANewPlaylist) TextFieldDialog(
+        hintText = stringResource(R.string.enter_playlist_name_prompt),
+        onDismiss = { isCreatingANewPlaylist = false },
+        onDone = { text ->
+            query {
+                Database.insert(Playlist(name = text))
             }
-        )
-    }
+        }
+    )
     var items by persistList<PlaylistPreview>("home/playlists")
 
     LaunchedEffect(playlistSortBy, playlistSortOrder) {
@@ -111,46 +108,42 @@ fun HomePlaylists(
                 .background(colorPalette.background0)
         ) {
             item(key = "header", contentType = 0, span = { GridItemSpan(maxLineSpan) }) {
-                Header(title = "Playlists") {
+                Header(title = stringResource(R.string.playlists)) {
                     SecondaryTextButton(
-                        text = "New playlist",
+                        text = stringResource(R.string.new_playlist),
                         onClick = { isCreatingANewPlaylist = true }
                     )
 
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
+                    Spacer(modifier = Modifier.weight(1f))
 
                     HeaderIconButton(
                         icon = R.drawable.medical,
-                        color = if (playlistSortBy == PlaylistSortBy.SongCount) colorPalette.text else colorPalette.textDisabled,
+                        color = if (playlistSortBy == PlaylistSortBy.SongCount) colorPalette.text
+                        else colorPalette.textDisabled,
                         onClick = { playlistSortBy = PlaylistSortBy.SongCount }
                     )
 
                     HeaderIconButton(
                         icon = R.drawable.text,
-                        color = if (playlistSortBy == PlaylistSortBy.Name) colorPalette.text else colorPalette.textDisabled,
+                        color = if (playlistSortBy == PlaylistSortBy.Name) colorPalette.text
+                        else colorPalette.textDisabled,
                         onClick = { playlistSortBy = PlaylistSortBy.Name }
                     )
 
                     HeaderIconButton(
                         icon = R.drawable.time,
-                        color = if (playlistSortBy == PlaylistSortBy.DateAdded) colorPalette.text else colorPalette.textDisabled,
+                        color = if (playlistSortBy == PlaylistSortBy.DateAdded) colorPalette.text
+                        else colorPalette.textDisabled,
                         onClick = { playlistSortBy = PlaylistSortBy.DateAdded }
                     )
 
-                    Spacer(
-                        modifier = Modifier
-                            .width(2.dp)
-                    )
+                    Spacer(modifier = Modifier.width(2.dp))
 
                     HeaderIconButton(
                         icon = R.drawable.arrow_up,
                         color = colorPalette.text,
                         onClick = { playlistSortOrder = !playlistSortOrder },
-                        modifier = Modifier
-                            .graphicsLayer { rotationZ = sortOrderIconRotation }
+                        modifier = Modifier.graphicsLayer { rotationZ = sortOrderIconRotation }
                     )
                 }
             }
@@ -159,7 +152,7 @@ fun HomePlaylists(
                 PlaylistItem(
                     icon = R.drawable.heart,
                     colorTint = colorPalette.red,
-                    name = "Favorites",
+                    name = stringResource(R.string.favorites),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
@@ -173,7 +166,7 @@ fun HomePlaylists(
                 PlaylistItem(
                     icon = R.drawable.airplane,
                     colorTint = colorPalette.blue,
-                    name = "Offline",
+                    name = stringResource(R.string.offline),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
@@ -187,7 +180,10 @@ fun HomePlaylists(
                 PlaylistItem(
                     icon = R.drawable.trending,
                     colorTint = colorPalette.red,
-                    name = "My top ${DataPreferences.topListLength}",
+                    name = stringResource(
+                        R.string.format_my_top_playlist,
+                        DataPreferences.topListLength
+                    ),
                     songCount = null,
                     thumbnailSizeDp = thumbnailSizeDp,
                     alternative = true,
@@ -197,7 +193,10 @@ fun HomePlaylists(
                 )
             }
 
-            items(items = items, key = { it.playlist.id }) { playlistPreview ->
+            items(
+                items = items,
+                key = { it.playlist.id }
+            ) { playlistPreview ->
                 PlaylistItem(
                     playlist = playlistPreview,
                     thumbnailSizeDp = thumbnailSizeDp,

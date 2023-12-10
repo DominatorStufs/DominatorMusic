@@ -61,6 +61,8 @@ import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
 import androidx.media3.exoplayer.audio.AudioRendererEventListener
+import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.audio.DefaultAudioOffloadSupportProvider
 import androidx.media3.exoplayer.audio.DefaultAudioSink
 import androidx.media3.exoplayer.audio.DefaultAudioSink.DefaultAudioProcessorChain
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
@@ -75,7 +77,7 @@ import it.vfsfitvnm.innertube.requests.player
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.MainActivity
 import it.vfsfitvnm.vimusic.R
-import it.vfsfitvnm.vimusic.enums.ExoPlayerDiskCacheMaxSize
+import it.vfsfitvnm.vimusic.enums.ExoPlayerDiskCacheSize
 import it.vfsfitvnm.vimusic.models.Event
 import it.vfsfitvnm.vimusic.models.QueuedMediaItem
 import it.vfsfitvnm.vimusic.models.Song
@@ -91,12 +93,13 @@ import it.vfsfitvnm.vimusic.utils.RingBuffer
 import it.vfsfitvnm.vimusic.utils.TimerJob
 import it.vfsfitvnm.vimusic.utils.YouTubeRadio
 import it.vfsfitvnm.vimusic.utils.activityPendingIntent
-import it.vfsfitvnm.vimusic.utils.broadCastPendingIntent
+import it.vfsfitvnm.vimusic.utils.broadcastPendingIntent
 import it.vfsfitvnm.vimusic.utils.findNextMediaItemById
 import it.vfsfitvnm.vimusic.utils.forcePlayFromBeginning
 import it.vfsfitvnm.vimusic.utils.forceSeekToNext
 import it.vfsfitvnm.vimusic.utils.forceSeekToPrevious
 import it.vfsfitvnm.vimusic.utils.intent
+import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid10
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid13
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid6
 import it.vfsfitvnm.vimusic.utils.isAtLeastAndroid8
@@ -139,7 +142,7 @@ val MediaItem.isLocal get() = mediaId.startsWith(LOCAL_KEY_PREFIX)
 val Song.isLocal get() = id.startsWith(LOCAL_KEY_PREFIX)
 
 @kotlin.OptIn(ExperimentalCoroutinesApi::class)
-@Suppress("DEPRECATION")
+@Suppress("LargeClass", "TooManyFunctions") // intended in this class: it is a service
 @OptIn(UnstableApi::class)
 class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListener.Callback {
     private lateinit var mediaSession: MediaSession
@@ -207,6 +210,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         return binder
     }
 
+    @Suppress("CyclomaticComplexMethod")
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onCreate() {
         super.onCreate()
@@ -221,24 +225,26 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         createNotificationChannel()
 
         val cacheEvictor = when (val size = DataPreferences.exoPlayerDiskCacheMaxSize) {
-            ExoPlayerDiskCacheMaxSize.Unlimited -> NoOpCacheEvictor()
+            ExoPlayerDiskCacheSize.Unlimited -> NoOpCacheEvictor()
             else -> LeastRecentlyUsedCacheEvictor(size.bytes)
         }
 
-        // TODO: Remove in a future release
         val directory = cacheDir.resolve("exoplayer").also { directory ->
             if (directory.exists()) return@also
 
             directory.mkdir()
 
             cacheDir.listFiles()?.forEach {
-                if (it.isDirectory && it.name.length == 1 && it.name.isDigitsOnly() || it.extension == "uid") {
-                    if (!it.renameTo(directory.resolve(it.name))) it.deleteRecursively()
-                }
+                @Suppress("ComplexCondition")
+                if (
+                    (it.isDirectory && it.name.length == 1 && it.name.isDigitsOnly() || it.extension == "uid") &&
+                    !it.renameTo(directory.resolve(it.name))
+                ) it.deleteRecursively()
             }
 
             filesDir.resolve("coil").deleteRecursively()
         }
+
         cache = SimpleCache(directory, cacheEvictor, StandaloneDatabaseProvider(this))
 
         player = ExoPlayer.Builder(this, createRendersFactory(), createMediaSourceFactory())
@@ -263,24 +269,37 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         maybeRestorePlayerQueue()
 
         mediaSession = MediaSession(baseContext, "PlayerService")
-        mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS or MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS)
         mediaSession.setCallback(SessionCallback(player))
         mediaSession.setPlaybackState(stateBuilder.build())
         mediaSession.isActive = true
 
         coroutineScope.launch {
-            isLikedState
-                .onEach { withContext(Dispatchers.Main) { updatePlaybackState() } }
-                .collect()
+            var first = true
+            isLikedState.onEach {
+                // work around NPE in other processes
+                if (first) {
+                    first = false
+                    return@onEach
+                }
+                withContext(Dispatchers.Main) {
+                    updatePlaybackState()
+                    // work around NPE in other processes
+                    handler.post {
+                        applicationContext.getSystemService<NotificationManager>()
+                            ?.notify(NOTIFICATION_ID, notification())
+                    }
+                }
+            }.collect()
         }
 
-        notificationActionReceiver = NotificationActionReceiver(player)
+        notificationActionReceiver = NotificationActionReceiver()
 
         val filter = IntentFilter().apply {
             addAction(Action.play.value)
             addAction(Action.pause.value)
             addAction(Action.next.value)
             addAction(Action.previous.value)
+            addAction(Action.like.value)
         }
 
         registerReceiver(notificationActionReceiver, filter)
@@ -314,7 +333,8 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                 stateCallback(state = { bassBoostLevel }, callback = ::maybeBassBoost)
                 stateCallback(
                     state = { speed },
-                    callback = { player.setPlaybackSpeed(speed.coerceAtLeast(0.01f)) })
+                    callback = { player.setPlaybackSpeed(speed.coerceAtLeast(0.01f)) }
+                )
                 stateCallback(
                     state = { isInvincibilityEnabled },
                     callback = {
@@ -340,7 +360,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         if (!player.shouldBePlaying || PlayerPreferences.stopWhenClosed)
-            broadCastPendingIntent<NotificationDismissReceiver>().send()
+            broadcastPendingIntent<NotificationDismissReceiver>().send()
         super.onTaskRemoved(rootIntent)
     }
 
@@ -480,12 +500,14 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
         query {
             Database.clearQueue()
-            Database.insert(mediaItems.mapIndexed { index, mediaItem ->
-                QueuedMediaItem(
-                    mediaItem = mediaItem,
-                    position = if (index == mediaItemIndex) mediaItemPosition else null
-                )
-            })
+            Database.insert(
+                mediaItems.mapIndexed { index, mediaItem ->
+                    QueuedMediaItem(
+                        mediaItem = mediaItem,
+                        position = if (index == mediaItemIndex) mediaItemPosition else null
+                    )
+                }
+            )
         }
     }
 
@@ -583,22 +605,29 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         mediaSession.setMetadata(metadataBuilder.build())
     }
 
-    @SuppressLint("NewApi")
     private fun maybeResumePlaybackWhenDeviceConnected() {
         if (!isAtLeastAndroid6) return
 
-        if (PlayerPreferences.resumePlaybackWhenDeviceConnected) {
-            if (audioManager == null) audioManager = getSystemService<AudioManager>()
+        if (!PlayerPreferences.resumePlaybackWhenDeviceConnected) {
+            audioManager?.unregisterAudioDeviceCallback(audioDeviceCallback)
+            audioDeviceCallback = null
+            return
+        }
+        if (audioManager == null) audioManager = getSystemService<AudioManager>()
 
-            audioDeviceCallback = object : AudioDeviceCallback() {
-                private fun canPlayMusic(audioDeviceInfo: AudioDeviceInfo): Boolean {
-                    if (!audioDeviceInfo.isSink) return false
-
-                    return audioDeviceInfo.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
-                            audioDeviceInfo.type == AudioDeviceInfo.TYPE_WIRED_HEADSET ||
-                            audioDeviceInfo.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES ||
-                            audioDeviceInfo.type == AudioDeviceInfo.TYPE_USB_HEADSET
-                }
+        audioDeviceCallback =
+            @SuppressLint("NewApi")
+            object : AudioDeviceCallback() {
+                private fun canPlayMusic(audioDeviceInfo: AudioDeviceInfo) =
+                    audioDeviceInfo.isSink && (
+                            audioDeviceInfo.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP ||
+                                    audioDeviceInfo.type == AudioDeviceInfo.TYPE_WIRED_HEADSET ||
+                                    audioDeviceInfo.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+                            )
+                        .let {
+                            if (!isAtLeastAndroid8) it else
+                                it || audioDeviceInfo.type == AudioDeviceInfo.TYPE_USB_HEADSET
+                        }
 
                 override fun onAudioDevicesAdded(addedDevices: Array<AudioDeviceInfo>) {
                     if (!player.isPlaying && addedDevices.any(::canPlayMusic)) player.play()
@@ -607,11 +636,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                 override fun onAudioDevicesRemoved(removedDevices: Array<AudioDeviceInfo>) = Unit
             }
 
-            audioManager?.registerAudioDeviceCallback(audioDeviceCallback, handler)
-        } else {
-            audioManager?.unregisterAudioDeviceCallback(audioDeviceCallback)
-            audioDeviceCallback = null
-        }
+        audioManager?.registerAudioDeviceCallback(audioDeviceCallback, handler)
     }
 
     private fun sendOpenEqualizerIntent() = sendBroadcast(
@@ -650,17 +675,17 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             else -> PlaybackState.STATE_NONE
         }
 
+    // legacy behavior may cause inconsistencies, but not available on sdk 24 or lower
+    @Suppress("DEPRECATION")
     override fun onEvents(player: Player, events: Player.Events) {
-        if (player.duration != C.TIME_UNSET) {
-            mediaSession.setMetadata(
-                metadataBuilder
-                    .putText(MediaMetadata.METADATA_KEY_TITLE, player.mediaMetadata.title)
-                    .putText(MediaMetadata.METADATA_KEY_ARTIST, player.mediaMetadata.artist)
-                    .putText(MediaMetadata.METADATA_KEY_ALBUM, player.mediaMetadata.albumTitle)
-                    .putLong(MediaMetadata.METADATA_KEY_DURATION, player.duration)
-                    .build()
-            )
-        }
+        if (player.duration != C.TIME_UNSET) mediaSession.setMetadata(
+            metadataBuilder
+                .putText(MediaMetadata.METADATA_KEY_TITLE, player.mediaMetadata.title)
+                .putText(MediaMetadata.METADATA_KEY_ARTIST, player.mediaMetadata.artist)
+                .putText(MediaMetadata.METADATA_KEY_ALBUM, player.mediaMetadata.albumTitle)
+                .putLong(MediaMetadata.METADATA_KEY_DURATION, player.duration)
+                .build()
+        )
 
         updatePlaybackState()
 
@@ -707,9 +732,11 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         val pauseIntent = Action.pause.pendingIntent
         val nextIntent = Action.next.pendingIntent
         val prevIntent = Action.previous.pendingIntent
+        val likeIntent = Action.like.pendingIntent
 
         val mediaMetadata = player.mediaMetadata
 
+        @Suppress("DEPRECATION") // support for SDK < 26
         val builder = if (isAtLeastAndroid8) {
             Notification.Builder(applicationContext, NOTIFICATION_CHANNEL_ID)
         } else {
@@ -722,15 +749,18 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             .setAutoCancel(false)
             .setOnlyAlertOnce(true)
             .setShowWhen(false)
-            .setSmallIcon(player.playerError?.let { R.drawable.alert_circle }
-                ?: R.drawable.app_icon)
+            .setSmallIcon(
+                player.playerError?.let { R.drawable.alert_circle } ?: R.drawable.app_icon
+            )
             .setOngoing(false)
-            .setContentIntent(activityPendingIntent<MainActivity>(
-                flags = PendingIntent.FLAG_UPDATE_CURRENT
-            ) {
-                putExtra("expandPlayerBottomSheet", true)
-            })
-            .setDeleteIntent(broadCastPendingIntent<NotificationDismissReceiver>())
+            .setContentIntent(
+                activityPendingIntent<MainActivity>(
+                    flags = PendingIntent.FLAG_UPDATE_CURRENT
+                ) {
+                    putExtra("expandPlayerBottomSheet", true)
+                }
+            )
+            .setDeleteIntent(broadcastPendingIntent<NotificationDismissReceiver>())
             .setVisibility(Notification.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
             .setStyle(
@@ -738,13 +768,18 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                     .setShowActionsInCompactView(0, 1, 2)
                     .setMediaSession(mediaSession.sessionToken)
             )
-            .addAction(R.drawable.play_skip_back, "Skip back", prevIntent)
+            .addAction(R.drawable.play_skip_back, getString(R.string.skip_back), prevIntent)
             .addAction(
                 if (player.shouldBePlaying) R.drawable.pause else R.drawable.play,
-                if (player.shouldBePlaying) "Pause" else "Play",
+                if (player.shouldBePlaying) getString(R.string.pause) else getString(R.string.play),
                 if (player.shouldBePlaying) pauseIntent else playIntent
             )
-            .addAction(R.drawable.play_skip_forward, "Skip forward", nextIntent)
+            .addAction(R.drawable.play_skip_forward, getString(R.string.skip_forward), nextIntent)
+            .addAction(
+                if (isLikedState.value) R.drawable.heart else R.drawable.heart_outline,
+                getString(R.string.like),
+                likeIntent
+            )
 
         bitmapProvider.load(mediaMetadata.artworkUri) { bitmap ->
             maybeShowSongCoverInLockScreen()
@@ -763,7 +798,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             if (getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null) createNotificationChannel(
                 NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
-                    "Now playing",
+                    getString(R.string.now_playing),
                     NotificationManager.IMPORTANCE_LOW
                 ).apply {
                     setSound(null, null)
@@ -776,7 +811,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                 createNotificationChannel(
                     NotificationChannel(
                         SLEEP_TIMER_NOTIFICATION_CHANNEL_ID,
-                        "Sleep timer",
+                        getString(R.string.sleep_timer),
                         NotificationManager.IMPORTANCE_LOW
                     ).apply {
                         setSound(null, null)
@@ -798,6 +833,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         )
     ) { !it.isLocal }
 
+    @Suppress("CyclomaticComplexMethod")
     private fun createDataSourceFactory(): DataSource.Factory {
         val chunkLength = 512 * 1024L
         val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
@@ -884,10 +920,10 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
     private fun createRendersFactory(): RenderersFactory {
         val minimumSilenceDuration = PlayerPreferences.minimumSilence.coerceIn(1000L..2_000_000L)
-        val audioSink = DefaultAudioSink.Builder()
+        val audioSink = DefaultAudioSink.Builder(applicationContext)
             .setEnableFloatOutput(false)
             .setEnableAudioTrackPlaybackParams(false)
-            .setOffloadMode(DefaultAudioSink.OFFLOAD_MODE_DISABLED)
+            .setAudioOffloadSupportProvider(DefaultAudioOffloadSupportProvider(applicationContext))
             .setAudioProcessorChain(
                 DefaultAudioProcessorChain(
                     arrayOf(),
@@ -900,6 +936,9 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                 )
             )
             .build()
+            .apply {
+                if (isAtLeastAndroid10) setOffloadMode(AudioSink.OFFLOAD_MODE_DISABLED)
+            }
 
         return RenderersFactory { handler: Handler?, _, audioListener: AudioRendererEventListener?, _, _ ->
             arrayOf(
@@ -948,7 +987,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             timerJob = coroutineScope.timer(delayMillis) {
                 val notification = NotificationCompat
                     .Builder(this@PlayerService, SLEEP_TIMER_NOTIFICATION_CHANNEL_ID)
-                    .setContentTitle("Sleep timer ended")
+                    .setContentTitle(getString(R.string.sleep_timer_ended))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
                     .setOnlyAlertOnce(true)
@@ -1015,6 +1054,15 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             song.contentLength?.let { cache.isCached(song.song.id, 0L, it) } ?: false
     }
 
+    private fun likeAction() = mediaItemState.value?.let { mediaItem ->
+        transaction {
+            Database.like(
+                mediaItem.mediaId,
+                if (isLikedState.value) null else System.currentTimeMillis()
+            )
+        }
+    }.let { }
+
     private inner class SessionCallback(private val player: Player) : MediaSession.Callback() {
         override fun onPlay() = player.play()
         override fun onPause() = player.pause()
@@ -1028,26 +1076,18 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
         override fun onCustomAction(action: String, extras: Bundle?) {
             super.onCustomAction(action, extras)
-            if (action == "LIKE") mediaItemState.value?.let { mediaItem ->
-                transaction {
-                    Database.like(
-                        mediaItem.mediaId,
-                        if (isLikedState.value) null else System.currentTimeMillis()
-                    )
-                }
-            }
+            if (action == "LIKE") likeAction()
         }
     }
 
-    class NotificationActionReceiver internal constructor(
-        private val player: Player
-    ) : BroadcastReceiver() {
+    inner class NotificationActionReceiver internal constructor() : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 Action.pause.value -> player.pause()
                 Action.play.value -> player.play()
                 Action.next.value -> player.forceSeekToNext()
                 Action.previous.value -> player.forceSeekToPrevious()
+                Action.like.value -> likeAction()
             }
         }
     }
@@ -1074,6 +1114,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             val play = Action("it.vfsfitvnm.vimusic.play")
             val next = Action("it.vfsfitvnm.vimusic.next")
             val previous = Action("it.vfsfitvnm.vimusic.previous")
+            val like = Action("it.vfsfitvnm.vimusic.like")
         }
     }
 

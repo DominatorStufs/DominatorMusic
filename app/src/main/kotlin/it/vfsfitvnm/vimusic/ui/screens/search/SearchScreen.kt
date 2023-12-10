@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import it.vfsfitvnm.compose.persist.PersistMapCleanup
@@ -22,10 +23,12 @@ import it.vfsfitvnm.compose.routing.RouteHandler
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.ui.components.themed.Scaffold
 import it.vfsfitvnm.vimusic.ui.screens.GlobalRoutes
+import it.vfsfitvnm.vimusic.ui.screens.Route
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.secondary
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@Route
 @Composable
 fun SearchScreen(
     initialTextInput: String,
@@ -53,18 +56,17 @@ fun SearchScreen(
     RouteHandler(listenToGlobalEmitter = true) {
         GlobalRoutes()
 
-        host {
+        NavHost {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
                 Box {
                     AnimatedVisibility(
                         visible = textFieldValue.text.isEmpty(),
                         enter = fadeIn(tween(300)),
                         exit = fadeOut(tween(300)),
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
+                        modifier = Modifier.align(Alignment.CenterEnd)
                     ) {
                         BasicText(
-                            text = "Enter a name",
+                            text = stringResource(R.string.search_placeholder),
                             maxLines = 1,
                             style = LocalAppearance.current.typography.xxl.secondary
                         )
@@ -80,8 +82,8 @@ fun SearchScreen(
                 tabIndex = tabIndex,
                 onTabChanged = onTabChanged,
                 tabColumnContent = { item ->
-                    item(0, "Online", R.drawable.globe)
-                    item(1, "Library", R.drawable.library)
+                    item(0, stringResource(R.string.online), R.drawable.globe)
+                    item(1, stringResource(R.string.library), R.drawable.library)
                 }
             ) { currentTabIndex ->
                 saveableStateHolder.SaveableStateProvider(currentTabIndex) {

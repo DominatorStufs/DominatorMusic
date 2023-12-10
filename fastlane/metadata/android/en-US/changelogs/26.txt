@@ -1,0 +1,6 @@
+* Fixed a bug where the search function in the Songs and Local tabs caused the player to play the wrong song when a song is clicked
+* Fixed an inconsistency: the loading spinner is now tinted correctly
+* Fixed an inconsistency with swiping the player / in the queue: the gesture now works correctly (easier to use and smoother)
+* Fixed inconsistencies with the plurality of songs: one song is no longer "1 songs"
+* Fixed literal "null" being displayed in the UI when metadata is not available
+* Added German translations

@@ -1,0 +1,5 @@
+* Added support for local music on Android 12 and below
+* Fixed inconsistent behavior with local music
+* Added a setting to swipe horizontally to close the player, useful for Android's one-handed mode users
+* Added like button in the player's notification
+* Fixed crashes where the app crashes when you load invalid synchronized lyrics

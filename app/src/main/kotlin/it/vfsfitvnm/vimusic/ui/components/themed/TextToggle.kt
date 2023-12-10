@@ -15,18 +15,20 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.utils.medium
 
 @Composable
 fun TextToggle(
-    modifier: Modifier = Modifier,
     state: Boolean,
     toggleState: () -> Unit,
     name: String,
-    onLabel: String = "on",
-    offLabel: String = "off"
+    modifier: Modifier = Modifier,
+    onLabel: String = stringResource(R.string.on_label),
+    offLabel: String = stringResource(R.string.off_label)
 ) {
     val (colorPalette, typography) = LocalAppearance.current
 
@@ -40,24 +42,26 @@ fun TextToggle(
     ) {
         BasicText(
             text = "$name ",
-            style = typography.xxs.medium,
+            style = typography.xxs.medium
         )
 
         AnimatedContent(
             targetState = state,
             transitionSpec = {
                 val slideDirection =
-                    if (targetState) AnimatedContentTransitionScope.SlideDirection.Up else AnimatedContentTransitionScope.SlideDirection.Down
+                    if (targetState) AnimatedContentTransitionScope.SlideDirection.Up
+                    else AnimatedContentTransitionScope.SlideDirection.Down
 
                 ContentTransform(
                     targetContentEnter = slideIntoContainer(slideDirection) + fadeIn(),
-                    initialContentExit = slideOutOfContainer(slideDirection) + fadeOut(),
+                    initialContentExit = slideOutOfContainer(slideDirection) + fadeOut()
                 )
-            }, label = ""
+            },
+            label = ""
         ) {
             BasicText(
                 text = if (it) onLabel else offLabel,
-                style = typography.xxs.medium,
+                style = typography.xxs.medium
             )
         }
     }
