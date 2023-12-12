@@ -31,13 +31,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import it.vfsfitvnm.compose.persist.persist
 import it.vfsfitvnm.compose.persist.persistList
+import it.vfsfitvnm.piped.Piped
+import it.vfsfitvnm.piped.models.Session
 import it.vfsfitvnm.vimusic.Database
 import it.vfsfitvnm.vimusic.LocalPlayerAwareWindowInsets
 import it.vfsfitvnm.vimusic.R
 import it.vfsfitvnm.vimusic.enums.BuiltInPlaylist
 import it.vfsfitvnm.vimusic.enums.PlaylistSortBy
 import it.vfsfitvnm.vimusic.enums.SortOrder
+import it.vfsfitvnm.vimusic.models.PipedSession
 import it.vfsfitvnm.vimusic.models.Playlist
 import it.vfsfitvnm.vimusic.models.PlaylistPreview
 import it.vfsfitvnm.vimusic.preferences.DataPreferences
@@ -50,9 +54,13 @@ import it.vfsfitvnm.vimusic.ui.components.themed.SecondaryTextButton
 import it.vfsfitvnm.vimusic.ui.components.themed.TextFieldDialog
 import it.vfsfitvnm.vimusic.ui.items.PlaylistItem
 import it.vfsfitvnm.vimusic.ui.screens.Route
+import it.vfsfitvnm.vimusic.ui.screens.settings.SettingsEntryGroupText
+import it.vfsfitvnm.vimusic.ui.screens.settings.SettingsGroupSpacer
 import it.vfsfitvnm.vimusic.ui.styling.Dimensions
 import it.vfsfitvnm.vimusic.ui.styling.LocalAppearance
 import it.vfsfitvnm.vimusic.ui.styling.px
+import kotlinx.coroutines.async
+import it.vfsfitvnm.piped.models.PlaylistPreview as PipedPlaylistPreview
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Route
@@ -60,6 +68,7 @@ import it.vfsfitvnm.vimusic.ui.styling.px
 fun HomePlaylists(
     onBuiltInPlaylist: (BuiltInPlaylist) -> Unit,
     onPlaylistClick: (Playlist) -> Unit,
+    onPipedPlaylistClick: (Session, PipedPlaylistPreview) -> Unit,
     onSearchClick: () -> Unit
 ) = with(OrderPreferences) {
     val (colorPalette) = LocalAppearance.current
@@ -76,9 +85,20 @@ fun HomePlaylists(
         }
     )
     var items by persistList<PlaylistPreview>("home/playlists")
+    var pipedSessions by persist<Map<PipedSession, List<PipedPlaylistPreview>?>>("home/piped")
 
     LaunchedEffect(playlistSortBy, playlistSortOrder) {
         Database.playlistPreviews(playlistSortBy, playlistSortOrder).collect { items = it }
+    }
+
+    LaunchedEffect(Unit) {
+        Database.pipedSessions().collect { sessions ->
+            pipedSessions = sessions.associateWith { session ->
+                async {
+                    Piped.playlist.list(session = session.toApiSession())?.getOrNull()
+                }
+            }.mapValues { (_, value) -> value.await() }
+        }
     }
 
     val sortOrderIconRotation by animateFloatAsState(
@@ -207,6 +227,45 @@ fun HomePlaylists(
                         .animateItemPlacement()
                 )
             }
+
+            pipedSessions
+                ?.ifEmpty { null }
+                ?.filter { it.value?.isNotEmpty() == true }
+                ?.forEach { (session, playlists) ->
+                    item(
+                        key = "piped-header-${session.id}",
+                        contentType = 0,
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        SettingsGroupSpacer()
+                        SettingsEntryGroupText(title = session.username)
+                    }
+
+                    playlists?.let {
+                        items(
+                            items = playlists,
+                            key = { "piped-${session.id}" }
+                        ) { playlist ->
+                            PlaylistItem(
+                                name = playlist.name,
+                                songCount = playlist.videoCount,
+                                channelName = null,
+                                thumbnailUrl = playlist.thumbnailUrl.toString(),
+                                thumbnailSizeDp = thumbnailSizeDp,
+                                thumbnailSizePx = thumbnailSizePx,
+                                alternative = true,
+                                modifier = Modifier
+                                    .clickable(onClick = {
+                                        onPipedPlaylistClick(
+                                            session.toApiSession(),
+                                            playlist
+                                        )
+                                    })
+                                    .animateItemPlacement()
+                            )
+                        }
+                    }
+                }
         }
 
         FloatingActionsContainerWithScrollToTop(

@@ -3,6 +3,7 @@ package it.vfsfitvnm.piped.models
 import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.seconds
 
 @Serializable
 data class CreatedPlaylist(
@@ -42,14 +43,18 @@ data class Playlist(
         val uploaderName: String,
         val uploaderUrl: String, // not a real url either
         @SerialName("uploaderAvatar")
-        val uploaderAvatarUrl: UrlString
+        val uploaderAvatarUrl: UrlString,
+        @SerialName("duration")
+        val durationSeconds: Long
     ) {
         val id
             get() = if (url.startsWith("/watch?v=")) url.substringAfter("/watch?v=")
-            else Url(url).parameters["v"]?.firstOrNull()
+            else Url(url).parameters["v"]?.firstOrNull()?.toString()
 
         val uploaderId
-            get() = if (url.startsWith("/channel/")) url.substringAfter("/channel/")
-            else Url(url).pathSegments.lastOrNull()
+            get() = if (uploaderUrl.startsWith("/channel/")) uploaderUrl.substringAfter("/channel/")
+            else Url(uploaderUrl).pathSegments.lastOrNull()
+
+        val duration get() = durationSeconds.seconds
     }
 }

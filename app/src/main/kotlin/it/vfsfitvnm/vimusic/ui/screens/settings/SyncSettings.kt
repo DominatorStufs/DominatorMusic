@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import io.ktor.http.Url
 import it.vfsfitvnm.compose.persist.persistList
 import it.vfsfitvnm.piped.Piped
 import it.vfsfitvnm.piped.models.Instance
@@ -82,6 +83,7 @@ fun SyncSettings() {
                 var username by rememberSaveable { mutableStateOf("") }
                 var password by rememberSaveable { mutableStateOf("") }
                 var canSelect by rememberSaveable { mutableStateOf(false) }
+                var customInstance: String? by rememberSaveable { mutableStateOf(null) }
 
                 LaunchedEffect(Unit) {
                     Piped.getInstances()?.getOrNull()?.let {
@@ -97,19 +99,36 @@ fun SyncSettings() {
                     style = typography.m.semiBold
                 )
 
-                ValueSelectorSettingsEntry(
+                if (customInstance == null) ValueSelectorSettingsEntry(
                     title = stringResource(R.string.instance),
                     selectedValue = selectedInstance,
                     values = instances.indices.toImmutableList(),
                     onValueSelected = { selectedInstance = it },
                     valueText = { idx ->
-                        idx?.let { instances.getOrNull(it)?.name } ?: stringResource(R.string.click_to_select)
+                        idx?.let { instances.getOrNull(it)?.name }
+                            ?: stringResource(R.string.click_to_select)
                     },
                     isEnabled = canSelect,
                     trailingContent = if (loadingInstances) {
                         { CircularProgressIndicator() }
                     } else null
                 )
+                SwitchSettingEntry(
+                    title = stringResource(R.string.custom_instance),
+                    text = null,
+                    isChecked = customInstance != null,
+                    onCheckedChange = { customInstance = if (customInstance == null) "" else null }
+                )
+                customInstance?.let { instance ->
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextField(
+                        value = instance,
+                        onValueChange = { customInstance = it },
+                        hintText = stringResource(R.string.base_api_url),
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 TextField(
                     value = username,
@@ -130,13 +149,20 @@ fun SyncSettings() {
                 DialogTextButton(
                     text = stringResource(R.string.login),
                     primary = true,
-                    enabled = selectedInstance != null,
+                    enabled = (customInstance?.isNotBlank() == true || selectedInstance != null)
+                            && username.isNotBlank() && password.isNotBlank(),
                     onClick = {
-                        coroutineScope.launch {
-                            selectedInstance?.let { idx ->
+                        (customInstance?.let {
+                            runCatching {
+                                Url(it)
+                            }.getOrNull() ?: runCatching {
+                                Url("https://$it")
+                            }.getOrNull()
+                        } ?: selectedInstance?.let { instances[it].apiBaseUrl })?.let { url ->
+                            coroutineScope.launch {
                                 isLoading = true
                                 val session = Piped.login(
-                                    apiBaseUrl = instances[idx].apiBaseUrl,
+                                    apiBaseUrl = url,
                                     username = username,
                                     password = password
                                 )?.getOrNull().run {

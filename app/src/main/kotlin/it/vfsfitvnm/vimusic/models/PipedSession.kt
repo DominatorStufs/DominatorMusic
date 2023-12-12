@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import io.ktor.http.Url
+import it.vfsfitvnm.piped.models.Session
+import it.vfsfitvnm.piped.models.authenticatedWith
 
 @Immutable
 @Entity(
@@ -20,4 +22,6 @@ data class PipedSession(
     val apiBaseUrl: Url,
     val token: String,
     val username: String // the username should never change on piped
-)
+) {
+    fun toApiSession() = apiBaseUrl authenticatedWith token
+}

@@ -23,6 +23,7 @@ import io.ktor.serialization.kotlinx.json.json
 import it.vfsfitvnm.extensions.runCatchingCancellable
 import it.vfsfitvnm.piped.models.CreatedPlaylist
 import it.vfsfitvnm.piped.models.Instance
+import it.vfsfitvnm.piped.models.Playlist
 import it.vfsfitvnm.piped.models.PlaylistPreview
 import it.vfsfitvnm.piped.models.Session
 import it.vfsfitvnm.piped.models.authenticatedWith
@@ -41,10 +42,12 @@ object Piped {
     private val client by lazy {
         HttpClient(CIO) {
             install(ContentNegotiation) {
-                json(Json {
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
+                json(
+                    Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    }
+                )
             }
             expectSuccess = true
 
@@ -77,14 +80,16 @@ object Piped {
 
     suspend fun login(apiBaseUrl: Url, username: String, password: String) =
         runCatchingCancellable {
-            apiBaseUrl authenticatedWith (client.post(apiBaseUrl / "login") {
-                setBody(
-                    mapOf(
-                        "username" to username,
-                        "password" to password
-                    )
-                )
-            }.body<JsonElement>() / "token").jsonPrimitive.content
+            apiBaseUrl authenticatedWith (
+                    client.post(apiBaseUrl / "login") {
+                        setBody(
+                            mapOf(
+                                "username" to username,
+                                "password" to password
+                            )
+                        )
+                    }.body<JsonElement>() / "token"
+                    ).jsonPrimitive.content
         }
 
     val playlist = Playlists()
@@ -145,7 +150,7 @@ object Piped {
         }
 
         suspend fun songs(session: Session, id: UUID) = runCatchingCancellable {
-            request(session, "playlists/$id")
+            request(session, "playlists/$id").body<Playlist>()
         }
     }
 }

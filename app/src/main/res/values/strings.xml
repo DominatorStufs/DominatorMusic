@@ -321,6 +321,8 @@
     <string name="learn_more">Learn more</string>
     <string name="learn_more_description">Don\'t know what Piped is or don\'t have an account? Click here to get redirected to their docs</string>
     <string name="piped_sessions">Piped sessions</string>
+    <string name="custom_instance">Use Custom Instance</string>
+    <string name="base_api_url">Instance API URL</string>
 
     <plurals name="song_count_plural">
         <item quantity="one">%1$d song</item>

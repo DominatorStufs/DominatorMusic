@@ -321,6 +321,8 @@
     <string name="learn_more">Meer informatie</string>
     <string name="learn_more_description">Geen idee wat Piped is of geen account? Klik hier om doorgestuurd te worden naar de documentatie</string>
     <string name="piped_sessions">Piped sessies</string>
+    <string name="custom_instance">Gebruik andere instantie</string>
+    <string name="base_api_url">API URL van de instantie</string>
 
     <plurals name="song_count_plural">
         <item quantity="one">%1$d nummer</item>

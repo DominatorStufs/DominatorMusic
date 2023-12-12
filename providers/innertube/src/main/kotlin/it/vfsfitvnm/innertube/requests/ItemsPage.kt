@@ -47,13 +47,8 @@ suspend fun <T : Innertube.Item> Innertube.itemsPage(
 suspend fun <T : Innertube.Item> Innertube.itemsPage(
     body: ContinuationBody,
     fromMusicResponsiveListItemRenderer: (MusicResponsiveListItemRenderer) -> T? = { null },
-<<<<<<< HEAD:providers/innertube/src/main/kotlin/it/vfsfitvnm/innertube/requests/ItemsPage.kt
-    fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T? = { null },
-) = runCatchingCancellable {
-=======
     fromMusicTwoRowItemRenderer: (MusicTwoRowItemRenderer) -> T? = { null }
-) = runCatchingNonCancellable {
->>>>>>> af31bbe393b6aeae96ea00505cf3e0a9f75039a4:innertube/src/main/kotlin/it/vfsfitvnm/innertube/requests/ItemsPage.kt
+) = runCatchingCancellable {
     val response = client.post(BROWSE) {
         setBody(body)
     }.body<ContinuationResponse>()

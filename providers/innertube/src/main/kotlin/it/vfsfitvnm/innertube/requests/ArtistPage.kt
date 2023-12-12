@@ -12,13 +12,12 @@ import it.vfsfitvnm.innertube.models.MusicShelfRenderer
 import it.vfsfitvnm.innertube.models.bodies.BrowseBody
 import it.vfsfitvnm.innertube.utils.findSectionByTitle
 import it.vfsfitvnm.innertube.utils.from
-import it.vfsfitvnm.innertube.utils.runCatchingNonCancellable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.currentCoroutineContext
 
-suspend fun Innertube.artistPage(body: BrowseBody) = runCatchingNonCancellable {
+suspend fun Innertube.artistPage(body: BrowseBody) = runCatchingCancellable {
     val ctx = currentCoroutineContext()
     val response = client.post(BROWSE) {
         setBody(body)

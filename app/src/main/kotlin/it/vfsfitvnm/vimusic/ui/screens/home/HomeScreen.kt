@@ -29,6 +29,7 @@ import it.vfsfitvnm.vimusic.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import it.vfsfitvnm.vimusic.ui.screens.localPlaylistRoute
 import it.vfsfitvnm.vimusic.ui.screens.localplaylist.LocalPlaylistScreen
 import it.vfsfitvnm.vimusic.ui.screens.moodRoute
+import it.vfsfitvnm.vimusic.ui.screens.pipedPlaylistRoute
 import it.vfsfitvnm.vimusic.ui.screens.playlistRoute
 import it.vfsfitvnm.vimusic.ui.screens.search.SearchScreen
 import it.vfsfitvnm.vimusic.ui.screens.searchResultRoute
@@ -140,6 +141,13 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
                         3 -> HomePlaylists(
                             onBuiltInPlaylist = { builtInPlaylistRoute(it) },
                             onPlaylistClick = { localPlaylistRoute(it.id) },
+                            onPipedPlaylistClick = { session, playlist ->
+                                pipedPlaylistRoute(
+                                    p0 = session.apiBaseUrl.toString(),
+                                    p1 = session.token,
+                                    p2 = playlist.id.toString()
+                                )
+                            },
                             onSearchClick = onSearchClick
                         )
 

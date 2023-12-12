@@ -17,6 +17,7 @@ import it.vfsfitvnm.innertube.Innertube
 import it.vfsfitvnm.innertube.models.bodies.ContinuationBody
 import it.vfsfitvnm.innertube.requests.playlistPage
 import it.vfsfitvnm.innertube.utils.plus
+import it.vfsfitvnm.piped.models.Playlist
 import it.vfsfitvnm.vimusic.models.Song
 import it.vfsfitvnm.vimusic.service.LOCAL_KEY_PREFIX
 import it.vfsfitvnm.vimusic.service.isLocal
@@ -69,6 +70,33 @@ val Innertube.VideoItem.asMediaItem: MediaItem
                 .build()
         )
         .build()
+
+val Playlist.Video.asMediaItem: MediaItem?
+    get() {
+        val key = id ?: return null
+
+        return MediaItem.Builder()
+            .setMediaId(key)
+            .setUri(key)
+            .setCustomCacheKey(key)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle(title)
+                    .setArtist(uploaderName)
+                    .setArtworkUri(Uri.parse(thumbnailUrl.toString()))
+                    .setExtras(
+                        bundleOf(
+                            "durationText" to duration.toComponents { minutes, seconds, _ ->
+                                "$minutes:${seconds.toString().padStart(2, '0')}"
+                            },
+                            "artistNames" to listOf(uploaderName),
+                            "artistIds" to uploaderId?.let { listOf(it) }
+                        )
+                    )
+                    .build()
+            )
+            .build()
+    }
 
 val Song.asMediaItem: MediaItem
     get() = MediaItem.Builder()

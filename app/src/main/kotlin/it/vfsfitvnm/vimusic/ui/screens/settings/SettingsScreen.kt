@@ -144,7 +144,7 @@ inline fun <T> ValueSelectorSettingsEntry(
 @Composable
 fun SwitchSettingEntry(
     title: String,
-    text: String,
+    text: String?,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,

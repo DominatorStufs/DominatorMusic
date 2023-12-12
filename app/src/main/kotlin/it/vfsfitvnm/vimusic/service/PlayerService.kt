@@ -591,7 +591,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         bassBoost?.enabled = true
     }
 
-    private fun maybeShowSongCoverInLockScreen() {
+    private fun maybeShowSongCoverInLockScreen() = handler.post {
         val bitmap = if (isAtLeastAndroid13 || AppearancePreferences.isShowingThumbnailInLockscreen)
             bitmapProvider.bitmap else null
 

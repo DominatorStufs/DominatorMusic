@@ -24,7 +24,7 @@ fun <T : Any> sharedPreferencesProperty(
     private var listener: OnSharedPreferenceChangeListener? = null
 
     override fun getValue(thisRef: PreferencesHolder, property: KProperty<*>): T {
-        if (listener == null && !Snapshot.current.readOnly) {
+        if (listener == null && !Snapshot.current.readOnly && !Snapshot.current.root.readOnly) {
             state.value = thisRef.getValue(property.name)
             listener = OnSharedPreferenceChangeListener { preferences, key ->
                 if (key == property.name) preferences.getValue(property.name)
