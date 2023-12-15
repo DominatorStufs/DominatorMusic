@@ -1,7 +1,7 @@
 <div align="center">
     <img src="./app/src/main/ic_launcher-playstore.png" width="128" height="128" style="display: block; margin: 0 auto"/>
-    <h1>ViMusic</h1>
-    <p>An Android application for streaming music from YouTube Music</p>
+    <h1>Voxify</h1>
+    <p>An Android application for streaming seemless Music ✨</p>
 </div>
 
 ---
@@ -17,14 +17,21 @@
 </p>
 
 ## Features
-- Play (almost) any song or video from YouTube Music
-- Background playback
-- Cache audio chunks for offline playback
+- Every feature you loved from ViMusic
+- Privacy focused Fork of ViMusic
+  - Support for Piped api
+  - Login and sync into piped account for seamless streaming
+- Your Top 10 streamed music
+  - Ability to filter according to time (Past 24 hrs, Past week, All time, etc..)  
+- Play almost any song from YouTube Music
+- Suggestions Based on your music taste.
+- **Background playback**
+- Cache audio chunks for **offline listening**
 - Search for songs, albums, artists videos and playlists
-- Discover new songs by mood/genre
+- **Discover** new songs by mood/genre
 - Bookmark artists and albums
-- Import playlists
-- Import local music
+- Import playlists any from YouTube
+- Ability to play Local files 
 - Fetch, display and edit songs lyrics or synchronized lyrics
 - Local playlist management
 - Reorder songs in playlist or queue
@@ -34,8 +41,14 @@
 - Audio normalization
 - Android Auto
 - Persistent queue
+- Super Sleek and Modern UI
+- Lot of customizations
+  - Wavy Player
+  - Modern and Classical UI switching
+  - etc...
 - Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`)
-- ...
+- and many more...
+
 
 ## Installation
 
@@ -49,8 +62,9 @@
 ## Acknowledgments
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
 - [**ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps and web apps everywhere.
+- **App Icon**: [Music](https://iconscout.com/icons/music) by [IconScout Store](https://iconscout.com/contributors/iconscout) on [IconScout](https://iconscout.com) 
 
-<a href="https://www.flaticon.com/authors/ilham-fitrotul-hayat" title="music icons">App icon based on icon created by Ilham Fitrotul Hayat - Flaticon</a>
+
 
 ## Disclaimer
 This project and its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC or any of its affiliates and subsidiaries.
