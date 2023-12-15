@@ -119,6 +119,7 @@
     <string name="error_unknown_playback">Een onbekende afspeelfout heeft zich voorgedaan</string>
     <string name="error_piped_link">Het linken met je Piped account is mislukt. Probeer het opnieuw.</string>
     <string name="error_piped_instances_unavailable">De lijst van Piped instanties is niet beschikbaar</string>
+    <string name="error_bassboost_init">Er was een error bij het initialiseren van bass boost. Waarschijnlijk ondersteunt je apparaat het niet. Probeer het niveau aan te passen of probeer opnieuw.</string>
 
     <string name="media_permission_declined">Permissie afgewezen, verleen media permissie in de instellingen van je apparaat.</string>
     <string name="open_settings">Open instellingen</string>

@@ -119,6 +119,7 @@
     <string name="error_unknown_playback">An unknown playback error has occurred</string>
     <string name="error_piped_link">There was an unknown error linking your Piped account. Please try again.</string>
     <string name="error_piped_instances_unavailable">Piped instance list currently unavailable</string>
+    <string name="error_bassboost_init">There was an error initializing Bass Boost. Probably your device doesn\'t support it. Try changing the bass boost level or try again.</string>
 
     <string name="media_permission_declined">Permission declined, please grant media permissions in the settings of your device.</string>
     <string name="open_settings">Open settings</string>

@@ -26,6 +26,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.text.format.DateUtils
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -122,9 +123,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -275,18 +276,21 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
         coroutineScope.launch {
             var first = true
-            isLikedState.onEach {
+            mediaItemState.zip(isLikedState) { mediaItem, _ ->
                 // work around NPE in other processes
                 if (first) {
                     first = false
-                    return@onEach
+                    return@zip
                 }
+                if (mediaItem == null) return@zip
                 withContext(Dispatchers.Main) {
                     updatePlaybackState()
                     // work around NPE in other processes
                     handler.post {
-                        applicationContext.getSystemService<NotificationManager>()
-                            ?.notify(NOTIFICATION_ID, notification())
+                        runCatching {
+                            applicationContext.getSystemService<NotificationManager>()
+                                ?.notify(NOTIFICATION_ID, notification())
+                        }
                     }
                 }
             }.collect()
@@ -584,16 +588,22 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
     private fun maybeBassBoost() {
         if (!PlayerPreferences.bassBoost) {
-            bassBoost?.enabled = false
-            bassBoost?.release()
+            runCatching {
+                bassBoost?.enabled = false
+                bassBoost?.release()
+            }
             bassBoost = null
             maybeNormalizeVolume()
             return
         }
 
-        if (bassBoost == null) bassBoost = BassBoost(0, player.audioSessionId)
-        bassBoost?.setStrength(PlayerPreferences.bassBoostLevel.toShort())
-        bassBoost?.enabled = true
+        runCatching {
+            if (bassBoost == null) bassBoost = BassBoost(0, player.audioSessionId)
+            bassBoost?.setStrength(PlayerPreferences.bassBoostLevel.toShort())
+            bassBoost?.enabled = true
+        }.onFailure {
+            Toast.makeText(this, R.string.error_bassboost_init, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun maybeShowSongCoverInLockScreen() = handler.post {
