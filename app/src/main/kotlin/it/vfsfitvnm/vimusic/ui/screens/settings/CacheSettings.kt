@@ -65,6 +65,15 @@ fun CacheSettings() = with(DataPreferences) {
                     selectedValue = exoPlayerDiskCacheMaxSize,
                     onValueSelected = { exoPlayerDiskCacheMaxSize = it }
                 )
+
+                SwitchSettingsEntry(
+                    title = stringResource(R.string.progressive_cache),
+                    text = stringResource(R.string.progressive_cache_description),
+                    isChecked = PlayerPreferences.progressiveCache,
+                    onCheckedChange = {
+                        PlayerPreferences.progressiveCache = it
+                    }
+                )
             }
         }
     }

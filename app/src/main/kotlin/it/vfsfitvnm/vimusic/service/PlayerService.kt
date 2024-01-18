@@ -1099,10 +1099,13 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
             chunkLength: Long? = DEFAULT_CHUNK_LENGTH
         ): ResolvingDataSource.Factory {
             val ringBuffer = RingBuffer<Pair<String, Uri>?>(2) { null }
+            val cacheDataSource = CacheDataSource.Factory().setCache(cache)
+            if (!PlayerPreferences.progressiveCache)
+                cacheDataSource.setCacheWriteDataSinkFactory(null)
 
             return ResolvingDataSource.Factory(
                 ConditionalCacheDataSourceFactory(
-                    cacheDataSourceFactory = CacheDataSource.Factory().setCache(cache),
+                    cacheDataSourceFactory = cacheDataSource,
                     upstreamDataSourceFactory = DefaultDataSource.Factory(
                         context,
                         DefaultHttpDataSource.Factory()

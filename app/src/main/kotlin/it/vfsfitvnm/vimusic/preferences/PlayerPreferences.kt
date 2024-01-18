@@ -50,6 +50,7 @@ object PlayerPreferences : GlobalPreferencesHolder() {
     var showLike by showLikeProperty
     val highQualityAudioProperty = boolean(false)
     var highQualityAudio by highQualityAudioProperty
+    var progressiveCache by boolean(true)
 
     enum class PlayerLayout(val displayName: @Composable () -> String) {
         Classic(displayName = { stringResource(R.string.classic_player_layout_name) }),

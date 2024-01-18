@@ -358,4 +358,7 @@
     <string name="hq_audio">High quality audio</string>
     <string name="hq_audio_description">It could take more storage</string>
 
+    <string name="progressive_cache">Progressive cache</string>
+    <string name="progressive_cache_description">Song will be downloaded while listening</string>
+
 </resources>
