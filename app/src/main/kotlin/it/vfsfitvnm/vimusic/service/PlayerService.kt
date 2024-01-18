@@ -1136,7 +1136,12 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
                         if (body?.videoDetails?.videoId != videoId) throw VideoIdMismatchException()
 
-                        val format = body.streamingData?.highestQualityFormat
+                        val format = if (PlayerPreferences.highQualityAudio) {
+                            body.streamingData?.highestQualityFormat
+                        } else {
+                            body.streamingData?.lowestQualityFormat
+                        }
+
                         val url = when (val status = body.playabilityStatus?.status) {
                             "OK" -> format?.let { _ ->
                                 val mediaItem = findMediaItem(videoId)

@@ -48,6 +48,8 @@ object PlayerPreferences : GlobalPreferencesHolder() {
     var seekBarStyle by seekBarStyleProperty
     val showLikeProperty = boolean(false)
     var showLike by showLikeProperty
+    val highQualityAudioProperty = boolean(false)
+    var highQualityAudio by highQualityAudioProperty
 
     enum class PlayerLayout(val displayName: @Composable () -> String) {
         Classic(displayName = { stringResource(R.string.classic_player_layout_name) }),

@@ -69,6 +69,16 @@ fun PlayerSettings() = with(PlayerPreferences) {
             )
         }
         SettingsGroup(title = stringResource(R.string.audio)) {
+
+            SwitchSettingsEntry(
+                title = stringResource(R.string.hq_audio),
+                text = stringResource(R.string.hq_audio_description),
+                isChecked = highQualityAudio,
+                onCheckedChange = {
+                    highQualityAudio = it
+                }
+            )
+
             SwitchSettingsEntry(
                 title = stringResource(R.string.skip_silence),
                 text = stringResource(R.string.skip_silence_description),
