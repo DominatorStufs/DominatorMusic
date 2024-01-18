@@ -48,7 +48,7 @@ object PlayerPreferences : GlobalPreferencesHolder() {
     var seekBarStyle by seekBarStyleProperty
     val showLikeProperty = boolean(false)
     var showLike by showLikeProperty
-    val highQualityAudioProperty = boolean(false)
+    val highQualityAudioProperty = boolean(true)
     var highQualityAudio by highQualityAudioProperty
     var progressiveCache by boolean(true)
 
