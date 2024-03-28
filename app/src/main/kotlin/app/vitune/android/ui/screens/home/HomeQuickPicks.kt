@@ -37,13 +37,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.models.Song
 import app.vitune.android.preferences.DataPreferences
-import app.vitune.android.query
+import app.vitune.android.database.query
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop

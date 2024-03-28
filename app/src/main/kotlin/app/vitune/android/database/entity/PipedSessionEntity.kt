@@ -1,4 +1,4 @@
-package app.vitune.android.models
+package app.vitune.android.database.entity
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
@@ -9,6 +9,7 @@ import io.ktor.http.Url
 
 @Immutable
 @Entity(
+    tableName = "PipedSession",
     indices = [
         Index(
             value = ["apiBaseUrl", "username"],
@@ -16,11 +17,10 @@ import io.ktor.http.Url
         )
     ]
 )
-data class PipedSession(
+data class PipedSessionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val apiBaseUrl: Url,
     val token: String,
-    val username: String // the username should never change on piped
+    val username: String
 ) {
-    fun toApiSession() = apiBaseUrl authenticatedWith token
 }

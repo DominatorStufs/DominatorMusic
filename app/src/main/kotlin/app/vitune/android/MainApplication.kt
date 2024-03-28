@@ -57,6 +57,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.work.Configuration
+import app.vitune.android.database.DatabaseInitializer
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.service.PlayerService

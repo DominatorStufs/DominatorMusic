@@ -30,15 +30,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
-import app.vitune.android.models.PipedSession
+import app.vitune.android.database.repository.PipedSessionRepository
+import app.vitune.android.domain.material.PipedSession
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.PlaylistPreview
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.OrderPreferences
-import app.vitune.android.query
+import app.vitune.android.database.query
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
 import app.vitune.android.ui.components.themed.HeaderIconButton
@@ -90,7 +91,7 @@ fun HomePlaylists(
     }
 
     LaunchedEffect(Unit) {
-        Database.pipedSessions().collect { sessions ->
+        PipedSessionRepository.pipedSessions().collect { sessions ->
             pipedSessions = sessions.associateWith { session ->
                 async {
                     Piped.playlist.list(session = session.toApiSession())?.getOrNull()

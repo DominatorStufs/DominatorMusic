@@ -23,10 +23,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import app.vitune.android.Database
 import app.vitune.android.R
-import app.vitune.android.models.PipedSession
-import app.vitune.android.transaction
+import app.vitune.android.database.repository.PipedSessionRepository
+import app.vitune.android.domain.material.PipedSession
+import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.themed.CircularProgressIndicator
 import app.vitune.android.ui.components.themed.DefaultDialog
 import app.vitune.android.ui.components.themed.DialogTextButton
@@ -51,7 +51,7 @@ fun SyncSettings() {
     val (colorPalette, typography) = LocalAppearance.current
     val uriHandler = LocalUriHandler.current
 
-    val pipedSessions by Database.pipedSessions().collectAsState(initial = listOf())
+    val pipedSessions by PipedSessionRepository.pipedSessions().collectAsState(initial = listOf())
 
     var linkingPiped by remember { mutableStateOf(false) }
     if (linkingPiped) DefaultDialog(
@@ -172,8 +172,8 @@ fun SyncSettings() {
                                     this
                                 }
                                 transaction {
-                                    Database.insert(
-                                        PipedSession(
+                                    PipedSessionRepository.insert(
+                                        PipedSession.new(
                                             apiBaseUrl = session.apiBaseUrl,
                                             username = username,
                                             token = session.token
@@ -213,7 +213,7 @@ fun SyncSettings() {
                     onClick = { },
                     trailingContent = {
                         IconButton(
-                            onClick = { transaction { Database.delete(it) } },
+                            onClick = { transaction { PipedSessionRepository.delete(it) } },
                             icon = R.drawable.delete,
                             color = colorPalette.text
                         )

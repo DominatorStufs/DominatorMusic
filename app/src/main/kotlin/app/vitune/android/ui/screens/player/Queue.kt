@@ -62,13 +62,13 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.R
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.SongPlaylistMap
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.service.PlayerService
-import app.vitune.android.transaction
+import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.BottomSheet
 import app.vitune.android.ui.components.BottomSheetState
 import app.vitune.android.ui.components.LocalMenuState

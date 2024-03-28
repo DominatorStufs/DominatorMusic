@@ -15,7 +15,7 @@ import androidx.annotation.OptIn
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.media3.common.util.UnstableApi
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.R
 import app.vitune.android.models.Album
 import app.vitune.android.models.PlaylistPreview

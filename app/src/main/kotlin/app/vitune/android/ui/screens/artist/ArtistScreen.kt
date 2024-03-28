@@ -14,13 +14,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.models.Artist
 import app.vitune.android.preferences.UIStatePreferences
 import app.vitune.android.preferences.UIStatePreferences.artistScreenTabIndexProperty
-import app.vitune.android.query
+import app.vitune.android.database.query
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.themed.Header
 import app.vitune.android.ui.components.themed.HeaderIconButton

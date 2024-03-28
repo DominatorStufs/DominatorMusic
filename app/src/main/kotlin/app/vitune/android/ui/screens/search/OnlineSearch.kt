@@ -42,12 +42,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
 import app.vitune.android.models.SearchQuery
 import app.vitune.android.preferences.DataPreferences
-import app.vitune.android.query
+import app.vitune.android.database.query
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
 import app.vitune.android.ui.components.themed.SecondaryTextButton

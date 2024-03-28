@@ -27,12 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.R
 import app.vitune.android.models.Song
 import app.vitune.android.preferences.OrderPreferences
 import app.vitune.android.service.LOCAL_KEY_PREFIX
-import app.vitune.android.transaction
+import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.get

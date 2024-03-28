@@ -66,7 +66,7 @@ import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.MainActivity
 import app.vitune.android.R
 import app.vitune.android.models.Event
@@ -77,8 +77,8 @@ import app.vitune.android.models.SongWithContentLength
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.PlayerPreferences
-import app.vitune.android.query
-import app.vitune.android.transaction
+import app.vitune.android.database.query
+import app.vitune.android.database.transaction
 import app.vitune.android.utils.ConditionalCacheDataSourceFactory
 import app.vitune.android.utils.InvincibleService
 import app.vitune.android.utils.TimerJob

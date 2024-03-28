@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.models.PlaylistPreview
 import app.vitune.android.ui.components.themed.TextPlaceholder
 import app.vitune.android.utils.color

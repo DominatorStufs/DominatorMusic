@@ -1,4 +1,4 @@
-package app.vitune.android
+package app.vitune.android.database
 
 import android.content.ContentValues
 import android.database.SQLException
@@ -32,6 +32,8 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
+import app.vitune.android.Dependencies
+import app.vitune.android.database.entity.PipedSessionEntity
 import app.vitune.android.models.Album
 import app.vitune.android.models.Artist
 import app.vitune.android.models.Event
@@ -39,7 +41,6 @@ import app.vitune.android.models.EventWithSong
 import app.vitune.android.models.Format
 import app.vitune.android.models.Info
 import app.vitune.android.models.Lyrics
-import app.vitune.android.models.PipedSession
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.PlaylistPreview
 import app.vitune.android.models.PlaylistWithSongs
@@ -273,7 +274,7 @@ interface Database {
     fun incrementTotalPlayTimeMs(id: String, addition: Long)
 
     @Query("SELECT * FROM PipedSession")
-    fun pipedSessions(): Flow<List<PipedSession>>
+    fun pipedSessions(): Flow<List<PipedSessionEntity>>
 
     @Query("SELECT * FROM Playlist WHERE id = :id")
     fun playlist(id: Long): Flow<Playlist?>
@@ -548,7 +549,7 @@ interface Database {
     fun insert(artists: List<Artist>, songArtistMaps: List<SongArtistMap>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(pipedSession: PipedSession)
+    fun insert(pipedSessionEntity: PipedSessionEntity)
 
     @Transaction
     fun insert(mediaItem: MediaItem, block: (Song) -> Song = { it }) {
@@ -616,7 +617,7 @@ interface Database {
     fun delete(songPlaylistMap: SongPlaylistMap)
 
     @Delete
-    fun delete(pipedSession: PipedSession)
+    fun delete(pipedSessionEntity: PipedSessionEntity)
 
     @RawQuery
     fun raw(supportSQLiteQuery: SupportSQLiteQuery): Int
@@ -640,7 +641,7 @@ interface Database {
         Format::class,
         Event::class,
         Lyrics::class,
-        PipedSession::class
+        PipedSessionEntity::class
     ],
     views = [SortedSongPlaylistMap::class],
     version = 28,
@@ -668,7 +669,7 @@ interface Database {
         AutoMigration(from = 24, to = 25),
         AutoMigration(from = 25, to = 26),
         AutoMigration(from = 26, to = 27),
-        AutoMigration(from = 27, to = 28)
+        AutoMigration(from = 27, to = 28),
     ]
 )
 @TypeConverters(Converters::class)
@@ -695,7 +696,7 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
             .build()
 
         operator fun invoke() {
-            if (!::instance.isInitialized) reload()
+            if (!Companion::instance.isInitialized) reload()
         }
 
         fun reload() = synchronized(this) {

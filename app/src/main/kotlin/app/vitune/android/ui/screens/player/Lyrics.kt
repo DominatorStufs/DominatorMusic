@@ -52,13 +52,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.models.Lyrics
 import app.vitune.android.preferences.PlayerPreferences
-import app.vitune.android.query
-import app.vitune.android.transaction
+import app.vitune.android.database.query
+import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.themed.CircularProgressIndicator
 import app.vitune.android.ui.components.themed.DefaultDialog

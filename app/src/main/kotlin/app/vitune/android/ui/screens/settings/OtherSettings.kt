@@ -33,14 +33,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.vitune.android.Database
-import app.vitune.android.DatabaseInitializer
+import app.vitune.android.database.Database
+import app.vitune.android.database.DatabaseInitializer
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.PlayerPreferences
-import app.vitune.android.query
+import app.vitune.android.database.query
 import app.vitune.android.service.PlayerMediaBrowserService
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.components.themed.SliderDialog

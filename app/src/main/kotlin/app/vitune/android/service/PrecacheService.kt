@@ -18,9 +18,9 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
 import androidx.media3.exoplayer.workmanager.WorkManagerScheduler
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.R
-import app.vitune.android.transaction
+import app.vitune.android.database.transaction
 import app.vitune.android.utils.intent
 import app.vitune.android.utils.toast
 import kotlinx.coroutines.CoroutineName

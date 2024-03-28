@@ -4,13 +4,13 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.res.stringResource
-import app.vitune.android.Database
+import app.vitune.android.database.Database
 import app.vitune.android.R
 import app.vitune.android.models.SearchQuery
 import app.vitune.android.models.toUiMood
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.UIStatePreferences
-import app.vitune.android.query
+import app.vitune.android.database.query
 import app.vitune.android.ui.components.themed.Scaffold
 import app.vitune.android.ui.screens.GlobalRoutes
 import app.vitune.android.ui.screens.Route
