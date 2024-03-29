@@ -13,23 +13,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import app.vitune.android.database.Database
 import app.vitune.android.R
-import app.vitune.android.models.Album
-import app.vitune.android.models.SongAlbumMap
-import app.vitune.android.database.query
-import app.vitune.android.ui.components.themed.Header
-import app.vitune.android.ui.components.themed.HeaderIconButton
-import app.vitune.android.ui.components.themed.HeaderPlaceholder
-import app.vitune.android.ui.components.themed.PlaylistInfo
-import app.vitune.android.ui.components.themed.Scaffold
-import app.vitune.android.ui.components.themed.adaptiveThumbnailContent
+import app.vitune.android.database.Database
+import app.vitune.android.database.repository.AlbumRepository
+import app.vitune.android.domain.material.Album
+import app.vitune.android.domain.value.SongAlbumEntry
+import app.vitune.android.ui.components.themed.*
 import app.vitune.android.ui.items.AlbumItem
 import app.vitune.android.ui.items.AlbumItemPlaceholder
 import app.vitune.android.ui.screens.GlobalRoutes
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.ui.screens.albumRoute
 import app.vitune.android.ui.screens.searchresult.ItemsPage
+import app.vitune.android.usecase.AlbumUseCase
 import app.vitune.android.utils.asMediaItem
 import app.vitune.compose.persist.PersistMapCleanup
 import app.vitune.compose.persist.persist
@@ -61,8 +57,8 @@ fun AlbumScreen(browseId: String) {
     PersistMapCleanup(prefix = "album/$browseId/")
 
     LaunchedEffect(Unit) {
-        Database
-            .album(browseId)
+        AlbumRepository
+            .albumFlow(browseId)
             .combine(tabIndexState) { album, tabIndex -> album to tabIndex }
             .collect { (currentAlbum, tabIndex) ->
                 album = currentAlbum
@@ -73,35 +69,30 @@ fun AlbumScreen(browseId: String) {
                             ?.onSuccess { currentAlbumPage ->
                                 albumPage = currentAlbumPage
 
-                                Database.clearAlbum(browseId)
-
-                                Database.upsert(
-                                    album = Album(
-                                        id = browseId,
-                                        title = currentAlbumPage.title,
-                                        description = currentAlbumPage.description,
-                                        thumbnailUrl = currentAlbumPage.thumbnail?.url,
-                                        year = currentAlbumPage.year,
-                                        authorsText = currentAlbumPage.authors
-                                            ?.joinToString("") { it.name.orEmpty() },
-                                        shareUrl = currentAlbumPage.url,
-                                        timestamp = System.currentTimeMillis(),
-                                        bookmarkedAt = album?.bookmarkedAt,
-                                        otherInfo = currentAlbumPage.otherInfo
-                                    ),
-                                    songAlbumMaps = currentAlbumPage
+                                AlbumRepository.save(Album(
+                                    id = browseId,
+                                    title = currentAlbumPage.title,
+                                    description = currentAlbumPage.description,
+                                    thumbnailUrl = currentAlbumPage.thumbnail?.url,
+                                    year = currentAlbumPage.year,
+                                    authorsText = currentAlbumPage.authors
+                                        ?.joinToString("") { it.name.orEmpty() },
+                                    shareUrl = currentAlbumPage.url,
+                                    timestamp = System.currentTimeMillis(),
+                                    bookmarkedAt = album?.bookmarkedAt,
+                                    otherInfo = currentAlbumPage.otherInfo,
+                                    songReferenceIds = currentAlbumPage
                                         .songsPage
                                         ?.items
                                         ?.map(Innertube.SongItem::asMediaItem)
                                         ?.onEach(Database::insert)
                                         ?.mapIndexed { position, mediaItem ->
-                                            SongAlbumMap(
+                                            SongAlbumEntry(
                                                 songId = mediaItem.mediaId,
-                                                albumId = browseId,
                                                 position = position
                                             )
                                         } ?: emptyList()
-                                )
+                                ))
                             }
                     }
             }
@@ -132,13 +123,8 @@ fun AlbumScreen(browseId: String) {
                             else R.drawable.bookmark,
                             color = colorPalette.accent,
                             onClick = {
-                                val bookmarkedAt =
-                                    if (album?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                query {
-                                    album
-                                        ?.copy(bookmarkedAt = bookmarkedAt)
-                                        ?.let(Database::update)
+                                album?.let {
+                                    AlbumUseCase.toggleBookmark(it.id)
                                 }
                             }
                         )

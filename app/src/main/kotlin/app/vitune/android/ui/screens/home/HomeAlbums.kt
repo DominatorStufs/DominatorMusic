@@ -24,10 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
-import app.vitune.android.models.Album
+import app.vitune.android.database.repository.AlbumRepository
+import app.vitune.android.domain.material.Album
 import app.vitune.android.preferences.OrderPreferences
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
@@ -52,7 +52,7 @@ fun HomeAlbums(
     var items by persist<List<Album>>(tag = "home/albums", emptyList())
 
     LaunchedEffect(albumSortBy, albumSortOrder) {
-        Database.albums(albumSortBy, albumSortOrder).collect { items = it }
+        AlbumRepository.albums(albumSortBy, albumSortOrder).collect { items = it }
     }
 
     val sortOrderIconRotation by animateFloatAsState(

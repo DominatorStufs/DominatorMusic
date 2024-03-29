@@ -309,7 +309,7 @@ fun MediaItemMenu(
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            if (albumInfo == null) albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
+            if (albumInfo == null) albumInfo = Info(mediaItem.mediaId, null) // TODO: The DB already returned null o.O?
             if (artistsInfo == null) artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
 
             launch { SongUseCase.isLiked(mediaItem.mediaId).collect { isLiked = it } }
@@ -412,7 +412,10 @@ fun MediaItemMenu(
                     IconButton(
                         icon = if (!isLiked) R.drawable.heart_outline else R.drawable.heart,
                         color = colorPalette.favoritesIcon,
-                        onClick = { SongUseCase.toggleLike(mediaItem.mediaId) },
+                        onClick = {
+                            // TODO: This was MediaItem Insert with SideEffects
+                            SongUseCase.toggleLike(mediaItem.mediaId)
+                        },
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(18.dp)

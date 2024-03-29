@@ -1,4 +1,4 @@
-package app.vitune.android.models
+package app.vitune.android.database.entity
 
 import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
@@ -9,6 +9,7 @@ import app.vitune.android.domain.material.Song
 
 @Immutable
 @Entity(
+    tableName = "SongAlbumMap",
     primaryKeys = ["songId", "albumId"],
     foreignKeys = [
         ForeignKey(
@@ -18,14 +19,14 @@ import app.vitune.android.domain.material.Song
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Album::class,
+            entity = AlbumEntity::class,
             parentColumns = ["id"],
             childColumns = ["albumId"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class SongAlbumMap(
+data class SongAlbumCrossRefEntity(
     @ColumnInfo(index = true) val songId: String,
     @ColumnInfo(index = true) val albumId: String,
     val position: Int?

@@ -18,8 +18,9 @@ import androidx.media3.common.util.UnstableApi
 import app.vitune.android.database.Database
 import app.vitune.android.R
 import app.vitune.android.database.mapper.SongMapper
+import app.vitune.android.database.repository.AlbumRepository
 import app.vitune.android.database.repository.SongRepository
-import app.vitune.android.models.Album
+import app.vitune.android.domain.material.Album
 import app.vitune.android.models.PlaylistPreview
 import app.vitune.android.domain.material.Song
 import app.vitune.android.models.SongWithContentLength
@@ -114,8 +115,8 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                         }
 
                 MediaId.ALBUMS ->
-                    Database
-                        .albumsByRowIdDesc()
+                    AlbumRepository
+                        .albumsByRowId(SortOrder.Descending)
                         .first()
                         .map { it.asBrowserMediaItem }
                         .toMutableList()

@@ -12,7 +12,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.vitune.android.models.Album
+import app.vitune.android.domain.material.Album
 import app.vitune.android.ui.components.themed.TextPlaceholder
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold

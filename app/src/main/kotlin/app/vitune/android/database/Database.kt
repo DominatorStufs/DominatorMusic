@@ -8,57 +8,25 @@ import androidx.annotation.OptIn
 import androidx.core.database.getFloatOrNull
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import androidx.room.AutoMigration
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.DeleteColumn
-import androidx.room.DeleteTable
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.RawQuery
-import androidx.room.RenameColumn
-import androidx.room.RenameTable
-import androidx.room.RewriteQueriesToDropUnusedColumns
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.Transaction
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
-import androidx.room.Update
-import androidx.room.Upsert
+import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
 import app.vitune.android.Dependencies
+import app.vitune.android.database.entity.AlbumEntity
 import app.vitune.android.database.entity.PipedSessionEntity
+import app.vitune.android.database.entity.SongAlbumCrossRefEntity
 import app.vitune.android.database.entity.SongEntity
-import app.vitune.android.models.Album
-import app.vitune.android.models.Artist
-import app.vitune.android.models.Event
-import app.vitune.android.models.EventWithSong
-import app.vitune.android.models.Format
-import app.vitune.android.models.Info
-import app.vitune.android.models.Lyrics
-import app.vitune.android.models.Playlist
-import app.vitune.android.models.PlaylistPreview
-import app.vitune.android.models.PlaylistWithSongs
-import app.vitune.android.models.QueuedMediaItem
-import app.vitune.android.models.SearchQuery
-import app.vitune.android.models.SongAlbumMap
-import app.vitune.android.models.SongArtistMap
-import app.vitune.android.models.SongPlaylistMap
-import app.vitune.android.models.SongWithContentLength
-import app.vitune.android.models.SortedSongPlaylistMap
+import app.vitune.android.models.*
 import app.vitune.android.service.LOCAL_KEY_PREFIX
-import app.vitune.core.data.enums.AlbumSortBy
 import app.vitune.core.data.enums.ArtistSortBy
 import app.vitune.core.data.enums.PlaylistSortBy
 import app.vitune.core.data.enums.SongSortBy
 import app.vitune.core.data.enums.SortOrder
-import io.ktor.http.Url
+import io.ktor.http.*
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -214,7 +182,15 @@ interface Database {
     }
 
     @Query("SELECT * FROM Album WHERE id = :id")
-    fun album(id: String): Flow<Album?>
+    fun album(id: String): AlbumEntity?
+
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE Album.id = :id")
+    fun albumFlow(id: String): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
+
+    @Query("SELECT * FROM SongAlbumMap WHERE albumId = :albumId")
+    fun songAlbumCrossReferences(albumId: String): List<SongAlbumCrossRefEntity>
 
     @Transaction
     @Query(
@@ -229,40 +205,35 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun albumSongs(albumId: String): Flow<List<SongEntity>>
 
-    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY title ASC")
-    fun albumsByTitleAsc(): Flow<List<Album>>
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE bookmarkedAt IS NOT NULL ORDER BY title ASC")
+    fun albumsByTitleAsc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY year ASC")
-    fun albumsByYearAsc(): Flow<List<Album>>
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE bookmarkedAt IS NOT NULL ORDER BY year ASC")
+    fun albumsByYearAsc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt ASC")
-    fun albumsByRowIdAsc(): Flow<List<Album>>
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt ASC")
+    fun albumsByRowIdAsc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY title DESC")
-    fun albumsByTitleDesc(): Flow<List<Album>>
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE bookmarkedAt IS NOT NULL ORDER BY title DESC")
+    fun albumsByTitleDesc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY year DESC")
-    fun albumsByYearDesc(): Flow<List<Album>>
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE bookmarkedAt IS NOT NULL ORDER BY year DESC")
+    fun albumsByYearDesc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt DESC")
-    fun albumsByRowIdDesc(): Flow<List<Album>>
-
-    fun albums(sortBy: AlbumSortBy, sortOrder: SortOrder) = when (sortBy) {
-        AlbumSortBy.Title -> when (sortOrder) {
-            SortOrder.Ascending -> albumsByTitleAsc()
-            SortOrder.Descending -> albumsByTitleDesc()
-        }
-
-        AlbumSortBy.Year -> when (sortOrder) {
-            SortOrder.Ascending -> albumsByYearAsc()
-            SortOrder.Descending -> albumsByYearDesc()
-        }
-
-        AlbumSortBy.DateAdded -> when (sortOrder) {
-            SortOrder.Ascending -> albumsByRowIdAsc()
-            SortOrder.Descending -> albumsByRowIdDesc()
-        }
-    }
+    @Query("SELECT * FROM Album " +
+            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+            "WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt DESC")
+    fun albumsByRowIdDesc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
     @Query("SELECT * FROM PipedSession")
     fun pipedSessions(): Flow<List<PipedSessionEntity>>
@@ -447,9 +418,6 @@ interface Database {
     @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
     fun search(query: String): Flow<List<SongEntity>>
 
-    @Query("SELECT albumId AS id, NULL AS name FROM SongAlbumMap WHERE songId = :songId")
-    fun songAlbumInfo(songId: String): Info
-
     @Query("SELECT id, name FROM Artist LEFT JOIN SongArtistMap ON id = artistId WHERE songId = :songId")
     fun songArtistInfo(songId: String): List<Info>
 
@@ -528,7 +496,7 @@ interface Database {
     fun insertSongPlaylistMaps(songPlaylistMaps: List<SongPlaylistMap>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(album: Album, songAlbumMap: SongAlbumMap)
+    fun insert(album: AlbumEntity, songAlbumMap: SongAlbumCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(artists: List<Artist>, songArtistMaps: List<SongArtistMap>)
@@ -550,8 +518,8 @@ interface Database {
 
         mediaItem.mediaMetadata.extras?.getString("albumId")?.let { albumId ->
             insert(
-                Album(id = albumId, title = mediaItem.mediaMetadata.albumTitle?.toString()),
-                SongAlbumMap(songId = song.id, albumId = albumId, position = null)
+                AlbumEntity(id = albumId, title = mediaItem.mediaMetadata.albumTitle?.toString()),
+                SongAlbumCrossRefEntity(songId = song.id, albumId = albumId, position = null)
             )
         }
 
@@ -575,16 +543,13 @@ interface Database {
     fun update(artist: Artist)
 
     @Update
-    fun update(album: Album)
-
-    @Update
     fun update(playlist: Playlist)
 
     @Upsert
     fun upsert(lyrics: Lyrics)
 
     @Upsert
-    fun upsert(album: Album, songAlbumMaps: List<SongAlbumMap>)
+    fun upsert(album: AlbumEntity, songAlbumMaps: List<SongAlbumCrossRefEntity>)
 
     @Upsert
     fun upsert(artist: Artist)
@@ -622,8 +587,8 @@ interface Database {
         Playlist::class,
         Artist::class,
         SongArtistMap::class,
-        Album::class,
-        SongAlbumMap::class,
+        AlbumEntity::class,
+        SongAlbumCrossRefEntity::class,
         SearchQuery::class,
         QueuedMediaItem::class,
         Format::class,

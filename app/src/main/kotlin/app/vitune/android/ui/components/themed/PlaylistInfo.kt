@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.vitune.android.models.Album
+import app.vitune.android.domain.material.Album
 import app.vitune.android.utils.semiBold
 import app.vitune.core.ui.LocalAppearance
 import app.vitune.providers.innertube.Innertube

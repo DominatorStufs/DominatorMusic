@@ -1,12 +1,12 @@
-package app.vitune.android.models
+package app.vitune.android.database.entity
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Immutable
-@Entity
-data class Album(
+@Entity(tableName = "Album")
+data class AlbumEntity(
     @PrimaryKey val id: String,
     val title: String? = null,
     val description: String? = null,
