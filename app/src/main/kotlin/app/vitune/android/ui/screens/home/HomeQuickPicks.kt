@@ -41,9 +41,10 @@ import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Song
+import app.vitune.android.domain.material.Song
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.database.query
+import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -104,7 +105,7 @@ fun QuickPicks(
 
         when (DataPreferences.quickPicksSource) {
             DataPreferences.QuickPicksSource.Trending ->
-                Database
+                SongRepository
                     .trending()
                     .distinctUntilChanged()
                     .collect { handleSong(it.firstOrNull()) }

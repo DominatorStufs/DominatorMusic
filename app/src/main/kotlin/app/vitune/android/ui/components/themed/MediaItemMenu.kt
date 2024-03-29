@@ -52,9 +52,9 @@ import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.models.Info
 import app.vitune.android.models.Playlist
-import app.vitune.android.models.Song
+import app.vitune.android.domain.material.Song
 import app.vitune.android.models.SongPlaylistMap
-import app.vitune.android.database.query
+import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.service.PrecacheService
 import app.vitune.android.service.isLocal
 import app.vitune.android.database.transaction
@@ -62,6 +62,7 @@ import app.vitune.android.ui.items.SongItem
 import app.vitune.android.ui.screens.albumRoute
 import app.vitune.android.ui.screens.artistRoute
 import app.vitune.android.ui.screens.home.HideSongDialog
+import app.vitune.android.usecase.SongUseCase
 import app.vitune.android.utils.addNext
 import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.enqueue
@@ -283,7 +284,7 @@ fun MediaItemMenu(
 
     var isViewingPlaylists by remember { mutableStateOf(false) }
     var height by remember { mutableStateOf(0.dp) }
-    var likedAt by remember { mutableStateOf<Long?>(null) }
+    var isLiked by remember { mutableStateOf<Boolean>(false) }
     var isBlacklisted by remember { mutableStateOf(false) }
 
     var albumInfo by remember {
@@ -311,7 +312,7 @@ fun MediaItemMenu(
             if (albumInfo == null) albumInfo = Database.songAlbumInfo(mediaItem.mediaId)
             if (artistsInfo == null) artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
 
-            launch { Database.likedAt(mediaItem.mediaId).collect { likedAt = it } }
+            launch { SongUseCase.isLiked(mediaItem.mediaId).collect { isLiked = it } }
             launch { Database.blacklisted(mediaItem.mediaId).collect { isBlacklisted = it } }
         }
     }
@@ -409,19 +410,9 @@ fun MediaItemMenu(
 
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     IconButton(
-                        icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                        icon = if (!isLiked) R.drawable.heart_outline else R.drawable.heart,
                         color = colorPalette.favoritesIcon,
-                        onClick = {
-                            query {
-                                if (Database.like(
-                                        mediaItem.mediaId,
-                                        if (likedAt == null) System.currentTimeMillis() else null
-                                    ) == 0
-                                ) {
-                                    Database.insert(mediaItem, Song::toggleLike)
-                                }
-                            }
-                        },
+                        onClick = { SongUseCase.toggleLike(mediaItem.mediaId) },
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(18.dp)

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
-import app.vitune.android.models.Song
+import app.vitune.android.domain.material.Song
 import app.vitune.android.ui.components.themed.TextPlaceholder
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.secondary

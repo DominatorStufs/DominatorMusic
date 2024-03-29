@@ -12,7 +12,7 @@ import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
-import app.vitune.android.models.Song
+import app.vitune.android.domain.material.Song
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.service.LOCAL_KEY_PREFIX
 import app.vitune.android.service.isLocal

@@ -6,29 +6,9 @@ import android.media.audiofx.AudioEffect
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -57,13 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.database.repository.SongRepository
+import app.vitune.android.database.transaction
 import app.vitune.android.models.ui.toUiMedia
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.service.PlayerService
-import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.BottomSheet
 import app.vitune.android.ui.components.BottomSheetState
 import app.vitune.android.ui.components.LocalMenuState
@@ -75,16 +55,8 @@ import app.vitune.android.ui.components.themed.SliderDialog
 import app.vitune.android.ui.modifiers.PinchDirection
 import app.vitune.android.ui.modifiers.onSwipe
 import app.vitune.android.ui.modifiers.pinchToToggle
-import app.vitune.android.utils.DisposableListener
-import app.vitune.android.utils.forceSeekToNext
-import app.vitune.android.utils.forceSeekToPrevious
-import app.vitune.android.utils.positionAndDurationState
-import app.vitune.android.utils.seamlessPlay
-import app.vitune.android.utils.secondary
-import app.vitune.android.utils.semiBold
-import app.vitune.android.utils.shouldBePlaying
-import app.vitune.android.utils.thumbnail
-import app.vitune.android.utils.toast
+import app.vitune.android.usecase.SongUseCase
+import app.vitune.android.utils.*
 import app.vitune.compose.persist.PersistMapCleanup
 import app.vitune.compose.routing.OnGlobalRoute
 import app.vitune.core.ui.Dimensions
@@ -96,7 +68,6 @@ import app.vitune.core.ui.utils.px
 import app.vitune.core.ui.utils.roundedShape
 import app.vitune.providers.innertube.models.NavigationEndpoint
 import coil.compose.AsyncImage
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlin.math.absoluteValue
 
 @Composable
@@ -412,12 +383,7 @@ fun Player(
         var boostDialogOpen by rememberSaveable { mutableStateOf(false) }
 
         if (boostDialogOpen) {
-            fun submit(state: Float) = transaction {
-                Database.setLoudnessBoost(
-                    songId = mediaItem.mediaId,
-                    loudnessBoost = state.takeUnless { it == 0f }
-                )
-            }
+            fun submit(state: Float) = SongUseCase.updateLoudnessBoost(mediaItem.mediaId, state.takeUnless { it == 0f })
 
             SliderDialog(
                 onDismiss = { boostDialogOpen = false },
@@ -426,10 +392,9 @@ fun Player(
                     val state = remember { mutableFloatStateOf(0f) }
 
                     LaunchedEffect(mediaItem.mediaId) {
-                        Database
+                        SongUseCase
                             .loudnessBoost(mediaItem.mediaId)
-                            .distinctUntilChanged()
-                            .collect { state.floatValue = it ?: 0f }
+                            .collect { state.floatValue = it }
                     }
 
                     state

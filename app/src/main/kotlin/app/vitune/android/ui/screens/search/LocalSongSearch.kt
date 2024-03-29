@@ -22,11 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Song
+import app.vitune.android.database.repository.SongRepository
+import app.vitune.android.domain.material.Song
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
@@ -58,7 +58,7 @@ fun LocalSongSearch(
 
     LaunchedEffect(textFieldValue.text) {
         if (textFieldValue.text.length > 1)
-            Database.search("%${textFieldValue.text}%").collect { items = it }
+            SongRepository.search("%${textFieldValue.text}%").collect { items = it }
     }
 
     val lazyListState = rememberLazyListState()

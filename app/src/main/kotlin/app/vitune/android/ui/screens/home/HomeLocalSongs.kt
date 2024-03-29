@@ -29,7 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.vitune.android.database.Database
 import app.vitune.android.R
-import app.vitune.android.models.Song
+import app.vitune.android.database.entity.SongEntity
+import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.preferences.OrderPreferences
 import app.vitune.android.service.LOCAL_KEY_PREFIX
 import app.vitune.android.database.transaction
@@ -84,7 +85,7 @@ fun HomeLocalSongs(onSearchClick: () -> Unit) = with(OrderPreferences) {
     if (hasPermission) HomeSongs(
         onSearchClick = onSearchClick,
         songProvider = {
-            Database.songs(
+            SongRepository.songs(
                 sortBy = localSongSortBy,
                 sortOrder = localSongSortOrder,
                 isLocal = true
@@ -124,7 +125,7 @@ fun HomeLocalSongs(onSearchClick: () -> Unit) = with(OrderPreferences) {
 }
 
 private val mediaScope = CoroutineScope(Dispatchers.IO + CoroutineName("MediaStore worker"))
-fun Context.musicFilesAsFlow(): StateFlow<List<Song>> = flow {
+fun Context.musicFilesAsFlow(): StateFlow<List<SongEntity>> = flow {
     var version: String? = null
 
     while (currentCoroutineContext().isActive) {
@@ -171,7 +172,7 @@ fun Context.musicFilesAsFlow(): StateFlow<List<Song>> = flow {
                                 }
 
                             add(
-                                Song(
+                                SongEntity(
                                     id = "$LOCAL_KEY_PREFIX$id",
                                     title = name,
                                     artistsText = artist,

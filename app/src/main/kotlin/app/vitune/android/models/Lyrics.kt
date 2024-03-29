@@ -4,12 +4,14 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import app.vitune.android.database.entity.SongEntity
+import app.vitune.android.domain.material.Song
 
 @Immutable
 @Entity(
     foreignKeys = [
         ForeignKey(
-            entity = Song::class,
+            entity = SongEntity::class,
             parentColumns = ["id"],
             childColumns = ["songId"],
             onDelete = ForeignKey.CASCADE

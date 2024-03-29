@@ -2,43 +2,16 @@ package app.vitune.android.ui.screens.player
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,31 +24,24 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.media3.common.Player
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.database.Database
 import app.vitune.android.models.Info
-import app.vitune.android.models.Song
 import app.vitune.android.models.ui.UiMedia
 import app.vitune.android.preferences.PlayerPreferences
-import app.vitune.android.database.query
 import app.vitune.android.service.PlayerService
-import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.SeekBar
 import app.vitune.android.ui.components.themed.BigIconButton
 import app.vitune.android.ui.components.themed.IconButton
 import app.vitune.android.ui.modifiers.horizontalFadingEdge
 import app.vitune.android.ui.screens.artistRoute
-import app.vitune.android.utils.bold
-import app.vitune.android.utils.forceSeekToNext
-import app.vitune.android.utils.forceSeekToPrevious
-import app.vitune.android.utils.secondary
-import app.vitune.android.utils.semiBold
+import app.vitune.android.usecase.SongUseCase
+import app.vitune.android.utils.*
 import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.favoritesIcon
 import app.vitune.core.ui.utils.px
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -90,14 +56,9 @@ fun Controls(
     modifier: Modifier = Modifier,
     layout: PlayerPreferences.PlayerLayout = PlayerPreferences.playerLayout
 ) {
-    var likedAt by remember { mutableStateOf<Long?>(null) }
+    var isLiked by remember { mutableStateOf(false) }
 
-    LaunchedEffect(media) {
-        Database
-            .likedAt(media.id)
-            .distinctUntilChanged()
-            .collect { likedAt = it }
-    }
+    LaunchedEffect(media) { SongUseCase.isLiked(media.id).collect { isLiked = it } }
 
     val shouldBePlayingTransition = updateTransition(
         targetState = shouldBePlaying,
@@ -116,7 +77,7 @@ fun Controls(
             binder = binder,
             shouldBePlaying = shouldBePlaying,
             position = position,
-            likedAt = likedAt,
+            isLiked = isLiked,
             playButtonRadius = playButtonRadius,
             modifier = modifier
         )
@@ -126,7 +87,7 @@ fun Controls(
             binder = binder,
             shouldBePlaying = shouldBePlaying,
             position = position,
-            likedAt = likedAt,
+            isLiked = isLiked,
             playButtonRadius = playButtonRadius,
             modifier = modifier
         )
@@ -139,7 +100,7 @@ private fun ClassicControls(
     binder: PlayerService.Binder,
     shouldBePlaying: Boolean,
     position: Long,
-    likedAt: Long?,
+    isLiked: Boolean,
     playButtonRadius: Dp,
     modifier: Modifier = Modifier
 ) = with(PlayerPreferences) {
@@ -167,25 +128,10 @@ private fun ClassicControls(
             modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(
-                icon = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
+                icon = if (!isLiked) R.drawable.heart_outline else R.drawable.heart,
                 color = colorPalette.favoritesIcon,
                 onClick = {
-                    val currentMediaItem = binder.player.currentMediaItem
-
-                    query {
-                        if (
-                            Database.like(
-                                media.id,
-                                if (likedAt == null) System.currentTimeMillis() else null
-                            ) == 0
-                        ) {
-                            currentMediaItem
-                                ?.takeIf { it.mediaId == media.id }
-                                ?.let {
-                                    Database.insert(currentMediaItem, Song::toggleLike)
-                                }
-                        }
-                    }
+                    SongUseCase.toggleLike(media.id)
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -256,7 +202,7 @@ private fun ModernControls(
     binder: PlayerService.Binder,
     shouldBePlaying: Boolean,
     position: Long,
-    likedAt: Long?,
+    isLiked: Boolean,
     playButtonRadius: Dp,
     modifier: Modifier = Modifier,
     controlHeight: Dp = 64.dp
@@ -272,15 +218,8 @@ private fun ModernControls(
 
     val likeButtonContent: @Composable RowScope.() -> Unit = {
         BigIconButton(
-            iconId = if (likedAt == null) R.drawable.heart_outline else R.drawable.heart,
-            onClick = {
-                transaction {
-                    Database.like(
-                        songId = media.id,
-                        likedAt = if (likedAt == null) System.currentTimeMillis() else null
-                    )
-                }
-            },
+            iconId = if (!isLiked) R.drawable.heart_outline else R.drawable.heart,
+            onClick = { SongUseCase.toggleLike(media.id) },
             modifier = Modifier.weight(1f)
         )
     }

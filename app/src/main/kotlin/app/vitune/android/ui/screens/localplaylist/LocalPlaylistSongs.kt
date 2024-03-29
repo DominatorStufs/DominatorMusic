@@ -29,8 +29,9 @@ import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.database.mapper.SongMapper
 import app.vitune.android.models.Playlist
-import app.vitune.android.models.Song
+import app.vitune.android.domain.material.Song
 import app.vitune.android.models.SongPlaylistMap
 import app.vitune.android.database.query
 import app.vitune.android.database.transaction
@@ -98,7 +99,8 @@ fun LocalPlaylistSongs(
             .playlistSongs(playlistId)
             .filterNotNull()
             .distinctUntilChanged()
-            .collect { songs = it }
+            // TODO: Mapper is not supposed to be here
+            .collect { songs = it.map(SongMapper::map) }
     }
 
     val lazyListState = rememberLazyListState()

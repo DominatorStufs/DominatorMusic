@@ -17,9 +17,11 @@ import androidx.core.os.bundleOf
 import androidx.media3.common.util.UnstableApi
 import app.vitune.android.database.Database
 import app.vitune.android.R
+import app.vitune.android.database.mapper.SongMapper
+import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.models.Album
 import app.vitune.android.models.PlaylistPreview
-import app.vitune.android.models.Song
+import app.vitune.android.domain.material.Song
 import app.vitune.android.models.SongWithContentLength
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.OrderPreferences
@@ -28,6 +30,7 @@ import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forceSeekToNext
 import app.vitune.android.utils.forceSeekToPrevious
 import app.vitune.android.utils.intent
+import app.vitune.core.data.enums.SortOrder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.cancellable
@@ -87,8 +90,8 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                 )
 
                 MediaId.SONGS ->
-                    Database
-                        .songsByPlayTimeDesc(limit = 30)
+                    SongRepository
+                        .songsByPlayTime(SortOrder.Descending, limit = 30)
                         .first()
                         .also { lastSongs = it }
                         .map { it.asBrowserMediaItem }
@@ -283,7 +286,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                     }
 
                     MediaId.FAVORITES ->
-                        Database
+                        SongRepository
                             .favorites()
                             .first()
                             .shuffled()
@@ -294,17 +297,18 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                             .first()
                             .filter { binder.isCached(it) }
                             .map(SongWithContentLength::song)
+                            .map(SongMapper::map) // TODO
                             .shuffled()
 
                     MediaId.TOP -> {
                         val duration = DataPreferences.topListPeriod.duration
                         val length = DataPreferences.topListLength
 
-                        val flow = if (duration != null) Database.trending(
+                        val flow = if (duration != null) SongRepository.trending(
                             limit = length,
                             period = duration.inWholeMilliseconds
-                        ) else Database
-                            .songsByPlayTimeDesc(limit = length)
+                        ) else SongRepository
+                            .songsByPlayTime(SortOrder.Descending, limit = length)
                             .distinctUntilChanged()
                             .cancellable()
 
@@ -312,7 +316,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                     }
 
                     MediaId.LOCAL ->
-                        Database
+                        SongRepository
                             .songs(
                                 sortBy = OrderPreferences.localSongSortBy,
                                 sortOrder = OrderPreferences.localSongSortOrder,
@@ -325,15 +329,14 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
                         data
                             .getOrNull(1)
                             ?.toLongOrNull()
-                            ?.let(Database::playlistWithSongs)
+                            ?.let(SongRepository::playlistWithSongs)
                             ?.first()
-                            ?.songs
                             ?.shuffled()
 
                     MediaId.ALBUMS ->
                         data
                             .getOrNull(1)
-                            ?.let(Database::albumSongs)
+                            ?.let(SongRepository::albumSongs)
                             ?.first()
 
                     else -> emptyList()

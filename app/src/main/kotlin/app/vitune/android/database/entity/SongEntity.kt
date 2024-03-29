@@ -1,4 +1,4 @@
-package app.vitune.android.models
+package app.vitune.android.database.entity
 
 import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
@@ -6,8 +6,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Immutable
-@Entity
-data class Song(
+@Entity(tableName = "Song")
+data class SongEntity(
     @PrimaryKey val id: String,
     val title: String,
     val artistsText: String? = null,
@@ -19,5 +19,4 @@ data class Song(
     @ColumnInfo(defaultValue = "false")
     val blacklisted: Boolean = false
 ) {
-    fun toggleLike() = copy(likedAt = if (likedAt == null) System.currentTimeMillis() else null)
 }

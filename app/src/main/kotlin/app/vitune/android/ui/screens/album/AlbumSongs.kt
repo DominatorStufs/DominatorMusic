@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Song
+import app.vitune.android.database.repository.SongRepository
+import app.vitune.android.domain.material.Song
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -68,7 +68,7 @@ fun AlbumSongs(
     var songs by persistList<Song>("album/$browseId/songs")
 
     LaunchedEffect(Unit) {
-        Database.albumSongs(browseId).collect { songs = it }
+        SongRepository.albumSongs(browseId).collect { songs = it }
     }
 
     val lazyListState = rememberLazyListState()

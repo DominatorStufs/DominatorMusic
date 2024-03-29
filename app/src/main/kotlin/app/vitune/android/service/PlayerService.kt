@@ -12,10 +12,7 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.AudioDeviceCallback
-import android.media.AudioDeviceInfo
-import android.media.AudioManager
-import android.media.MediaDescription
+import android.media.*
 import android.media.MediaMetadata
 import android.media.audiofx.AudioEffect
 import android.media.audiofx.BassBoost
@@ -34,12 +31,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.getSystemService
 import androidx.core.net.toUri
+import androidx.media3.common.*
 import androidx.media3.common.AudioAttributes
-import androidx.media3.common.C
-import androidx.media3.common.MediaItem
-import androidx.media3.common.PlaybackException
-import androidx.media3.common.Player
-import androidx.media3.common.Timeline
 import androidx.media3.common.audio.SonicAudioProcessor
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.database.StandaloneDatabaseProvider
@@ -47,61 +40,35 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.ResolvingDataSource
-import androidx.media3.datasource.cache.Cache
-import androidx.media3.datasource.cache.CacheDataSource
-import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
-import androidx.media3.datasource.cache.NoOpCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
+import androidx.media3.datasource.cache.*
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.RenderersFactory
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.analytics.PlaybackStats
 import androidx.media3.exoplayer.analytics.PlaybackStatsListener
-import androidx.media3.exoplayer.audio.AudioSink
-import androidx.media3.exoplayer.audio.DefaultAudioOffloadSupportProvider
-import androidx.media3.exoplayer.audio.DefaultAudioSink
+import androidx.media3.exoplayer.audio.*
 import androidx.media3.exoplayer.audio.DefaultAudioSink.DefaultAudioProcessorChain
-import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
-import androidx.media3.exoplayer.audio.SilenceSkippingAudioProcessor
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
-import app.vitune.android.database.Database
 import app.vitune.android.MainActivity
 import app.vitune.android.R
+import app.vitune.android.database.Database
+import app.vitune.android.database.query
+import app.vitune.android.database.repository.SongRepository
+import app.vitune.android.domain.material.Song
 import app.vitune.android.models.Event
 import app.vitune.android.models.Format
 import app.vitune.android.models.QueuedMediaItem
-import app.vitune.android.models.Song
 import app.vitune.android.models.SongWithContentLength
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.PlayerPreferences
-import app.vitune.android.database.query
-import app.vitune.android.database.transaction
-import app.vitune.android.utils.ConditionalCacheDataSourceFactory
-import app.vitune.android.utils.InvincibleService
-import app.vitune.android.utils.TimerJob
-import app.vitune.android.utils.YouTubeRadio
-import app.vitune.android.utils.activityPendingIntent
-import app.vitune.android.utils.broadcastPendingIntent
-import app.vitune.android.utils.findNextMediaItemById
-import app.vitune.android.utils.forcePlayFromBeginning
-import app.vitune.android.utils.forceSeekToNext
-import app.vitune.android.utils.forceSeekToPrevious
-import app.vitune.android.utils.intent
-import app.vitune.android.utils.mediaItems
-import app.vitune.android.utils.shouldBePlaying
-import app.vitune.android.utils.thumbnail
-import app.vitune.android.utils.timer
-import app.vitune.android.utils.toast
+import app.vitune.android.usecase.SongUseCase
+import app.vitune.android.utils.*
 import app.vitune.core.data.enums.ExoPlayerDiskCacheSize
 import app.vitune.core.data.utils.RingBuffer
-import app.vitune.core.ui.utils.isAtLeastAndroid10
-import app.vitune.core.ui.utils.isAtLeastAndroid12
-import app.vitune.core.ui.utils.isAtLeastAndroid13
-import app.vitune.core.ui.utils.isAtLeastAndroid6
-import app.vitune.core.ui.utils.isAtLeastAndroid8
+import app.vitune.core.ui.utils.*
 import app.vitune.providers.innertube.Innertube
 import app.vitune.providers.innertube.models.NavigationEndpoint
 import app.vitune.providers.innertube.models.bodies.PlayerBody
@@ -109,29 +76,10 @@ import app.vitune.providers.innertube.models.bodies.SearchBody
 import app.vitune.providers.innertube.requests.player
 import app.vitune.providers.innertube.requests.searchPage
 import app.vitune.providers.innertube.utils.from
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.cancellable
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
@@ -210,13 +158,11 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
     private val isLikedState = mediaItemState
         .flatMapMerge { item ->
             item?.mediaId?.let {
-                Database
-                    .likedAt(it)
-                    .distinctUntilChanged()
+                SongUseCase
+                    .isLiked(it)
                     .cancellable()
-            } ?: flowOf(null)
+            } ?: flowOf(false)
         }
-        .map { it != null }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.Eagerly,
@@ -431,7 +377,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
 
         if (totalPlayTimeMs > 5000 && !DataPreferences.pausePlaytime) query {
-            Database.incrementTotalPlayTimeMs(mediaItem.mediaId, totalPlayTimeMs)
+            SongUseCase.incrementTotalPlayTime(mediaItem.mediaId, totalPlayTimeMs)
         }
 
         if (totalPlayTimeMs > 30000 && !DataPreferences.pauseHistory) query {
@@ -590,11 +536,11 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         volumeNormalizationJob = coroutineScope.launch {
             runCatching {
                 Database.loudnessDb(songId).cancellable().collectLatest { loudness ->
-                    Database.loudnessBoost(songId).cancellable().collectLatest { boost ->
+                    SongUseCase.loudnessBoost(songId).cancellable().collectLatest { boost ->
                         withContext(Dispatchers.Main) {
                             loudnessEnhancer?.setTargetGain(
                                 PlayerPreferences.volumeNormalizationBaseGainRounded +
-                                        ((boost ?: 0f) * 100).toInt() -
+                                        ((boost) * 100).toInt() -
                                         ((loudness ?: 0f) * 100).toInt()
                             )
                             loudnessEnhancer?.enabled = true
@@ -1031,12 +977,8 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
     }
 
     private fun likeAction() = mediaItemState.value?.let { mediaItem ->
-        transaction {
-            Database.like(
-                songId = mediaItem.mediaId,
-                likedAt = if (isLikedState.value) null else System.currentTimeMillis()
-            )
-        }
+        // TODO: Duplicates UseCase
+        SongUseCase.toggleLike(mediaItem.mediaId)
     }.let { }
 
     private inner class SessionCallback(private val player: Player) : MediaSession.Callback() {
@@ -1189,7 +1131,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                                                 "durationText",
                                                 durationText
                                             )
-                                            Database.updateDurationText(videoId, durationText)
+                                            SongUseCase.updateDurationText(videoId, durationText)
                                         }
 
                                 query {

@@ -4,12 +4,14 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import app.vitune.android.database.entity.SongEntity
+import app.vitune.android.domain.material.Song
 
 @Immutable
 data class PlaylistWithSongs(
     @Embedded val playlist: Playlist,
     @Relation(
-        entity = Song::class,
+        entity = SongEntity::class,
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
@@ -18,5 +20,5 @@ data class PlaylistWithSongs(
             entityColumn = "songId"
         )
     )
-    val songs: List<Song>
+    val songs: List<SongEntity>
 )
