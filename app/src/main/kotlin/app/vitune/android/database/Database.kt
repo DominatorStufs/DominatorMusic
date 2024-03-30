@@ -357,7 +357,7 @@ interface Database {
     fun artistSongs(artistId: String): Flow<List<SongEntity>>
 
     @Query("SELECT * FROM Format WHERE songId = :songId")
-    fun format(songId: String): Flow<Format?>
+    fun format(songId: String): Flow<FormatEntity?>
 
     @Transaction
     @Query(
@@ -472,9 +472,6 @@ interface Database {
     fun insert(event: Event)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(format: Format)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(searchQuery: SearchQuery)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -557,6 +554,9 @@ interface Database {
     @Upsert
     fun upsert(song: SongEntity)
 
+    @Upsert
+    fun upsert(format: FormatEntity)
+
     @Delete
     fun delete(song: SongEntity)
 
@@ -591,7 +591,7 @@ interface Database {
         SongAlbumCrossRefEntity::class,
         SearchQuery::class,
         QueuedMediaItem::class,
-        Format::class,
+        FormatEntity::class,
         Event::class,
         LyricsEntity::class,
         PipedSessionEntity::class

@@ -16,10 +16,10 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.TransferListener
 import androidx.media3.datasource.cache.CacheDataSource
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Format
+import app.vitune.android.database.repository.SongRepository
+import app.vitune.android.domain.material.Format
 import app.vitune.android.service.PrecacheService
 import app.vitune.android.service.downloadState
 import app.vitune.android.ui.components.themed.HeaderIconButton
@@ -66,7 +66,7 @@ fun isCached(
     var format: Format? by remember { mutableStateOf(null) }
 
     LaunchedEffect(mediaId, key) {
-        Database.format(mediaId).distinctUntilChanged().collect { format = it }
+        SongRepository.format(mediaId).distinctUntilChanged().collect { format = it }
     }
 
     return remember(key) {

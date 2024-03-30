@@ -58,7 +58,7 @@ import app.vitune.android.database.query
 import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.domain.material.Song
 import app.vitune.android.models.Event
-import app.vitune.android.models.Format
+import app.vitune.android.domain.material.Format
 import app.vitune.android.models.QueuedMediaItem
 import app.vitune.android.models.SongWithContentLength
 import app.vitune.android.preferences.AppearancePreferences
@@ -535,7 +535,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         volumeNormalizationJob?.cancel()
         volumeNormalizationJob = coroutineScope.launch {
             runCatching {
-                Database.loudnessDb(songId).cancellable().collectLatest { loudness ->
+                SongRepository.loudnessDb(songId).cancellable().collectLatest { loudness ->
                     SongUseCase.loudnessBoost(songId).cancellable().collectLatest { boost ->
                         withContext(Dispatchers.Main) {
                             loudnessEnhancer?.setTargetGain(
@@ -1137,7 +1137,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
                                 query {
                                     mediaItem?.let(Database::insert)
 
-                                    Database.insert(
+                                    SongRepository.save(
                                         Format(
                                             songId = videoId,
                                             itag = format.itag,

@@ -7,21 +7,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -31,10 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheSpan
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Format
+import app.vitune.android.database.Database
+import app.vitune.android.database.repository.SongRepository
+import app.vitune.android.domain.material.Format
 import app.vitune.android.utils.color
 import app.vitune.android.utils.medium
 import app.vitune.core.ui.LocalAppearance
@@ -74,7 +63,7 @@ fun StatsForNerds(
         var format by remember { mutableStateOf<Format?>(null) }
 
         LaunchedEffect(mediaId) {
-            Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
+            SongRepository.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
                 if (currentFormat?.itag == null) binder.player.currentMediaItem
                     ?.takeIf { it.mediaId == mediaId }
                     ?.let { mediaItem ->
@@ -84,7 +73,7 @@ fun StatsForNerds(
                                 ?.onSuccess { response ->
                                     response.streamingData?.highestQualityFormat?.let { format ->
                                         Database.insert(mediaItem)
-                                        Database.insert(
+                                        SongRepository.save(
                                             Format(
                                                 songId = mediaId,
                                                 itag = format.itag,
