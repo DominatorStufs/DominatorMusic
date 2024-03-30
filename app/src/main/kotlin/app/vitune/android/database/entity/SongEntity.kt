@@ -17,6 +17,7 @@ data class SongEntity(
     val totalPlayTimeMs: Long = 0,
     val loudnessBoost: Float? = null,
     @ColumnInfo(defaultValue = "false")
-    val blacklisted: Boolean = false
+    val blacklisted: Boolean = false,
+    // TODO: Incorporate Link Artists
 ) {
 }

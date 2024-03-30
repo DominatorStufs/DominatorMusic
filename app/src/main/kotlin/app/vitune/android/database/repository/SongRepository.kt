@@ -83,11 +83,13 @@ class SongRepository {
         }
 
         fun save(song: Song) {
+            // TODO: Handle Artist References
             Database.upsert(SongMapper.map(song))
         }
 
         fun delete(song: Song) {
             Database.delete(SongMapper.map(song))
         }
+
     }
 }

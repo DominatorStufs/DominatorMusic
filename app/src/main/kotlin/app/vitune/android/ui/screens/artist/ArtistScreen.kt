@@ -14,20 +14,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Artist
+import app.vitune.android.database.repository.ArtistRepository
+import app.vitune.android.domain.material.Artist
 import app.vitune.android.preferences.UIStatePreferences
 import app.vitune.android.preferences.UIStatePreferences.artistScreenTabIndexProperty
-import app.vitune.android.database.query
 import app.vitune.android.ui.components.LocalMenuState
-import app.vitune.android.ui.components.themed.Header
-import app.vitune.android.ui.components.themed.HeaderIconButton
-import app.vitune.android.ui.components.themed.HeaderPlaceholder
-import app.vitune.android.ui.components.themed.NonQueuedMediaItemMenu
-import app.vitune.android.ui.components.themed.Scaffold
-import app.vitune.android.ui.components.themed.adaptiveThumbnailContent
+import app.vitune.android.ui.components.themed.*
 import app.vitune.android.ui.items.AlbumItem
 import app.vitune.android.ui.items.AlbumItemPlaceholder
 import app.vitune.android.ui.items.SongItem
@@ -36,6 +30,7 @@ import app.vitune.android.ui.screens.GlobalRoutes
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.ui.screens.albumRoute
 import app.vitune.android.ui.screens.searchresult.ItemsPage
+import app.vitune.android.usecase.ArtistUseCase
 import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.forcePlay
 import app.vitune.compose.persist.PersistMapCleanup
@@ -72,8 +67,8 @@ fun ArtistScreen(browseId: String) {
     var artistPage by persist<Innertube.ArtistPage?>("artist/$browseId/artistPage")
 
     LaunchedEffect(Unit) {
-        Database
-            .artist(browseId)
+        ArtistRepository
+            .artistFlow(browseId)
             .combine(
                 flow = artistScreenTabIndexProperty.stateFlow.map { it != 4 },
                 transform = ::Pair
@@ -88,7 +83,7 @@ fun ArtistScreen(browseId: String) {
                             ?.onSuccess { currentArtistPage ->
                                 artistPage = currentArtistPage
 
-                                Database.upsert(
+                                ArtistRepository.save(
                                     Artist(
                                         id = browseId,
                                         name = currentArtistPage.name,
@@ -128,13 +123,8 @@ fun ArtistScreen(browseId: String) {
                                 else R.drawable.bookmark,
                                 color = colorPalette.accent,
                                 onClick = {
-                                    val bookmarkedAt =
-                                        if (artist?.bookmarkedAt == null) System.currentTimeMillis() else null
-
-                                    query {
-                                        artist
-                                            ?.copy(bookmarkedAt = bookmarkedAt)
-                                            ?.let(Database::update)
+                                    artist?.let {
+                                        ArtistUseCase.toggleBookmark(it.id)
                                     }
                                 }
                             )

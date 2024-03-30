@@ -10,28 +10,12 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -47,33 +31,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.database.Database
+import app.vitune.android.database.repository.ArtistRepository
+import app.vitune.android.database.transaction
+import app.vitune.android.domain.material.Song
 import app.vitune.android.models.Info
 import app.vitune.android.models.Playlist
-import app.vitune.android.domain.material.Song
 import app.vitune.android.models.SongPlaylistMap
-import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.service.PrecacheService
 import app.vitune.android.service.isLocal
-import app.vitune.android.database.transaction
 import app.vitune.android.ui.items.SongItem
 import app.vitune.android.ui.screens.albumRoute
 import app.vitune.android.ui.screens.artistRoute
 import app.vitune.android.ui.screens.home.HideSongDialog
 import app.vitune.android.usecase.SongUseCase
-import app.vitune.android.utils.addNext
-import app.vitune.android.utils.asMediaItem
-import app.vitune.android.utils.enqueue
-import app.vitune.android.utils.forcePlay
-import app.vitune.android.utils.formatAsDuration
-import app.vitune.android.utils.isCached
-import app.vitune.android.utils.launchYouTubeMusic
-import app.vitune.android.utils.medium
-import app.vitune.android.utils.semiBold
-import app.vitune.android.utils.thumbnail
-import app.vitune.android.utils.toast
+import app.vitune.android.utils.*
 import app.vitune.core.data.enums.PlaylistSortBy
 import app.vitune.core.data.enums.SortOrder
 import app.vitune.core.ui.Dimensions
@@ -83,6 +57,7 @@ import app.vitune.core.ui.utils.px
 import app.vitune.providers.innertube.models.NavigationEndpoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -308,9 +283,14 @@ fun MediaItemMenu(
     }
 
     LaunchedEffect(Unit) {
+        if (artistsInfo == null) {
+            ArtistRepository.artistsBySongId(mediaItem.mediaId)
+                .map { it -> it.map { Info(it.id, it.name) } }
+                .collect { artistsInfo = it }
+        }
+
         withContext(Dispatchers.IO) {
             if (albumInfo == null) albumInfo = Info(mediaItem.mediaId, null) // TODO: The DB already returned null o.O?
-            if (artistsInfo == null) artistsInfo = Database.songArtistInfo(mediaItem.mediaId)
 
             launch { SongUseCase.isLiked(mediaItem.mediaId).collect { isLiked = it } }
             launch { Database.blacklisted(mediaItem.mediaId).collect { isBlacklisted = it } }

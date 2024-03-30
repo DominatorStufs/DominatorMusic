@@ -27,6 +27,7 @@ import androidx.media3.common.Player
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.database.Database
+import app.vitune.android.database.repository.ArtistRepository
 import app.vitune.android.models.Info
 import app.vitune.android.models.ui.UiMedia
 import app.vitune.android.preferences.PlayerPreferences
@@ -42,6 +43,7 @@ import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.favoritesIcon
 import app.vitune.core.ui.utils.px
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -367,11 +369,10 @@ private fun MediaInfo(media: UiMedia) {
     var maxHeight by rememberSaveable { mutableIntStateOf(0) }
 
     LaunchedEffect(media) {
-        withContext(Dispatchers.IO) {
-            artistInfo = Database
-                .songArtistInfo(media.id)
-                .takeIf { it.isNotEmpty() }
-        }
+        ArtistRepository
+            .artistsBySongId(media.id)
+            .map { it -> it.map { Info(it.id, it.name) }}
+            .collect { artistInfo = it }
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

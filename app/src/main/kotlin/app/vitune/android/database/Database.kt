@@ -15,18 +15,13 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteQuery
 import app.vitune.android.Dependencies
-import app.vitune.android.database.entity.AlbumEntity
-import app.vitune.android.database.entity.PipedSessionEntity
-import app.vitune.android.database.entity.SongAlbumCrossRefEntity
-import app.vitune.android.database.entity.SongEntity
+import app.vitune.android.database.entity.*
 import app.vitune.android.models.*
 import app.vitune.android.service.LOCAL_KEY_PREFIX
-import app.vitune.core.data.enums.ArtistSortBy
 import app.vitune.core.data.enums.PlaylistSortBy
 import app.vitune.core.data.enums.SongSortBy
 import app.vitune.core.data.enums.SortOrder
 import io.ktor.http.*
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -155,38 +150,31 @@ interface Database {
     fun lyrics(songId: String): Flow<Lyrics?>
 
     @Query("SELECT * FROM Artist WHERE id = :id")
-    fun artist(id: String): Flow<Artist?>
+    fun artist(id: String): ArtistEntity?
+
+    @Query("SELECT * FROM Artist WHERE id = :id")
+    fun artistFlow(id: String): Flow<ArtistEntity?>
 
     @Query("SELECT * FROM Artist WHERE bookmarkedAt IS NOT NULL ORDER BY name DESC")
-    fun artistsByNameDesc(): Flow<List<Artist>>
+    fun artistsByNameDesc(): Flow<List<ArtistEntity>>
 
     @Query("SELECT * FROM Artist WHERE bookmarkedAt IS NOT NULL ORDER BY name ASC")
-    fun artistsByNameAsc(): Flow<List<Artist>>
+    fun artistsByNameAsc(): Flow<List<ArtistEntity>>
 
     @Query("SELECT * FROM Artist WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt DESC")
-    fun artistsByRowIdDesc(): Flow<List<Artist>>
+    fun artistsByRowIdDesc(): Flow<List<ArtistEntity>>
 
     @Query("SELECT * FROM Artist WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt ASC")
-    fun artistsByRowIdAsc(): Flow<List<Artist>>
-
-    fun artists(sortBy: ArtistSortBy, sortOrder: SortOrder) = when (sortBy) {
-        ArtistSortBy.Name -> when (sortOrder) {
-            SortOrder.Ascending -> artistsByNameAsc()
-            SortOrder.Descending -> artistsByNameDesc()
-        }
-
-        ArtistSortBy.DateAdded -> when (sortOrder) {
-            SortOrder.Ascending -> artistsByRowIdAsc()
-            SortOrder.Descending -> artistsByRowIdDesc()
-        }
-    }
+    fun artistsByRowIdAsc(): Flow<List<ArtistEntity>>
 
     @Query("SELECT * FROM Album WHERE id = :id")
     fun album(id: String): AlbumEntity?
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE Album.id = :id")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE Album.id = :id"
+    )
     fun albumFlow(id: String): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
     @Query("SELECT * FROM SongAlbumMap WHERE albumId = :albumId")
@@ -205,34 +193,46 @@ interface Database {
     @RewriteQueriesToDropUnusedColumns
     fun albumSongs(albumId: String): Flow<List<SongEntity>>
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE bookmarkedAt IS NOT NULL ORDER BY title ASC")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE bookmarkedAt IS NOT NULL ORDER BY title ASC"
+    )
     fun albumsByTitleAsc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE bookmarkedAt IS NOT NULL ORDER BY year ASC")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE bookmarkedAt IS NOT NULL ORDER BY year ASC"
+    )
     fun albumsByYearAsc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt ASC")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt ASC"
+    )
     fun albumsByRowIdAsc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE bookmarkedAt IS NOT NULL ORDER BY title DESC")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE bookmarkedAt IS NOT NULL ORDER BY title DESC"
+    )
     fun albumsByTitleDesc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE bookmarkedAt IS NOT NULL ORDER BY year DESC")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE bookmarkedAt IS NOT NULL ORDER BY year DESC"
+    )
     fun albumsByYearDesc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
-    @Query("SELECT * FROM Album " +
-            "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
-            "WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt DESC")
+    @Query(
+        "SELECT * FROM Album " +
+                "JOIN SongAlbumMap ON Album.id = SongAlbumMap.albumId " +
+                "WHERE bookmarkedAt IS NOT NULL ORDER BY bookmarkedAt DESC"
+    )
     fun albumsByRowIdDesc(): Flow<Map<AlbumEntity, List<SongAlbumCrossRefEntity>>>
 
     @Query("SELECT * FROM PipedSession")
@@ -418,8 +418,8 @@ interface Database {
     @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
     fun search(query: String): Flow<List<SongEntity>>
 
-    @Query("SELECT id, name FROM Artist LEFT JOIN SongArtistMap ON id = artistId WHERE songId = :songId")
-    fun songArtistInfo(songId: String): List<Info>
+    @Query("SELECT Artist.* FROM Artist JOIN SongArtistMap ON id = artistId WHERE songId = :songId")
+    fun artistsBySongId(songId: String): Flow<List<ArtistEntity>>
 
     @Transaction
     @Query(
@@ -484,7 +484,7 @@ interface Database {
     fun insert(songPlaylistMap: SongPlaylistMap): Long
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(songArtistMap: SongArtistMap): Long
+    fun insert(songArtistMap: SongArtistCrossRefEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(song: SongEntity): Long
@@ -499,7 +499,7 @@ interface Database {
     fun insert(album: AlbumEntity, songAlbumMap: SongAlbumCrossRefEntity)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(artists: List<Artist>, songArtistMaps: List<SongArtistMap>)
+    fun insert(artists: List<ArtistEntity>, songArtistMaps: List<SongArtistCrossRefEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(pipedSessionEntity: PipedSessionEntity)
@@ -528,10 +528,10 @@ interface Database {
                 if (artistNames.size == artistIds.size) {
                     insert(
                         artistNames.mapIndexed { index, artistName ->
-                            Artist(id = artistIds[index], name = artistName)
+                            ArtistEntity(id = artistIds[index], name = artistName)
                         },
                         artistIds.map { artistId ->
-                            SongArtistMap(songId = song.id, artistId = artistId)
+                            SongArtistCrossRefEntity(songId = song.id, artistId = artistId)
                         }
                     )
                 }
@@ -540,7 +540,7 @@ interface Database {
     }
 
     @Update
-    fun update(artist: Artist)
+    fun update(artist: ArtistEntity)
 
     @Update
     fun update(playlist: Playlist)
@@ -552,7 +552,7 @@ interface Database {
     fun upsert(album: AlbumEntity, songAlbumMaps: List<SongAlbumCrossRefEntity>)
 
     @Upsert
-    fun upsert(artist: Artist)
+    fun upsert(artist: ArtistEntity)
 
     @Upsert
     fun upsert(song: SongEntity)
@@ -585,8 +585,8 @@ interface Database {
         SongEntity::class,
         SongPlaylistMap::class,
         Playlist::class,
-        Artist::class,
-        SongArtistMap::class,
+        ArtistEntity::class,
+        SongArtistCrossRefEntity::class,
         AlbumEntity::class,
         SongAlbumCrossRefEntity::class,
         SearchQuery::class,
