@@ -1,4 +1,4 @@
-package app.vitune.android.models
+package app.vitune.android.database.entity
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 
 @Immutable
 @Entity(
+    tableName = "SearchQuery",
     indices = [
         Index(
             value = ["query"],
@@ -14,7 +15,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class SearchQuery(
+data class SearchQueryEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val query: String
 )

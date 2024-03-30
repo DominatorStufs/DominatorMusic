@@ -41,6 +41,7 @@ import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.database.query
+import app.vitune.android.database.repository.SearchQueryRepository
 import app.vitune.android.service.PlayerMediaBrowserService
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.components.themed.SliderDialog
@@ -98,7 +99,7 @@ fun OtherSettings() {
     )
 
     val queriesCount by remember {
-        Database.queriesCount().distinctUntilChanged()
+        SearchQueryRepository.queriesCount().distinctUntilChanged()
     }.collectAsState(initial = 0)
 
     SettingsCategoryScreen(
@@ -133,7 +134,7 @@ fun OtherSettings() {
                         queriesCount
                     )
                     else stringResource(R.string.empty_history),
-                    onClick = { query(Database::clearQueries) },
+                    onClick = { query(SearchQueryRepository::clearQueries) },
                     isEnabled = queriesCount > 0
                 )
             }

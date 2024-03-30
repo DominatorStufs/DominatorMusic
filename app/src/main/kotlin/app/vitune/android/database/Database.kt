@@ -19,7 +19,6 @@ import app.vitune.android.database.entity.*
 import app.vitune.android.models.*
 import app.vitune.android.service.LOCAL_KEY_PREFIX
 import app.vitune.core.data.enums.PlaylistSortBy
-import app.vitune.core.data.enums.SongSortBy
 import app.vitune.core.data.enums.SortOrder
 import io.ktor.http.*
 import kotlinx.coroutines.flow.Flow
@@ -114,7 +113,7 @@ interface Database {
     fun clearQueue()
 
     @Query("SELECT * FROM SearchQuery WHERE `query` LIKE :query ORDER BY id DESC")
-    fun queries(query: String): Flow<List<SearchQuery>>
+    fun queries(query: String): Flow<List<SearchQueryEntity>>
 
     @Query("SELECT COUNT (*) FROM SearchQuery")
     fun queriesCount(): Flow<Int>
@@ -450,8 +449,8 @@ interface Database {
     @Throws(SQLException::class)
     fun insert(event: Event)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(searchQuery: SearchQuery)
+    @Upsert
+    fun upsert(searchQuery: SearchQueryEntity)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(playlist: Playlist): Long
@@ -540,7 +539,7 @@ interface Database {
     fun delete(song: SongEntity)
 
     @Delete
-    fun delete(searchQuery: SearchQuery)
+    fun delete(searchQuery: SearchQueryEntity)
 
     @Delete
     fun delete(playlist: Playlist)
@@ -568,7 +567,7 @@ interface Database {
         SongArtistCrossRefEntity::class,
         AlbumEntity::class,
         SongAlbumCrossRefEntity::class,
-        SearchQuery::class,
+        SearchQueryEntity::class,
         QueuedMediaItem::class,
         FormatEntity::class,
         Event::class,

@@ -3,16 +3,7 @@ package app.vitune.android.ui.screens.search
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -42,20 +33,16 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
-import app.vitune.android.models.SearchQuery
-import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.database.query
+import app.vitune.android.database.repository.SearchQueryRepository
+import app.vitune.android.domain.material.SearchQuery
+import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
 import app.vitune.android.ui.components.themed.SecondaryTextButton
-import app.vitune.android.utils.align
-import app.vitune.android.utils.center
-import app.vitune.android.utils.disabled
-import app.vitune.android.utils.medium
-import app.vitune.android.utils.secondary
+import app.vitune.android.utils.*
 import app.vitune.compose.persist.persist
 import app.vitune.compose.persist.persistList
 import app.vitune.core.ui.LocalAppearance
@@ -79,7 +66,7 @@ fun OnlineSearch(
     var history by persistList<SearchQuery>("search/online/history")
 
     LaunchedEffect(textFieldValue.text) {
-        if (!DataPreferences.pauseSearchHistory) Database.queries("%${textFieldValue.text}%")
+        if (!DataPreferences.pauseSearchHistory) SearchQueryRepository.queries("%${textFieldValue.text}%")
             .distinctUntilChanged { old, new -> old.size == new.size }
             .collect { history = it }
     }
@@ -205,7 +192,7 @@ fun OnlineSearch(
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
                                     query {
-                                        Database.delete(searchQuery)
+                                        SearchQueryRepository.delete(searchQuery)
                                     }
                                 }
                             )
