@@ -1,30 +1,29 @@
 package app.vitune.android.usecase
 
 import app.vitune.android.database.repository.SongRepository
-import app.vitune.android.database.transaction
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class SongUseCase {
     companion object {
         fun toggleLike(songId: String) {
             CoroutineScope(Dispatchers.IO).launch {
-                transaction {
-                    val song = SongRepository.song(songId)
-                    song?.toggleLike()
-                    song?.let(SongRepository::save)
-                }
+                val song = SongRepository.song(songId)
+                song?.toggleLike()
+                song?.let(SongRepository::save)
             }
         }
 
         fun updateDurationText(songId: String, durationText: String?) {
             // TODO: What is an duration text and why is it a property of the song?
             CoroutineScope(Dispatchers.IO).launch {
-                transaction {
-                    val song = SongRepository.song(songId)
-                    song?.updateDurationText(durationText)
-                    song?.let(SongRepository::save)
-                }
+                val song = SongRepository.song(songId)
+                song?.updateDurationText(durationText)
+                song?.let(SongRepository::save)
             }
         }
 
@@ -36,11 +35,9 @@ class SongUseCase {
 
         fun incrementTotalPlayTime(songId: String, playTime: Long) {
             CoroutineScope(Dispatchers.IO).launch {
-                transaction {
-                    val song = SongRepository.song(songId)
-                    song?.incrementTotalPlayTime(playTime)
-                    song?.let(SongRepository::save)
-                }
+                val song = SongRepository.song(songId)
+                song?.incrementTotalPlayTime(playTime)
+                song?.let(SongRepository::save)
             }
         }
 
@@ -52,11 +49,9 @@ class SongUseCase {
 
         fun updateLoudnessBoost(songId: String, loudnessBoost: Float?) {
             CoroutineScope(Dispatchers.IO).launch {
-                transaction {
-                    val song = SongRepository.song(songId)
-                    song?.updateLoudnessBoost(loudnessBoost)
-                    song?.let(SongRepository::save)
-                }
+                val song = SongRepository.song(songId)
+                song?.updateLoudnessBoost(loudnessBoost)
+                song?.let(SongRepository::save)
             }
         }
     }

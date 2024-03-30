@@ -1,5 +1,6 @@
 package app.vitune.android.database.mapper
 
+import app.vitune.android.database.entity.SongAggregate
 import app.vitune.android.database.entity.SongEntity
 import app.vitune.android.domain.material.Song
 
@@ -19,7 +20,8 @@ class SongMapper {
             )
         }
 
-        fun map(songEntity: SongEntity): Song {
+        fun map(songAggregate: SongAggregate): Song {
+            val songEntity = songAggregate.song
             return Song(
                 songEntity.id,
                 songEntity.title,
@@ -29,7 +31,8 @@ class SongMapper {
                 songEntity.likedAt,
                 songEntity.totalPlayTimeMs,
                 songEntity.loudnessBoost,
-                songEntity.blacklisted
+                songEntity.blacklisted,
+                songAggregate.format?.let(FormatMapper::map)
             )
         }
     }

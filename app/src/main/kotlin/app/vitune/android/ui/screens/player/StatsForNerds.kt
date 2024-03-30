@@ -36,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
@@ -63,8 +64,8 @@ fun StatsForNerds(
         var format by remember { mutableStateOf<Format?>(null) }
 
         LaunchedEffect(mediaId) {
-            SongRepository.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
-                if (currentFormat?.itag == null) binder.player.currentMediaItem
+            SongRepository.songFlow(mediaId).distinctUntilChanged().filterNotNull().collectLatest { song ->
+                if (song.format?.itag == null) binder.player.currentMediaItem
                     ?.takeIf { it.mediaId == mediaId }
                     ?.let { mediaItem ->
                         withContext(Dispatchers.IO) {
@@ -73,8 +74,7 @@ fun StatsForNerds(
                                 ?.onSuccess { response ->
                                     response.streamingData?.highestQualityFormat?.let { format ->
                                         Database.insert(mediaItem)
-                                        SongRepository.save(
-                                            Format(
+                                        song.updateFormat(Format(
                                                 songId = mediaId,
                                                 itag = format.itag,
                                                 mimeType = format.mimeType,
@@ -82,12 +82,12 @@ fun StatsForNerds(
                                                 loudnessDb = response.playerConfig?.audioConfig?.normalizedLoudnessDb,
                                                 contentLength = format.contentLength,
                                                 lastModified = format.lastModified
-                                            )
-                                        )
+                                            ))
+                                        SongRepository.save(song)
                                     }
                                 }
                         }
-                    } else format = currentFormat
+                    } else format = song.format
             }
         }
 

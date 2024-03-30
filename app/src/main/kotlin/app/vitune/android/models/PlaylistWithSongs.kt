@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
+import app.vitune.android.database.entity.SongAggregate
 import app.vitune.android.database.entity.SongEntity
 import app.vitune.android.domain.material.Song
 
@@ -20,5 +21,5 @@ data class PlaylistWithSongs(
             entityColumn = "songId"
         )
     )
-    val songs: List<SongEntity>
+    val songs: List<SongAggregate>
 )

@@ -66,7 +66,7 @@ fun isCached(
     var format: Format? by remember { mutableStateOf(null) }
 
     LaunchedEffect(mediaId, key) {
-        SongRepository.format(mediaId).distinctUntilChanged().collect { format = it }
+        SongRepository.songFlow(mediaId).distinctUntilChanged().collect { format = it?.format }
     }
 
     return remember(key) {

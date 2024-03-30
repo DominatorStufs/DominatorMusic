@@ -9,7 +9,8 @@ data class Song(
     var likedAt: Long? = null,
     var totalPlayTimeMs: Long = 0,
     var loudnessBoost: Float? = null,
-    val blacklisted: Boolean = false
+    val blacklisted: Boolean = false,
+    var format: Format? = null
 ) {
     fun toggleLike() {
         if (likedAt == null) {
@@ -33,5 +34,9 @@ data class Song(
 
     fun updateLoudnessBoost(loudnessBoost: Float?) {
         this.loudnessBoost = loudnessBoost
+    }
+
+    fun updateFormat(format: Format) {
+        this.format = format
     }
 }

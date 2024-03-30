@@ -535,13 +535,13 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         volumeNormalizationJob?.cancel()
         volumeNormalizationJob = coroutineScope.launch {
             runCatching {
-                SongRepository.loudnessDb(songId).cancellable().collectLatest { loudness ->
+                SongRepository.songFlow(songId).cancellable().collectLatest { song ->
                     SongUseCase.loudnessBoost(songId).cancellable().collectLatest { boost ->
                         withContext(Dispatchers.Main) {
                             loudnessEnhancer?.setTargetGain(
                                 PlayerPreferences.volumeNormalizationBaseGainRounded +
                                         ((boost) * 100).toInt() -
-                                        ((loudness ?: 0f) * 100).toInt()
+                                        ((song?.format?.loudnessDb ?: 0f) * 100).toInt()
                             )
                             loudnessEnhancer?.enabled = true
                         }
@@ -955,7 +955,7 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
         }
 
         fun isCached(song: SongWithContentLength) =
-            song.contentLength?.let { cache.isCached(song.song.id, 0L, it) } ?: false
+            song.contentLength?.let { cache.isCached(song.song.song.id, 0L, it) } ?: false
 
         fun playFromSearch(query: String) {
             coroutineScope.launch {
@@ -1136,18 +1136,21 @@ class PlayerService : InvincibleService(), Player.Listener, PlaybackStatsListene
 
                                 query {
                                     mediaItem?.let(Database::insert)
-
-                                    SongRepository.save(
-                                        Format(
-                                            songId = videoId,
-                                            itag = format.itag,
-                                            mimeType = format.mimeType,
-                                            bitrate = format.bitrate,
-                                            loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
-                                            contentLength = format.contentLength,
-                                            lastModified = format.lastModified
+                                    val song = SongRepository.song(videoId)
+                                    song?.let {
+                                        it.updateFormat(
+                                            Format(
+                                                songId = videoId,
+                                                itag = format.itag,
+                                                mimeType = format.mimeType,
+                                                bitrate = format.bitrate,
+                                                loudnessDb = body.playerConfig?.audioConfig?.normalizedLoudnessDb,
+                                                contentLength = format.contentLength,
+                                                lastModified = format.lastModified
+                                            )
                                         )
-                                    )
+                                        SongRepository.save(it)
+                                    }
                                 }
 
                                 format.url

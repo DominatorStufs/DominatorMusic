@@ -41,6 +41,7 @@ import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.database.mapper.SongMapper
 import app.vitune.android.domain.material.Song
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.database.query
@@ -114,7 +115,7 @@ fun QuickPicks(
                 Database
                     .events()
                     .distinctUntilChanged()
-                    .collect { handleSong(it.firstOrNull()?.song) }
+                    .collect { handleSong(it.firstOrNull()?.song?.let(SongMapper::map)) } // TODO
         }
     }
 

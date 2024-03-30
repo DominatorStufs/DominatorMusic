@@ -4,6 +4,7 @@ import app.vitune.android.database.Database
 import app.vitune.android.database.mapper.FormatMapper
 import app.vitune.android.database.mapper.LyricsMapper
 import app.vitune.android.database.mapper.SongMapper
+import app.vitune.android.database.transaction
 import app.vitune.android.domain.material.Song
 import app.vitune.android.domain.material.Lyrics
 import app.vitune.android.domain.material.Format
@@ -92,28 +93,16 @@ class SongRepository {
                 .map { it?.let(LyricsMapper::map) }
         }
 
-        // TODO: Merge into song eventually
-        fun format(songId: String): Flow<Format?> {
-            return Database.format(songId)
-                .map { it?.let(FormatMapper::map) }
-        }
-
-        // TODO: Use Song for that later
-        fun loudnessDb(songId: String): Flow<Float?> {
-            return Database.loudnessDb(songId)
-        }
-
         fun save(lyrics: Lyrics) {
             Database.upsert(LyricsMapper.map(lyrics))
         }
 
-        fun save(format: Format) {
-            Database.upsert(FormatMapper.map(format))
-        }
-
         fun save(song: Song) {
             // TODO: Handle Artist References
-            Database.upsert(SongMapper.map(song))
+            transaction {
+                Database.upsert(SongMapper.map(song))
+                Database.upsert(FormatMapper.map(song))
+            }
         }
 
         fun delete(song: Song) {

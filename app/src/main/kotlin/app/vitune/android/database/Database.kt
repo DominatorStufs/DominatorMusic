@@ -32,22 +32,22 @@ interface Database {
     @Transaction
     @Query("SELECT * FROM Song WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY ROWID ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByRowIdAsc(): Flow<List<SongEntity>>
+    fun songsByRowIdAsc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY ROWID DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByRowIdDesc(): Flow<List<SongEntity>>
+    fun songsByRowIdDesc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY title ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByTitleAsc(): Flow<List<SongEntity>>
+    fun songsByTitleAsc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id NOT LIKE '$LOCAL_KEY_PREFIX%' ORDER BY title DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun songsByTitleDesc(): Flow<List<SongEntity>>
+    fun songsByTitleDesc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query(
@@ -58,7 +58,7 @@ interface Database {
         """
     )
     @RewriteQueriesToDropUnusedColumns
-    fun songsByPlayTimeAsc(): Flow<List<SongEntity>>
+    fun songsByPlayTimeAsc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query(
@@ -70,60 +70,42 @@ interface Database {
         """
     )
     @RewriteQueriesToDropUnusedColumns
-    fun songsByPlayTimeDesc(limit: Int = -1): Flow<List<SongEntity>>
+    fun songsByPlayTimeDesc(limit: Int = -1): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%' ORDER BY ROWID ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun localSongsByRowIdAsc(): Flow<List<SongEntity>>
+    fun localSongsByRowIdAsc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%' ORDER BY ROWID DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun localSongsByRowIdDesc(): Flow<List<SongEntity>>
+    fun localSongsByRowIdDesc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%' ORDER BY title ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun localSongsByTitleAsc(): Flow<List<SongEntity>>
+    fun localSongsByTitleAsc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%' ORDER BY title DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun localSongsByTitleDesc(): Flow<List<SongEntity>>
+    fun localSongsByTitleDesc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%' ORDER BY totalPlayTimeMs ASC")
     @RewriteQueriesToDropUnusedColumns
-    fun localSongsByPlayTimeAsc(): Flow<List<SongEntity>>
+    fun localSongsByPlayTimeAsc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE id LIKE '$LOCAL_KEY_PREFIX%' ORDER BY totalPlayTimeMs DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun localSongsByPlayTimeDesc(): Flow<List<SongEntity>>
-
-    @Suppress("CyclomaticComplexMethod")
-    fun songs(sortBy: SongSortBy, sortOrder: SortOrder, isLocal: Boolean = false) = when (sortBy) {
-        SongSortBy.PlayTime -> when (sortOrder) {
-            SortOrder.Ascending -> if (isLocal) localSongsByPlayTimeAsc() else songsByPlayTimeAsc()
-            SortOrder.Descending -> if (isLocal) localSongsByPlayTimeDesc() else songsByPlayTimeDesc()
-        }
-
-        SongSortBy.Title -> when (sortOrder) {
-            SortOrder.Ascending -> if (isLocal) localSongsByTitleAsc() else songsByTitleAsc()
-            SortOrder.Descending -> if (isLocal) localSongsByTitleDesc() else songsByTitleDesc()
-        }
-
-        SongSortBy.DateAdded -> when (sortOrder) {
-            SortOrder.Ascending -> if (isLocal) localSongsByRowIdAsc() else songsByRowIdAsc()
-            SortOrder.Descending -> if (isLocal) localSongsByRowIdDesc() else songsByRowIdDesc()
-        }
-    }
+    fun localSongsByPlayTimeDesc(): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Song WHERE likedAt IS NOT NULL ORDER BY likedAt DESC")
     @RewriteQueriesToDropUnusedColumns
-    fun favorites(): Flow<List<SongEntity>>
+    fun favorites(): Flow<List<SongAggregate>>
 
     @Query("SELECT * FROM QueuedMediaItem")
     fun queue(): List<QueuedMediaItem>
@@ -140,11 +122,13 @@ interface Database {
     @Query("DELETE FROM SearchQuery")
     fun clearQueries()
 
+    @Transaction
     @Query("SELECT * FROM Song WHERE id = :id")
-    fun songFlow(id: String): Flow<SongEntity?>
+    fun songFlow(id: String): Flow<SongAggregate?>
 
+    @Transaction
     @Query("SELECT * FROM Song WHERE id = :id")
-    fun song(id: String): SongEntity?
+    fun song(id: String): SongAggregate?
 
     @Query("SELECT * FROM Lyrics WHERE songId = :songId")
     fun lyrics(songId: String): Flow<LyricsEntity?>
@@ -191,7 +175,7 @@ interface Database {
         """
     )
     @RewriteQueriesToDropUnusedColumns
-    fun albumSongs(albumId: String): Flow<List<SongEntity>>
+    fun albumSongs(albumId: String): Flow<List<SongAggregate>>
 
     @Query(
         "SELECT * FROM Album " +
@@ -252,7 +236,7 @@ interface Database {
         ORDER BY SortedSongPlaylistMap.position
         """
     )
-    fun playlistSongs(id: Long): Flow<List<SongEntity>?>
+    fun playlistSongs(id: Long): Flow<List<SongAggregate>?>
 
     @Transaction
     @Query("SELECT * FROM Playlist WHERE id = :id")
@@ -354,10 +338,7 @@ interface Database {
         """
     )
     @RewriteQueriesToDropUnusedColumns
-    fun artistSongs(artistId: String): Flow<List<SongEntity>>
-
-    @Query("SELECT * FROM Format WHERE songId = :songId")
-    fun format(songId: String): Flow<FormatEntity?>
+    fun artistSongs(artistId: String): Flow<List<SongAggregate>>
 
     @Transaction
     @Query(
@@ -412,11 +393,9 @@ interface Database {
     @Query("DELETE FROM SongAlbumMap WHERE albumId = :id")
     fun clearAlbum(id: String)
 
-    @Query("SELECT loudnessDb FROM Format WHERE songId = :songId")
-    fun loudnessDb(songId: String): Flow<Float?>
-
+    @Transaction
     @Query("SELECT * FROM Song WHERE title LIKE :query OR artistsText LIKE :query")
-    fun search(query: String): Flow<List<SongEntity>>
+    fun search(query: String): Flow<List<SongAggregate>>
 
     @Query("SELECT Artist.* FROM Artist JOIN SongArtistMap ON id = artistId WHERE songId = :songId")
     fun artistsBySongId(songId: String): Flow<List<ArtistEntity>>
@@ -433,7 +412,7 @@ interface Database {
         """
     )
     @RewriteQueriesToDropUnusedColumns
-    fun trending(limit: Int = 3): Flow<List<SongEntity>>
+    fun trending(limit: Int = 3): Flow<List<SongAggregate>>
 
     @Transaction
     @Query(
@@ -452,7 +431,7 @@ interface Database {
         limit: Int = 3,
         now: Long = System.currentTimeMillis(),
         period: Long
-    ): Flow<List<SongEntity>>
+    ): Flow<List<SongAggregate>>
 
     @Transaction
     @Query("SELECT * FROM Event ORDER BY timestamp DESC")
