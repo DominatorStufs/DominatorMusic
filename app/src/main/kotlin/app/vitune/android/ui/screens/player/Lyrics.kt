@@ -52,12 +52,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
-import app.vitune.android.database.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
-import app.vitune.android.models.Lyrics
+import app.vitune.android.domain.material.Lyrics
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.database.query
+import app.vitune.android.database.repository.SongRepository
 import app.vitune.android.database.transaction
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.themed.CircularProgressIndicator
@@ -128,7 +128,7 @@ fun Lyrics(
         LaunchedEffect(mediaId, isShowingSynchronizedLyrics) {
             runCatching {
                 withContext(Dispatchers.IO) {
-                    Database.lyrics(mediaId).collect { currentLyrics ->
+                    SongRepository.lyrics(mediaId).collect { currentLyrics ->
                         when {
                             isShowingSynchronizedLyrics && currentLyrics?.synced == null -> {
                                 lyrics = null
@@ -150,7 +150,7 @@ fun Lyrics(
                                     duration = duration.milliseconds,
                                     album = album
                                 )?.onSuccess {
-                                    Database.upsert(
+                                    SongRepository.save(
                                         Lyrics(
                                             songId = mediaId,
                                             fixed = currentLyrics?.fixed,
@@ -163,7 +163,7 @@ fun Lyrics(
                                         title = title,
                                         duration = duration / 1000
                                     )?.onSuccess {
-                                        Database.upsert(
+                                        SongRepository.save(
                                             Lyrics(
                                                 songId = mediaId,
                                                 fixed = currentLyrics?.fixed,
@@ -179,7 +179,7 @@ fun Lyrics(
                             !isShowingSynchronizedLyrics && currentLyrics?.fixed == null -> {
                                 lyrics = null
                                 Innertube.lyrics(NextBody(videoId = mediaId))?.onSuccess {
-                                    Database.upsert(
+                                    SongRepository.save(
                                         Lyrics(
                                             songId = mediaId,
                                             fixed = it.orEmpty(),
@@ -208,7 +208,7 @@ fun Lyrics(
             onDone = {
                 query {
                     ensureSongInserted()
-                    Database.upsert(
+                    SongRepository.save(
                         Lyrics(
                             songId = mediaId,
                             fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else it,
@@ -266,7 +266,7 @@ fun Lyrics(
                     values = tracks.toImmutableList(),
                     onValueSelected = {
                         transaction {
-                            Database.upsert(
+                            SongRepository.save(
                                 Lyrics(
                                     songId = mediaId,
                                     fixed = lyrics?.fixed,
@@ -515,7 +515,7 @@ fun Lyrics(
                                                 if (isShowingSynchronizedLyrics) null else lyrics?.synced
 
                                             query {
-                                                Database.upsert(
+                                                SongRepository.save(
                                                     Lyrics(
                                                         songId = mediaId,
                                                         fixed = fixed,
@@ -546,7 +546,7 @@ fun Lyrics(
                                                 lyrics?.let {
                                                     val startTime = binder?.player?.currentPosition
                                                     query {
-                                                        Database.upsert(it.copy(startTime = startTime))
+                                                        SongRepository.save(it.copy(startTime = startTime))
                                                     }
                                                 }
                                             }

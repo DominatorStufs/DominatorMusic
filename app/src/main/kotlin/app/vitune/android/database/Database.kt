@@ -147,7 +147,7 @@ interface Database {
     fun song(id: String): SongEntity?
 
     @Query("SELECT * FROM Lyrics WHERE songId = :songId")
-    fun lyrics(songId: String): Flow<Lyrics?>
+    fun lyrics(songId: String): Flow<LyricsEntity?>
 
     @Query("SELECT * FROM Artist WHERE id = :id")
     fun artist(id: String): ArtistEntity?
@@ -546,7 +546,7 @@ interface Database {
     fun update(playlist: Playlist)
 
     @Upsert
-    fun upsert(lyrics: Lyrics)
+    fun upsert(lyrics: LyricsEntity)
 
     @Upsert
     fun upsert(album: AlbumEntity, songAlbumMaps: List<SongAlbumCrossRefEntity>)
@@ -593,7 +593,7 @@ interface Database {
         QueuedMediaItem::class,
         Format::class,
         Event::class,
-        Lyrics::class,
+        LyricsEntity::class,
         PipedSessionEntity::class
     ],
     views = [SortedSongPlaylistMap::class],

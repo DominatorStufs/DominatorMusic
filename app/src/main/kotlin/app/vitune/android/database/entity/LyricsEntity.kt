@@ -1,4 +1,4 @@
-package app.vitune.android.models
+package app.vitune.android.database.entity
 
 import androidx.compose.runtime.Immutable
 import androidx.room.Entity
@@ -9,6 +9,7 @@ import app.vitune.android.domain.material.Song
 
 @Immutable
 @Entity(
+    tableName = "Lyrics",
     foreignKeys = [
         ForeignKey(
             entity = SongEntity::class,
@@ -18,7 +19,7 @@ import app.vitune.android.domain.material.Song
         )
     ]
 )
-data class Lyrics(
+data class LyricsEntity(
     @PrimaryKey val songId: String,
     val fixed: String?,
     val synced: String?,

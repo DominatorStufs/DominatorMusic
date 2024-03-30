@@ -1,8 +1,10 @@
 package app.vitune.android.database.repository
 
 import app.vitune.android.database.Database
+import app.vitune.android.database.mapper.LyricsMapper
 import app.vitune.android.database.mapper.SongMapper
 import app.vitune.android.domain.material.Song
+import app.vitune.android.domain.material.Lyrics
 import app.vitune.core.data.enums.SongSortBy
 import app.vitune.core.data.enums.SortOrder
 import kotlinx.coroutines.flow.Flow
@@ -80,6 +82,16 @@ class SongRepository {
             return Database.playlistWithSongs(id)
                 .map { it?.songs ?: emptyList() }
                 .map { it.map(SongMapper::map) }
+        }
+
+        // TODO: Merge into song eventually
+        fun lyrics(songId: String): Flow<Lyrics?> {
+            return Database.lyrics(songId)
+                .map { it?.let(LyricsMapper::map) }
+        }
+
+        fun save(lyrics: Lyrics) {
+            Database.upsert(LyricsMapper.map(lyrics))
         }
 
         fun save(song: Song) {
