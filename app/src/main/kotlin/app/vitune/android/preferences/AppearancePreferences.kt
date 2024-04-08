@@ -9,6 +9,7 @@ import app.vitune.core.ui.enums.ThumbnailRoundness
 object AppearancePreferences : GlobalPreferencesHolder() {
     var colorPaletteName by enum(ColorPaletteName.Dynamic)
     var colorPaletteMode by enum(ColorPaletteMode.System)
+    var usePureBlack by boolean(false)
     var thumbnailRoundness by enum(ThumbnailRoundness.Medium)
     var fontFamily by enum(BuiltInFontFamily.Poppins)
     var applyFontPadding by boolean(false)

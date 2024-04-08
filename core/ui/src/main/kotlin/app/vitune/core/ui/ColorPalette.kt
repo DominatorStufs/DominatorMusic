@@ -94,7 +94,6 @@ fun colorPaletteOf(
         ColorPaletteMode.System -> if (isDark) DefaultDarkColorPalette else DefaultLightColorPalette
     }
 
-    ColorPaletteName.PureBlack -> PureBlackColorPalette
     ColorPaletteName.AMOLED -> PureBlackColorPalette.copy(isAmoled = true)
 }
 

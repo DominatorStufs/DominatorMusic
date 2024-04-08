@@ -87,6 +87,7 @@ import app.vitune.core.ui.SystemBarAppearance
 import app.vitune.core.ui.appearance
 import app.vitune.core.ui.dynamicColorPaletteOf
 import app.vitune.core.ui.enums.ColorPaletteName
+import app.vitune.core.ui.isPureBlackAvailable
 import app.vitune.core.ui.rippleTheme
 import app.vitune.core.ui.shimmerTheme
 import app.vitune.providers.innertube.Innertube
@@ -163,6 +164,8 @@ class MainActivity : ComponentActivity(), MonetColorsChangedListener {
         val appearance = appearance(
             name = colorPaletteName,
             mode = colorPaletteMode,
+            usePureBlack = usePureBlack &&
+                isPureBlackAvailable(colorPaletteName, colorPaletteMode),
             fontFamily = fontFamily,
             materialAccentColor = Color(monet.getAccentColor(this@MainActivity)),
             sampleBitmap = sampleBitmap,

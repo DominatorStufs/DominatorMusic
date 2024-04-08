@@ -18,11 +18,12 @@ import app.vitune.android.utils.currentLocale
 import app.vitune.android.utils.findActivity
 import app.vitune.android.utils.startLanguagePicker
 import app.vitune.core.ui.BuiltInFontFamily
+import app.vitune.core.ui.googleFontsAvailable
+import app.vitune.core.ui.isPureBlackAvailable
 import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.enums.ColorPaletteMode
 import app.vitune.core.ui.enums.ColorPaletteName
 import app.vitune.core.ui.enums.ThumbnailRoundness
-import app.vitune.core.ui.googleFontsAvailable
 import app.vitune.core.ui.utils.isAtLeastAndroid13
 
 @Route
@@ -43,11 +44,20 @@ fun AppearanceSettings() = with(AppearancePreferences) {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.theme_mode),
                 selectedValue = colorPaletteMode,
-                isEnabled = colorPaletteName != ColorPaletteName.PureBlack &&
-                        colorPaletteName != ColorPaletteName.AMOLED,
+                isEnabled = colorPaletteName != ColorPaletteName.AMOLED,
                 onValueSelected = { colorPaletteMode = it },
                 valueText = { it.nameLocalized }
             )
+
+            AnimatedVisibility(
+                visible = isPureBlackAvailable(colorPaletteName, colorPaletteMode),
+                label = ""
+            ) { SwitchSettingsEntry(
+                title = stringResource(R.string.theme_name_pureblack),
+                text = "",
+                isChecked = usePureBlack,
+                onCheckedChange = { usePureBlack = it }
+            ) }
         }
         SettingsGroup(title = stringResource(R.string.shapes)) {
             EnumValueSelectorSettingsEntry(
@@ -200,7 +210,6 @@ val ColorPaletteName.nameLocalized
         when (this) {
             ColorPaletteName.Default -> R.string.theme_name_default
             ColorPaletteName.Dynamic -> R.string.theme_name_dynamic
-            ColorPaletteName.PureBlack -> R.string.theme_name_pureblack
             ColorPaletteName.AMOLED -> R.string.theme_name_amoled
             ColorPaletteName.MaterialYou -> R.string.theme_name_materialyou
         }

@@ -80,7 +80,8 @@ fun appearance(
     sampleBitmap: Bitmap?,
     applyFontPadding: Boolean,
     thumbnailRoundness: Dp,
-    isSystemInDarkTheme: Boolean = isSystemInDarkTheme()
+    isSystemInDarkTheme: Boolean = isSystemInDarkTheme(),
+    usePureBlack: Boolean
 ): Appearance {
     val isDark = remember(mode, isSystemInDarkTheme) {
         mode == ColorPaletteMode.Dark || (mode == ColorPaletteMode.System && isSystemInDarkTheme)
@@ -142,7 +143,6 @@ fun appearance(
                     isAmoled = false
                 )
 
-                ColorPaletteName.PureBlack -> PureBlackColorPalette
                 ColorPaletteName.AMOLED -> dynamicColorPaletteOf(
                     hsl = dynamicAccentColor,
                     isDark = true,
@@ -156,15 +156,24 @@ fun appearance(
         colorPalette,
         defaultTheme,
         thumbnailRoundness,
+        usePureBlack,
         isDark = isDark
     ) {
         Appearance(
-            colorPalette = colorPalette,
+            colorPalette = if (usePureBlack) PureBlackColorPalette else colorPalette,
             typography = defaultTheme.typography.copy(color = colorPalette.text),
             thumbnailShapeCorners = thumbnailRoundness
         )
     }.value
 }
+
+@Composable
+fun isPureBlackAvailable(
+    colorPaletteName: ColorPaletteName,
+    colorPaletteMode: ColorPaletteMode
+) = colorPaletteName == ColorPaletteName.AMOLED
+        || colorPaletteMode == ColorPaletteMode.Dark
+        || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme())
 
 fun Activity.setSystemBarAppearance(isDark: Boolean) {
     with(WindowCompat.getInsetsController(window, window.decorView.rootView)) {
