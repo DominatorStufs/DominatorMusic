@@ -29,7 +29,7 @@ data class ColorPalette(
         override fun restore(value: List<Any>) = when (val accent = value[0] as Int) {
             0 -> DefaultDarkColorPalette
             1 -> DefaultLightColorPalette
-            2 -> PureBlackColorPalette
+            2 -> PureBlackColorPalette()
             else -> dynamicColorPaletteOf(
                 accentColor = Color(accent),
                 isDark = value[1] as Boolean,
@@ -41,7 +41,7 @@ data class ColorPalette(
             when {
                 value === DefaultDarkColorPalette -> 0
                 value === DefaultLightColorPalette -> 1
-                value === PureBlackColorPalette -> 2
+                value === PureBlackColorPalette() -> 2
                 else -> value.accent.toArgb()
             },
             value.isDark,
@@ -76,7 +76,9 @@ val DefaultLightColorPalette = ColorPalette(
     isAmoled = false
 )
 
-val PureBlackColorPalette = DefaultDarkColorPalette.copy(
+fun PureBlackColorPalette(
+    p: ColorPalette = DefaultDarkColorPalette
+) = p.copy(
     background0 = Color.Black,
     background1 = Color.Black,
     background2 = Color.Black
@@ -94,7 +96,8 @@ fun colorPaletteOf(
         ColorPaletteMode.System -> if (isDark) DefaultDarkColorPalette else DefaultLightColorPalette
     }
 
-    ColorPaletteName.AMOLED -> PureBlackColorPalette.copy(isAmoled = true)
+    ColorPaletteName.PureBlack -> PureBlackColorPalette()
+    ColorPaletteName.AMOLED -> PureBlackColorPalette().copy(isAmoled = true)
 }
 
 fun dynamicAccentColorOf(
@@ -140,7 +143,7 @@ fun dynamicColorPaletteOf(
         lightness = 0.5f
     )
 
-    if (isAmoled) PureBlackColorPalette.copy(
+    if (isAmoled) PureBlackColorPalette().copy(
         isAmoled = true,
         accent = accentColor
     ) else colorPaletteOf(
@@ -194,20 +197,20 @@ fun dynamicColorPaletteOf(
 
 inline val ColorPalette.isDefault
     get() =
-        this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette
+        this === DefaultDarkColorPalette || this === DefaultLightColorPalette || this === PureBlackColorPalette()
 
 inline val ColorPalette.collapsedPlayerProgressBar get() =
-    if (this === PureBlackColorPalette) DefaultDarkColorPalette.background0 else background2
+    if (this === PureBlackColorPalette()) DefaultDarkColorPalette.background0 else background2
 inline val ColorPalette.favoritesIcon get() = if (isDefault) red else accent
 inline val ColorPalette.shimmer get() = if (isDefault) Color(0xff838383) else accent
 inline val ColorPalette.primaryButton
-    get() = if (this === PureBlackColorPalette || isAmoled) Color(0xFF272727) else background2
+    get() = if (this === PureBlackColorPalette() || isAmoled) Color(0xFF272727) else background2
 
 @Suppress("UnusedReceiverParameter")
-inline val ColorPalette.overlay get() = PureBlackColorPalette.background0.copy(alpha = 0.75f)
+inline val ColorPalette.overlay get() = PureBlackColorPalette().background0.copy(alpha = 0.75f)
 
 @Suppress("UnusedReceiverParameter")
-inline val ColorPalette.onOverlay get() = PureBlackColorPalette.text
+inline val ColorPalette.onOverlay get() = PureBlackColorPalette().text
 
 @Suppress("UnusedReceiverParameter")
-inline val ColorPalette.onOverlayShimmer get() = PureBlackColorPalette.shimmer
+inline val ColorPalette.onOverlayShimmer get() = PureBlackColorPalette().shimmer

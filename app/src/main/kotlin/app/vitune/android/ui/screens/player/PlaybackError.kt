@@ -66,7 +66,7 @@ fun PlaybackError(
     ) { currentMessage ->
         if (currentMessage != null) BasicText(
             text = currentMessage,
-            style = LocalAppearance.current.typography.xs.center.medium.color(PureBlackColorPalette.text),
+            style = LocalAppearance.current.typography.xs.center.medium.color(PureBlackColorPalette().text),
             modifier = Modifier
                 .background(Color.Black.copy(0.4f))
                 .padding(all = 8.dp)

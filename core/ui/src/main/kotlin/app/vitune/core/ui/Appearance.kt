@@ -143,6 +143,7 @@ fun appearance(
                     isAmoled = false
                 )
 
+                ColorPaletteName.PureBlack -> PureBlackColorPalette()
                 ColorPaletteName.AMOLED -> dynamicColorPaletteOf(
                     hsl = dynamicAccentColor,
                     isDark = true,
@@ -160,7 +161,10 @@ fun appearance(
         isDark = isDark
     ) {
         Appearance(
-            colorPalette = if (usePureBlack) PureBlackColorPalette else colorPalette,
+            // NOTE(dtomvan): When using pure black we modify the current
+            // ColorPallette to behave in our new way. NO-OP if user is using
+            // the "normal" pure black palette.
+            colorPalette = if (usePureBlack) PureBlackColorPalette(colorPalette) else colorPalette,
             typography = defaultTheme.typography.copy(color = colorPalette.text),
             thumbnailShapeCorners = thumbnailRoundness
         )
