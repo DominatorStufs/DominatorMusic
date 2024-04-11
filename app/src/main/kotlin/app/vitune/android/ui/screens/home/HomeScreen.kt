@@ -53,8 +53,8 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
                 isStacking -> defaultStacking
                 isUnstacking -> defaultUnstacking
                 isUnknown -> when {
-                    initialState.route == searchRoute && targetState.route == searchResultRoute -> defaultStacking
-                    initialState.route == searchResultRoute && targetState.route == searchRoute -> defaultUnstacking
+                    initialState == searchRoute && targetState == searchResultRoute -> defaultStacking
+                    initialState == searchResultRoute && targetState == searchRoute -> defaultUnstacking
                     else -> defaultStill
                 }
 

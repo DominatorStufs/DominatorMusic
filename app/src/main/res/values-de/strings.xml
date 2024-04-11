@@ -7,12 +7,13 @@
     <string name="format_db">%1$s dB</string>
     <string name="format_kbps">%1$s kbps</string>
     <string name="format_ms">%1$s ms</string>
+    <string name="format_px">%1$spx</string>
 
     <string name="format_go_to_artist">Mehr von %1$s</string>
     <string name="format_top_playlist">Top %1$s</string>
     <string name="format_my_top_playlist">Meine Top %1$s</string>
     <string name="format_view_top_of_header">Top %1$s…</string>
-    <string name="format_speed_multiplier">%1$sx</string>
+    <string name="format_multiplier">%1$sx</string>
 
     <string name="past_24_hours">24 Stunden</string>
     <string name="past_week">1 Woche</string>
@@ -120,7 +121,8 @@
     <string name="error_piped_instances_unavailable">Liste der Piped-Instanzen ist derzeit nicht verfügbar.</string>
     <string name="error_bassboost_init">Es ist ein Fehler bei der Initialisierung von Bass Boost aufgetreten. Wahrscheinlich unterstützt Ihr Gerät diese Funktion nicht. Ändern Sie den Bassverstärkungspegel oder versuchen Sie es erneut.</string>
     <string name="error_pre_cache">Beim Zwischenspeichern ist ein unbekannter Fehler aufgetreten. Bitte versuchen Sie es erneut.</string>
-
+    <string name="error_url">Kann die URL %1$s nicht öffnen</string>
+    
     <string name="media_permission_declined">Berechtigung abgelehnt, bitte erteilen Sie die Medienberechtigung in den Einstellungen Ihres Geräts.</string>
     <string name="open_settings">Einstellungen öffnen</string>
     <string name="no_items_found">Keine Elemente gefunden</string>
@@ -154,6 +156,8 @@
     <string name="set_lyrics_start_offset_description">Verschiebt den synchronisierten Liedtext um die aktuelle Wiedergabezeit</string>
 
     <string name="playback_speed">Wiedergabegeschwindigkeit</string>
+    <string name="playback_pitch">Stellplatz</string>
+    <string name="playback_settings">Geschwindigkeit &amp; Tonhöhe</string>
     <string name="minimum_speed_value">Warum haben Sie das getan?!</string>
     <string name="song_volume_boost">Song-Lautstärke erhöhen</string>
     <string name="queue_loop">Warteschleife</string>
@@ -184,6 +188,8 @@
     <string name="theme_name_default">Standard</string>
     <string name="theme_name_dynamic">Dynamisch</string>
     <string name="theme_name_pureblack">Rein Schwarz</string>
+    <string name="theme_name_amoled">AMOLED</string>
+    <string name="theme_name_materialyou">Material You</string>
 
     <string name="theme_mode">Theme-Modus</string>
     <string name="theme_mode_light">Hell</string>
@@ -199,6 +205,7 @@
     <string name="thumbnail_roundness_heaviest">Stärkste</string>
 
     <string name="text">Text</string>
+    <string name="font">Schriftart</string>
     <string name="use_system_font">Systemschriftart verwenden</string>
     <string name="use_system_font_description">Verwenden Sie die vom System verwendete Schriftart</string>
     <string name="apply_font_padding">Auffüllen der Schrift</string>
@@ -328,6 +335,13 @@
     <string name="seek_bar_style">Lied-Zeit-Achse</string>
     <string name="static_seek_bar_name">Statisch</string>
     <string name="wavy_seek_bar_name">Wellenförmig</string>
+    <string name="seek_bar_quality">Wavy seek bar quality</string>
+    <string name="seek_bar_quality_poor">Schlecht</string>
+    <string name="seek_bar_quality_low">Niedrig</string>
+    <string name="seek_bar_quality_medium">Mittel</string>
+    <string name="seek_bar_quality_high">Hoch</string>
+    <string name="seek_bar_quality_great">Großartig</string>
+    <string name="seek_bar_quality_subpixel">Teilpixel</string>
 
     <string name="remove_from_blacklist">Von der schwarzen Liste entfernen</string>
     <string name="add_to_blacklist">Zur schwarzen Liste hinzufügen</string>
@@ -338,7 +352,9 @@
 
     <string name="swipe_to_hide_song">Wischen, um Lied zu löschen</string>
     <string name="swipe_to_hide_song_description">Wenn Sie einen Titel nach links wischen, wird er aus der Datenbank und dem Zwischenspeicher entfernt.</string>
-
+    <string name="swipe_to_hide_song_confirm">Sind Sie sicher, dass Sie das Lied löschen wollen?</string>
+    <string name="swipe_to_hide_song_confirm_description">Wenn Sie zum löschen wischen, müssen Sie zunächst bestätigen.</string>
+    
     <string name="version">Version</string>
     <string name="check_new_version">Nach Updates suchen</string>
     <string name="current_version">Sie verwenden derzeit die Version v%1$s</string>
@@ -347,6 +363,10 @@
     <string name="more_information">Weitere Informationen</string>
     <string name="up_to_date">Sie sind derzeit auf dem neuesten Stand: keine Updates verfügbar</string>
 
+    <string name="dynamic_thumbnails">Dynamische Miniaturbilder</string>
+    <string name="max_dynamic_thumbnail_size">Maximale dynamische Miniaturbildgröße</string>
+    <string name="max_dynamic_thumbnail_size_description">Die maximale Größe einer Miniaturansicht, wenn eine dynamische Miniaturansicht verwendet wird.</string>
+    
     <plurals name="format_reset_blacklist_description">
         <item quantity="one">Entferne %1$s Lied von der schwarzen Liste</item>
         <item quantity="other">Alle %1$s Songs von der Schwarzen Liste entfernen</item>

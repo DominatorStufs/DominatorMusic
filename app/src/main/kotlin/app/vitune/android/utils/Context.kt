@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.Uri
 import android.os.PowerManager
 import android.widget.Toast
@@ -98,5 +97,3 @@ fun Context.hasPermission(permission: String) = ContextCompat.checkSelfPermissio
     applicationContext,
     permission
 ) == PackageManager.PERMISSION_GRANTED
-
-operator fun Cursor.get(column: String): Int = getColumnIndexOrThrow(column)

@@ -13,7 +13,7 @@
     <string name="format_top_playlist">Top %1$s</string>
     <string name="format_my_top_playlist">Mijn top %1$s</string>
     <string name="format_view_top_of_header">Laat top %1$s zien van…</string>
-    <string name="format_speed_multiplier">%1$sx</string>
+    <string name="format_multiplier">%1$sx</string>
 
     <string name="past_24_hours">Afgelopen 24 uur</string>
     <string name="past_week">Afgelopen week</string>
@@ -155,7 +155,9 @@
     <string name="set_lyrics_start_offset">Stel startpunt in</string>
     <string name="set_lyrics_start_offset_description">Laat de gesynchroniseerde songtekst beginnen vanaf de huidige tijd</string>
 
-    <string name="playback_speed">Afspeelsnelheid</string>
+    <string name="playback_speed">Snelheid</string>
+    <string name="playback_pitch">Toonhoogte</string>
+    <string name="playback_settings">Snelheid en toonhoogte</string>
     <string name="minimum_speed_value">Waarom zou je dat doen?!</string>
     <string name="song_volume_boost">Volume-boost</string>
     <string name="queue_loop">Wachtrij herhalen</string>

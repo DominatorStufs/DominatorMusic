@@ -1,7 +1,6 @@
 package app.vitune.android.ui.screens.home
 
 import android.Manifest
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -35,11 +34,10 @@ import app.vitune.android.service.LOCAL_KEY_PREFIX
 import app.vitune.android.transaction
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.screens.Route
-import app.vitune.android.utils.get
+import app.vitune.android.utils.AudioMediaCursor
 import app.vitune.android.utils.hasPermission
 import app.vitune.android.utils.medium
 import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isAtLeastAndroid10
 import app.vitune.core.ui.utils.isAtLeastAndroid13
 import app.vitune.core.ui.utils.isCompositionLaunched
 import kotlinx.coroutines.CoroutineName
@@ -129,59 +127,28 @@ fun Context.musicFilesAsFlow(): StateFlow<List<Song>> = flow {
 
     while (currentCoroutineContext().isActive) {
         val newVersion = MediaStore.getVersion(applicationContext)
+
         if (version != newVersion) {
             version = newVersion
-            val collection =
-                if (isAtLeastAndroid10) MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-                else MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-            val projection = arrayOf(
-                MediaStore.Audio.Media.IS_MUSIC,
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM_ID
-            )
-            val sortOrder = "${MediaStore.Audio.Media.DISPLAY_NAME} ASC"
-            val albumUriBase = Uri.parse("content://media/external/audio/albumart")
 
-            contentResolver.query(collection, projection, null, null, sortOrder)
-                ?.use { cursor ->
-                    val isMusicIdx = cursor[MediaStore.Audio.Media.IS_MUSIC]
-                    val idIdx = cursor[MediaStore.Audio.Media._ID]
-                    val nameIdx = cursor[MediaStore.Audio.Media.DISPLAY_NAME]
-                    val durationIdx = cursor[MediaStore.Audio.Media.DURATION]
-                    val artistIdx = cursor[MediaStore.Audio.Media.ARTIST]
-                    val albumIdIdx = cursor[MediaStore.Audio.Media.ALBUM_ID]
-
-                    buildList {
-                        while (cursor.moveToNext()) {
-                            if (cursor.getInt(isMusicIdx) == 0) continue
-                            val id = cursor.getLong(idIdx)
-                            val name = cursor.getString(nameIdx)
-                            val duration = cursor.getInt(durationIdx)
-                            if (duration == 0) continue
-                            val artist = cursor.getString(artistIdx)
-                            val albumId = cursor.getLong(albumIdIdx)
-
-                            val albumUri = ContentUris.withAppendedId(albumUriBase, albumId)
-                            val durationText =
-                                duration.milliseconds.toComponents { minutes, seconds, _ ->
+            AudioMediaCursor.query(contentResolver) {
+                buildList {
+                    while (next()) {
+                        if (!isMusic || duration == 0) continue
+                        add(
+                            Song(
+                                id = "$LOCAL_KEY_PREFIX$id",
+                                title = name,
+                                artistsText = artist,
+                                durationText = duration.milliseconds.toComponents { minutes, seconds, _ ->
                                     "$minutes:${seconds.toString().padStart(2, '0')}"
-                                }
-
-                            add(
-                                Song(
-                                    id = "$LOCAL_KEY_PREFIX$id",
-                                    title = name,
-                                    artistsText = artist,
-                                    durationText = durationText,
-                                    thumbnailUrl = albumUri.toString()
-                                )
+                                },
+                                thumbnailUrl = albumUri.toString()
                             )
-                        }
+                        )
                     }
-                }?.let { emit(it) }
+                }
+            }?.let { emit(it) }
         }
         delay(5.seconds)
     }

@@ -13,7 +13,7 @@
     <string name="format_top_playlist">%1$s teratas</string>
     <string name="format_my_top_playlist">%1$s teratas Saya</string>
     <string name="format_view_top_of_header">Lihat %1$s teratas dari …</string>
-    <string name="format_speed_multiplier">%1$sx</string>
+    <string name="format_multiplier">%1$sx</string>
 
     <string name="past_24_hours">24 jam terakhir</string>
     <string name="past_week">Minggu lalu</string>

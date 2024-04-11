@@ -327,20 +327,53 @@ fun <T> ValueSelectorDialogBody(
 }
 
 @Composable
-fun SliderDialog(
-    onDismiss: () -> Unit,
-    title: String,
+fun ColumnScope.SliderDialogBody(
     provideState: @Composable () -> MutableState<Float>,
     onSlideCompleted: (newState: Float) -> Unit,
     min: Float,
     max: Float,
-    modifier: Modifier = Modifier,
     toDisplay: @Composable (Float) -> String = { it.toString() },
     @IntRange(from = 0) steps: Int = 0,
-    content: @Composable () -> Unit = { }
+    label: String? = null
+) {
+    val (_, typography) = LocalAppearance.current
+    var state by provideState()
+
+    if (label != null) BasicText(
+        text = label,
+        style = typography.xs.semiBold,
+        modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
+    )
+
+    Slider(
+        state = state,
+        setState = { state = it },
+        onSlideCompleted = { onSlideCompleted(state) },
+        range = min..max,
+        steps = steps,
+        modifier = Modifier
+            .height(36.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+    )
+
+    BasicText(
+        text = toDisplay(state),
+        style = typography.s.semiBold,
+        modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(vertical = 8.dp)
+    )
+}
+
+@Composable
+fun SliderDialog(
+    onDismiss: () -> Unit,
+    title: String,
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit = { }
 ) = Dialog(onDismissRequest = onDismiss) {
     val (colorPalette, typography) = LocalAppearance.current
-    var state by provideState()
 
     Column(
         modifier = modifier
@@ -352,26 +385,6 @@ fun SliderDialog(
             text = title,
             style = typography.s.semiBold,
             modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
-        )
-
-        Slider(
-            state = state,
-            setState = { state = it },
-            onSlideCompleted = { onSlideCompleted(state) },
-            range = min..max,
-            steps = steps,
-            modifier = Modifier
-                .height(36.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-        )
-
-        BasicText(
-            text = toDisplay(state),
-            style = typography.s.semiBold,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 8.dp)
         )
 
         content()

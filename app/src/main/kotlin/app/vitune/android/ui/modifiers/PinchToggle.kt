@@ -43,6 +43,8 @@ fun Modifier.pinchToToggle(
             var touchSlopReached = false
 
             awaitFirstDown(requireUnconsumed = false)
+
+            @Suppress("LoopWithTooManyJumpStatements")
             while (isActive) {
                 val event = awaitPointerEvent()
                 if (event.changes.fastAny { it.isConsumed }) break

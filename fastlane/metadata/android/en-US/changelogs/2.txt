@@ -1,0 +1,8 @@
+* Fixed incorrect pre-caching behavior
+* Fixed notification channel names
+* Fixed inconsistency in queue suggestions
+* Added more customization options
+* Enhanced player UI
+* Fixed inconsistency in cache settings
+* Added more German translations
+* Added Indonesian translations

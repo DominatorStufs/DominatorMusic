@@ -72,6 +72,7 @@ import app.vitune.android.ui.components.themed.BaseMediaItemMenu
 import app.vitune.android.ui.components.themed.IconButton
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.components.themed.SliderDialog
+import app.vitune.android.ui.components.themed.SliderDialogBody
 import app.vitune.android.ui.modifiers.PinchDirection
 import app.vitune.android.ui.modifiers.onSwipe
 import app.vitune.android.ui.modifiers.pinchToToggle
@@ -382,30 +383,45 @@ fun Player(
             )
         }
 
-        var speedDialogOpen by rememberSaveable { mutableStateOf(false) }
+        var audioDialogOpen by rememberSaveable { mutableStateOf(false) }
 
-        if (speedDialogOpen) {
-            SliderDialog(
-                onDismiss = { speedDialogOpen = false },
-                title = stringResource(R.string.playback_speed),
+        if (audioDialogOpen) SliderDialog(
+            onDismiss = { audioDialogOpen = false },
+            title = stringResource(R.string.playback_settings)
+        ) {
+            SliderDialogBody(
                 provideState = { remember(speed) { mutableFloatStateOf(speed) } },
                 onSlideCompleted = { speed = it },
                 min = 0f,
                 max = 2f,
                 toDisplay = {
                     if (it <= 0.01f) stringResource(R.string.minimum_speed_value)
-                    else stringResource(R.string.format_speed_multiplier, "%.2f".format(it))
-                }
+                    else stringResource(R.string.format_multiplier, "%.2f".format(it))
+                },
+                label = stringResource(R.string.playback_speed)
+            )
+            SliderDialogBody(
+                provideState = { remember(pitch) { mutableFloatStateOf(pitch) } },
+                onSlideCompleted = { pitch = it },
+                min = 0f,
+                max = 2f,
+                toDisplay = {
+                    if (it <= 0.01f) stringResource(R.string.minimum_speed_value)
+                    else stringResource(R.string.format_multiplier, "%.2f".format(it))
+                },
+                label = stringResource(R.string.playback_pitch)
+            )
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SecondaryTextButton(
-                        text = stringResource(R.string.reset),
-                        onClick = { speed = 1f }
-                    )
-                }
+                SecondaryTextButton(
+                    text = stringResource(R.string.reset),
+                    onClick = {
+                        speed = 1f
+                        pitch = 1f
+                    }
+                )
             }
         }
 
@@ -421,24 +437,26 @@ fun Player(
 
             SliderDialog(
                 onDismiss = { boostDialogOpen = false },
-                title = stringResource(R.string.song_volume_boost),
-                provideState = {
-                    val state = remember { mutableFloatStateOf(0f) }
-
-                    LaunchedEffect(mediaItem.mediaId) {
-                        Database
-                            .loudnessBoost(mediaItem.mediaId)
-                            .distinctUntilChanged()
-                            .collect { state.floatValue = it ?: 0f }
-                    }
-
-                    state
-                },
-                onSlideCompleted = { submit(it) },
-                min = -20f,
-                max = 20f,
-                toDisplay = { stringResource(R.string.format_db, "%.2f".format(it)) }
+                title = stringResource(R.string.song_volume_boost)
             ) {
+                SliderDialogBody(
+                    provideState = {
+                        val state = remember { mutableFloatStateOf(0f) }
+
+                        LaunchedEffect(mediaItem.mediaId) {
+                            Database
+                                .loudnessBoost(mediaItem.mediaId)
+                                .distinctUntilChanged()
+                                .collect { state.floatValue = it ?: 0f }
+                        }
+
+                        state
+                    },
+                    onSlideCompleted = { submit(it) },
+                    min = -20f,
+                    max = 20f,
+                    toDisplay = { stringResource(R.string.format_db, "%.2f".format(it)) }
+                )
                 Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -474,7 +492,7 @@ fun Player(
                                 onDismiss = menuState::hide,
                                 mediaItem = mediaItem,
                                 binder = binder,
-                                onShowSpeedDialog = { speedDialogOpen = true },
+                                onShowSpeedDialog = { audioDialogOpen = true },
                                 onShowNormalizationDialog = {
                                     boostDialogOpen = true
                                 }.takeIf { volumeNormalization }

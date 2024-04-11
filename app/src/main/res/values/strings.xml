@@ -13,7 +13,7 @@
     <string name="format_top_playlist">Top %1$s</string>
     <string name="format_my_top_playlist">My top %1$s</string>
     <string name="format_view_top_of_header">View top %1$s of …</string>
-    <string name="format_speed_multiplier">%1$sx</string>
+    <string name="format_multiplier">%1$sx</string>
 
     <string name="past_24_hours">Past 24 hours</string>
     <string name="past_week">Past week</string>
@@ -155,7 +155,9 @@
     <string name="set_lyrics_start_offset">Set start offset</string>
     <string name="set_lyrics_start_offset_description">Offsets the synchronized lyrics by the current playback time</string>
 
-    <string name="playback_speed">Playback speed</string>
+    <string name="playback_speed">Speed</string>
+    <string name="playback_pitch">Pitch</string>
+    <string name="playback_settings">Speed &amp; pitch</string>
     <string name="minimum_speed_value">Why would you do this?!</string>
     <string name="song_volume_boost">Song volume boost</string>
     <string name="queue_loop">Queue loop</string>

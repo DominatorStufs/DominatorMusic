@@ -2,6 +2,7 @@ package app.vitune.android.utils
 
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import kotlin.time.Duration
@@ -88,6 +89,10 @@ fun Player.findNextMediaItemById(mediaId: String): MediaItem? {
         if (getMediaItemAt(i).mediaId == mediaId) return getMediaItemAt(i)
     }
     return null
+}
+
+fun Player.setPlaybackPitch(pitch: Float) {
+    playbackParameters = PlaybackParameters(playbackParameters.speed, pitch)
 }
 
 operator fun Timeline.get(

@@ -41,6 +41,7 @@ import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.enqueue
 import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forcePlayFromBeginning
+import app.vitune.android.utils.PlaylistDownloadIcon
 import app.vitune.compose.persist.persistList
 import app.vitune.core.data.enums.BuiltInPlaylist
 import app.vitune.core.ui.Dimensions
@@ -127,6 +128,12 @@ fun BuiltInPlaylistSongs(
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
+
+                    if (builtInPlaylist != BuiltInPlaylist.Offline) {
+                        PlaylistDownloadIcon(
+                            songs = songs.map(Song::asMediaItem).toImmutableList()
+                        )
+                    }
 
                     if (builtInPlaylist == BuiltInPlaylist.Top) {
                         var dialogShowing by rememberSaveable { mutableStateOf(false) }

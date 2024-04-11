@@ -150,6 +150,7 @@ fun SyncSettings() {
                     enabled = (customInstance?.isNotBlank() == true || selectedInstance != null) &&
                             username.isNotBlank() && password.isNotBlank(),
                     onClick = {
+                        @Suppress("Wrapping") // thank you ktlint
                         (customInstance?.let {
                             runCatching {
                                 Url(it)

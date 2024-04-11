@@ -137,6 +137,7 @@ fun Uri?.thumbnail(size: Int) = toString().thumbnail(size)?.toUri()
 
 fun formatAsDuration(millis: Long) = DateUtils.formatElapsedTime(millis / 1000).removePrefix("0")
 
+@Suppress("LoopWithTooManyJumpStatements")
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     maxDepth: Int = Int.MAX_VALUE
 ) = runCatching {

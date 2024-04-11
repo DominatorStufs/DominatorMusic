@@ -9,7 +9,7 @@ compose_compiler = "1.5.11"
 
 room = "2.6.1"
 media3 = "1.3.0"
-ktor = "2.3.9"
+ktor = "2.3.10"
 detekt = "1.23.6"
 workmanager = "2.9.0"
 
@@ -31,8 +31,8 @@ kotlin_datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version =
 kotlin_immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version = "0.3.7" }
 
 compose_bom = { module = "androidx.compose:compose-bom", version = "2024.04.00" }
-compose_animation = { module = "androidx.compose.animation:animation" }
-compose_foundation = { module = "androidx.compose.foundation:foundation", version = "1.6.5" }
+compose_animation = { module = "androidx.compose.animation:animation", version = "1.7.0-alpha06" }
+compose_foundation = { module = "androidx.compose.foundation:foundation" }
 compose_ui = { module = "androidx.compose.ui:ui" }
 compose_ui_util = { module = "androidx.compose.ui:ui-util" }
 compose_ui_fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
@@ -67,5 +67,5 @@ monet = { module = "com.github.KieronQuinn:MonetCompat", version = "0.4.1" }
 
 desugaring = { module = "com.android.tools:desugar_jdk_libs", version = "2.0.4" }
 
-detekt_compose = { module = "io.nlopez.compose.rules:detekt", version = "0.3.12" }
+detekt_compose = { module = "io.nlopez.compose.rules:detekt", version = "0.3.13" }
 detekt_formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }

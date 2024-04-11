@@ -44,6 +44,7 @@ import app.vitune.android.query
 import app.vitune.android.service.PlayerMediaBrowserService
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.components.themed.SliderDialog
+import app.vitune.android.ui.components.themed.SliderDialogBody
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.findActivity
 import app.vitune.android.utils.isIgnoringBatteryOptimizations
@@ -167,18 +168,21 @@ fun OtherSettings() {
             )
             if (selectingThumbnailSize) SliderDialog(
                 onDismiss = { selectingThumbnailSize = false },
-                title = stringResource(R.string.max_dynamic_thumbnail_size),
-                provideState = {
-                    remember(AppearancePreferences.maxThumbnailSize) {
-                        mutableFloatStateOf(AppearancePreferences.maxThumbnailSize.toFloat())
-                    }
-                },
-                onSlideCompleted = { AppearancePreferences.maxThumbnailSize = it.roundToInt() },
-                min = 32f,
-                max = 1920f,
-                toDisplay = { stringResource(R.string.format_px, it.roundToInt()) },
-                steps = 58
-            )
+                title = stringResource(R.string.max_dynamic_thumbnail_size)
+            ) {
+                SliderDialogBody(
+                    provideState = {
+                        remember(AppearancePreferences.maxThumbnailSize) {
+                            mutableFloatStateOf(AppearancePreferences.maxThumbnailSize.toFloat())
+                        }
+                    },
+                    onSlideCompleted = { AppearancePreferences.maxThumbnailSize = it.roundToInt() },
+                    min = 32f,
+                    max = 1920f,
+                    toDisplay = { stringResource(R.string.format_px, it.roundToInt()) },
+                    steps = 58
+                )
+            }
         }
         SettingsGroup(title = stringResource(R.string.service_lifetime)) {
             AnimatedVisibility(visible = !isIgnoringBatteryOptimizations) {
