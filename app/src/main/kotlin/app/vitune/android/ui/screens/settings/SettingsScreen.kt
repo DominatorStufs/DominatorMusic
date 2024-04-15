@@ -63,7 +63,7 @@ fun SettingsScreen() {
 
     PersistMapCleanup("settings/")
 
-    RouteHandler(listenToGlobalEmitter = true) {
+    RouteHandler {
         GlobalRoutes()
 
         NavHost {

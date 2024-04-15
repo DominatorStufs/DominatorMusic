@@ -32,12 +32,6 @@ import app.vitune.android.ui.screens.settingsRoute
 import app.vitune.compose.persist.PersistMapCleanup
 import app.vitune.compose.routing.Route0
 import app.vitune.compose.routing.RouteHandler
-import app.vitune.compose.routing.defaultStacking
-import app.vitune.compose.routing.defaultStill
-import app.vitune.compose.routing.defaultUnstacking
-import app.vitune.compose.routing.isStacking
-import app.vitune.compose.routing.isUnknown
-import app.vitune.compose.routing.isUnstacking
 
 private val moreMoodsRoute = Route0("moreMoodsRoute")
 private val moreAlbumsRoute = Route0("moreAlbumsRoute")
@@ -49,22 +43,7 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
 
     PersistMapCleanup("home/")
 
-    RouteHandler(
-        listenToGlobalEmitter = true,
-        transitionSpec = {
-            when {
-                isStacking -> defaultStacking
-                isUnstacking -> defaultUnstacking
-                isUnknown -> when {
-                    initialState.route == searchRoute && targetState.route == searchResultRoute -> defaultStacking
-                    initialState.route == searchResultRoute && targetState.route == searchRoute -> defaultUnstacking
-                    else -> defaultStill
-                }
-
-                else -> defaultStill
-            }
-        }
-    ) {
+    RouteHandler {
         GlobalRoutes()
 
         localPlaylistRoute { playlistId ->
@@ -79,7 +58,6 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
             SearchScreen(
                 initialTextInput = initialTextInput,
                 onSearch = { query ->
-                    pop()
                     searchResultRoute(query)
 
                     if (!DataPreferences.pauseSearchHistory) query {

@@ -13,7 +13,7 @@ val defaultStacking = ContentTransform(
 )
 
 val defaultUnstacking = ContentTransform(
-    initialContentExit = fadeOut(),
+    initialContentExit = scaleOut(targetScale = 1.1f) + fadeOut(),
     targetContentEnter = EnterTransition.None,
     targetContentZIndex = 0f
 )
@@ -24,14 +24,11 @@ val defaultStill = ContentTransform(
     targetContentZIndex = 1f
 )
 
-val TransitionScope<RouteHandlerScope>.isStacking
-    get() = initialState.route == null && targetState.route != null
+val TransitionScope<Route?>.isStacking: Boolean
+    get() = initialState == null && targetState != null
 
-val TransitionScope<RouteHandlerScope>.isUnstacking
-    get() = initialState.route != null && targetState.route == null
+val TransitionScope<Route?>.isUnstacking: Boolean
+    get() = initialState != null && targetState == null
 
-val TransitionScope<RouteHandlerScope>.isStill
-    get() = initialState.route == null && targetState.route == null
-
-val TransitionScope<RouteHandlerScope>.isUnknown
-    get() = initialState.route != null && targetState.route != null
+val TransitionScope<Route?>.isStill: Boolean
+    get() = initialState == null && targetState == null

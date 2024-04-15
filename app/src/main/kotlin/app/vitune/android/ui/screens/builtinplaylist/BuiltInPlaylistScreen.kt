@@ -22,7 +22,7 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
 
     PersistMapCleanup(prefix = "${builtInPlaylist.name}/")
 
-    RouteHandler(listenToGlobalEmitter = true) {
+    RouteHandler {
         GlobalRoutes()
 
         NavHost {

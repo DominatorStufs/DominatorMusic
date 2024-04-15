@@ -50,7 +50,7 @@ fun SearchScreen(
 
     PersistMapCleanup(prefix = "search/")
 
-    RouteHandler(listenToGlobalEmitter = true) {
+    RouteHandler {
         GlobalRoutes()
 
         NavHost {

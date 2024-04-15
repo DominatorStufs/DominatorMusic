@@ -18,7 +18,7 @@ fun MoodScreen(mood: Mood) {
 
     PersistMapCleanup(prefix = "playlist/mood/")
 
-    RouteHandler(listenToGlobalEmitter = true) {
+    RouteHandler {
         GlobalRoutes()
 
         NavHost {

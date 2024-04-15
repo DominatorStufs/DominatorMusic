@@ -28,7 +28,7 @@ fun PipedPlaylistScreen(
 
     PersistMapCleanup(prefix = "pipedplaylist/$playlistId")
 
-    RouteHandler(listenToGlobalEmitter = true) {
+    RouteHandler {
         GlobalRoutes()
 
         NavHost {
