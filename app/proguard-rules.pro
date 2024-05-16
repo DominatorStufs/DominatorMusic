@@ -35,3 +35,25 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn org.slf4j.impl.StaticLoggerBinder
+
+-dontwarn app.vitune.compose.persist.PersistKt
+-dontwarn app.vitune.compose.persist.PersistMap
+-dontwarn app.vitune.compose.persist.PersistMapCleanupKt
+-dontwarn app.vitune.compose.persist.PersistMapKt
+-dontwarn app.vitune.compose.preferences.PreferencesHolder
+-dontwarn app.vitune.compose.preferences.SharedPreferencesProperty
+-dontwarn app.vitune.compose.reordering.AnimateItemPlacementKt
+-dontwarn app.vitune.compose.reordering.DraggedItemKt
+-dontwarn app.vitune.compose.reordering.ReorderKt
+-dontwarn app.vitune.compose.reordering.ReorderingState
+-dontwarn app.vitune.compose.reordering.ReorderingStateKt
+-dontwarn app.vitune.compose.routing.GlobalRouteKt
+-dontwarn app.vitune.compose.routing.Route0
+-dontwarn app.vitune.compose.routing.Route1
+-dontwarn app.vitune.compose.routing.Route3
+-dontwarn app.vitune.compose.routing.Route4
+-dontwarn app.vitune.compose.routing.Route
+-dontwarn app.vitune.compose.routing.RouteHandlerKt
+-dontwarn app.vitune.compose.routing.RouteHandlerScope
+-dontwarn app.vitune.compose.routing.RouteRequest
+-dontwarn app.vitune.compose.routing.TransitionsKt
