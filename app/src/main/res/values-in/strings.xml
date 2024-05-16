@@ -132,7 +132,7 @@
     <string name="no_browser_installed">Tidak dapat menemukan aplikasi untuk menjelajah internet</string>
     <string name="no_equalizer_installed">Tidak dapat menemukan aplikasi untuk melakukan ekualisasi audio</string>
     <string name="no_file_chooser_installed">Tidak dapat menemukan aplikasi untuk membuat dokumen</string>
-    <string name="no_battery_optimization_settings_found">Tidak dapat menemukan pengaturan optimisasi baterai, harap daftarkan ViTune secara manual</string>
+    <string name="no_battery_optimization_settings_found">Tidak dapat menemukan pengaturan optimisasi baterai, harap daftarkan Banafsh secara manual</string>
 
     <string name="related_albums">Album terkait</string>
     <string name="similar_artists">Artis serupa</string>
@@ -250,7 +250,7 @@
     <string name="backup_description">Preferensi pribadi (mis. mode tema) dan cache dikecualikan.</string>
     <string name="backup_action_description">Ekspor database ke penyimpanan eksternal</string>
     <string name="restore">Pulihkan</string>
-    <string name="restore_warning">Data yang ada akan ditimpa.\nViTune akan otomatis menutup dirinya sendiri setelah memulihkan database.</string>
+    <string name="restore_warning">Data yang ada akan ditimpa.\nBanafsh akan otomatis menutup dirinya sendiri setelah memulihkan database.</string>
     <string name="restore_description">Impor database dari penyimpanan eksternal</string>
 
     <string name="other">Lainnya</string>
@@ -325,7 +325,7 @@
     <string name="username">Nama pengguna</string>
     <string name="password">Kata sandi</string>
     <string name="login">Masuk</string>
-    <string name="sync_description">Anda dapat menyimpan daftar putar di tempat lain dan menyinkronkannya dengan ViTune. Saat ini hanya mendukung Piped.</string>
+    <string name="sync_description">Anda dapat menyimpan daftar putar di tempat lain dan menyinkronkannya dengan Banafsh. Saat ini hanya mendukung Piped.</string>
     <string name="add_account">Tambahkan akun</string>
     <string name="add_account_description">Hubungkan akun Piped dengan instansi Anda, nama pengguna, dan kata sandi.</string>
     <string name="learn_more">Pelajari lebih lanjut</string>

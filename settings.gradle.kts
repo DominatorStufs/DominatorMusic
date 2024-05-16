@@ -22,5 +22,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = "vitune"
+rootProject.name = "banafsh"
 include(":app")

@@ -32,7 +32,7 @@ subprojects {
 }
 
 allprojects {
-    group = "app.vitune"
+    group = "app.banafsh"
     version = "1.0.4"
 
     apply(plugin = "io.gitlab.arturbosch.detekt")

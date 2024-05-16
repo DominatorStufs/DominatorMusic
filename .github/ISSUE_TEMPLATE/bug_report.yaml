@@ -5,10 +5,10 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for filling out this issue template. If you meant to submit a suggestion, feature request, etc., please fill out the [appropriate template](https://github.com/25huizengek1/ViTune/issues/new/choose).
-        Please do not submit a bug report for a network issue, unless it's an issue specific to ViTune.
+        Thank you for filling out this issue template. If you meant to submit a suggestion, feature request, etc., please fill out the [appropriate template](https://github.com/25huizengek1/Banafsh/issues/new/choose).
+        Please do not submit a bug report for a network issue, unless it's an issue specific to Banafsh.
 
-        ## ⚠️ Make sure you are able to reproduce the bug with the [latest version](https://github.com/25huizengek1/ViTune/releases/latest).
+        ## ⚠️ Make sure you are able to reproduce the bug with the [latest version](https://github.com/25huizengek1/Banafsh/releases/latest).
         ## ⚠️ Make sure there is no issue about this bug already.
 
   - type: textarea
@@ -62,21 +62,21 @@ body:
         If your bug includes a crash, please use include logs in your issue.
 
         To capture logs, you can use `adb logcat`, or, if you have root access on your device or installed [Shizuku](https://shizuku.rikka.app), you can use a logger of your choice, for example: [LogFox](https://github.com/F0x1d/LogFox) to record logs.
-        If you can, please filter on ViTune (`app.vitune.android`/`app.vitune.android.nightly`) to unclutter the logs a bit.
+        If you can, please filter on Banafsh (`app.banafsh.android`/`app.banafsh.android.nightly`) to unclutter the logs a bit.
 
         When submitting these logs here, please upload them as a file or upload them on [Pastebin](https://pastebin.com/). This way the issue ticket won't end up looking like a total mess.
 
   - type: input
-    id: vitune-version
+    id: banafsh-version
     attributes:
-      label: ViTune version
+      label: Banafsh version
       placeholder: |
         Example: "v1.0.4"
     validations:
       required: true
 
   - type: dropdown
-    id: vitune-version-type
+    id: banafsh-version-type
     attributes:
       label: What kind of build are you using?
       description: If you are using a debug build, please provide the exact commit hash above.
@@ -113,7 +113,7 @@ body:
       required: true
 
   - type: textarea
-    id: vitune-issue-description
+    id: banafsh-issue-description
     attributes:
       label: Upstream reproducibility
       placeholder: |

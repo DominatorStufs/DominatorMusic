@@ -5,7 +5,7 @@
 * Fixed a subtle UI inconsistency with the bottom sheets
 * Added fading edges to all overflowing headers
 * Fine-tuned the LRCLIB experience
-* Fixed a bug that caused the player to restart when a song is shared with ViTune and the screen gets rotated
+* Fixed a bug that caused the player to restart when a song is shared with Banafsh and the screen gets rotated
 * Tweaked the sleep timer dialog
 * Fixed the 'Unknown' album error
 * Added constraints to loudness normalization values

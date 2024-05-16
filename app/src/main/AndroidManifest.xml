@@ -49,14 +49,14 @@
         android:label="${appName}"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/Theme.ViTune.NoActionBar"
+        android:theme="@style/Theme.Banafsh.NoActionBar"
         tools:ignore="UnusedAttribute">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.ViTune.NoActionBar"
+            android:theme="@style/Theme.Banafsh.NoActionBar"
             android:windowSoftInputMode="adjustResize">
 
             <intent-filter>

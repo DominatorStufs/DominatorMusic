@@ -12,5 +12,5 @@
 * Highly customizable (dynamic theme, Material You, ...)
 * Normalize audio for the perfect listening experience
 * Listen from your car using Android Auto
-* Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`, etc.) with ViTune
+* Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`, etc.) with Banafsh
 * Ridiculously lightweight APK

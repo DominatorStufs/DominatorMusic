@@ -132,7 +132,7 @@
     <string name="no_browser_installed">Konnte keine Anwendung zum Surfen im Internet finden</string>
     <string name="no_equalizer_installed">Konnte keine Anwendung zum Entzerren von Audio finden</string>
     <string name="no_file_chooser_installed">Konnte keine Anwendung zum Erstellen von Dokumenten finden</string>
-    <string name="no_battery_optimization_settings_found">Konnte keine Einstellungen zur Batterieoptimierung finden, bitte ViTune manuell auf die Whitelist setzen</string>
+    <string name="no_battery_optimization_settings_found">Konnte keine Einstellungen zur Batterieoptimierung finden, bitte Banafsh manuell auf die Whitelist setzen</string>
 
     <string name="related_albums">Ähnliche Alben</string>
     <string name="similar_artists">Ähnliche Künstler</string>
@@ -253,7 +253,7 @@
     <string name="backup_description">Persönliche Einstellungen (z. B. der Themenmodus) und der Zwischenspeicher sind ausgeschlossen.</string>
     <string name="backup_action_description">Exportieren Sie die Musik-Datenbank auf den externen Speicher</string>
     <string name="restore">Wiederherstellen</string>
-    <string name="restore_warning">Vorhandene Daten werden überschrieben.\nViTune schließt sich nach der Wiederherstellung der Datenbank automatisch.</string>
+    <string name="restore_warning">Vorhandene Daten werden überschrieben.\nBanafsh schließt sich nach der Wiederherstellung der Datenbank automatisch.</string>
     <string name="restore_description">Importieren Sie die Musik-Datenbank vom externen Speicher</string>
 
     <string name="other">Sonstiges</string>
@@ -328,7 +328,7 @@
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
     <string name="login">Anmelden</string>
-    <string name="sync_description">Sie können Wiedergabelisten hosten und mit ViTune synchronisieren. Derzeit wird nur Piped unterstützt.</string>
+    <string name="sync_description">Sie können Wiedergabelisten hosten und mit Banafsh synchronisieren. Derzeit wird nur Piped unterstützt.</string>
     <string name="add_account">Account hinzufügen</string>
     <string name="add_account_description">Verknüpfen Sie ein Piped-Konto mit Ihrer Instanz, Ihrem Benutzernamen und Ihrem Passwort.</string>
     <string name="learn_more">Mehr erfahren</string>

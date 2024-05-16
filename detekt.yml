@@ -20,7 +20,7 @@ Compose:
   ModifierMissing:
     active: true
     ignoreAnnotated:
-      - app.vitune.android.ui.screens.Route
+      - app.banafsh.android.ui.screens.Route
   ModifierNaming:
     active: true
   ModifierNotUsedAtRoot:

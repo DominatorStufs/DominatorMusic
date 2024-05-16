@@ -133,7 +133,7 @@
     <string name="no_browser_installed">Couldn\'t find an application to browse the internet</string>
     <string name="no_equalizer_installed">Couldn\'t find an application to equalize audio</string>
     <string name="no_file_chooser_installed">Couldn\'t find an application to create documents</string>
-    <string name="no_battery_optimization_settings_found">Couldn\'t find battery optimization settings, please whitelist ViTune manually</string>
+    <string name="no_battery_optimization_settings_found">Couldn\'t find battery optimization settings, please whitelist Banafsh manually</string>
 
     <string name="related_albums">Related albums</string>
     <string name="similar_artists">Similar artists</string>
@@ -254,7 +254,7 @@
     <string name="backup_description">Personal preferences (i.e. the theme mode) and the cache are excluded.</string>
     <string name="backup_action_description">Export the database to the external storage</string>
     <string name="restore">Restore</string>
-    <string name="restore_warning">Existing data will be overwritten.\nViTune will automatically close itself after restoring the database.</string>
+    <string name="restore_warning">Existing data will be overwritten.\nBanafsh will automatically close itself after restoring the database.</string>
     <string name="restore_description">Import the database from the external storage</string>
 
     <string name="other">Other</string>
@@ -330,7 +330,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="sync_description">You can host playlists elsewhere and synchronize them with ViTune. Currently only supports Piped.</string>
+    <string name="sync_description">You can host playlists elsewhere and synchronize them with Banafsh. Currently only supports Piped.</string>
     <string name="add_account">Add account</string>
     <string name="add_account_description">Link a Piped account with your instance, username and password.</string>
     <string name="learn_more">Learn more</string>

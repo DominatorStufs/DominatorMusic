@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.ViTune" parent="@android:style/Theme.Holo.NoActionBar">
+    <style name="Theme.Banafsh" parent="@android:style/Theme.Holo.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

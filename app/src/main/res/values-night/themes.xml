@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.ViTune" parent="@android:style/Theme.Holo.NoActionBar">
+    <style name="Theme.Banafsh" parent="@android:style/Theme.Holo.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
@@ -12,7 +12,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="Theme.ViTune.NoActionBar" parent="Theme.ViTune">
+    <style name="Theme.Banafsh.NoActionBar" parent="Theme.Banafsh">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
