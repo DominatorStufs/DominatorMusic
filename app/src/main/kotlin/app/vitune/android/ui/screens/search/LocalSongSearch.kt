@@ -26,6 +26,9 @@ import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persistList
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Song
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -37,10 +40,7 @@ import app.vitune.android.utils.align
 import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.forcePlay
 import app.vitune.android.utils.medium
-import app.vitune.compose.persist.persistList
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.providers.innertube.models.NavigationEndpoint
+import app.vitune.android.lib.providers.innertube.models.NavigationEndpoint
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -19,6 +19,8 @@ import androidx.compose.ui.res.stringResource
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Song
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.ShimmerHost
@@ -33,9 +35,7 @@ import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.enqueue
 import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forcePlayFromBeginning
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isLandscape
+import app.vitune.android.lib.core.ui.utils.isLandscape
 import kotlinx.collections.immutable.toImmutableList
 
 // TODO: migrate to single impl for all 'song lists'

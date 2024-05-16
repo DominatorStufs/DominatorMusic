@@ -32,13 +32,13 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.vitune.android.LocalPlayerAwareWindowInsets
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.utils.center
 import app.vitune.android.utils.color
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.core.ui.utils.roundedShape
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.core.ui.utils.roundedShape
 
 @Composable
 inline fun NavigationRail(

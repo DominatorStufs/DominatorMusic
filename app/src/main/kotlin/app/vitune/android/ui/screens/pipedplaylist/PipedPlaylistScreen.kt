@@ -7,12 +7,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.res.stringResource
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.PersistMapCleanup
+import app.vitune.android.lib.compose.routing.RouteHandler
 import app.vitune.android.ui.components.themed.Scaffold
 import app.vitune.android.ui.screens.GlobalRoutes
 import app.vitune.android.ui.screens.Route
-import app.vitune.compose.persist.PersistMapCleanup
-import app.vitune.compose.routing.RouteHandler
-import app.vitune.providers.piped.models.authenticatedWith
+import app.vitune.android.lib.providers.piped.models.authenticatedWith
 import io.ktor.http.Url
 import java.util.UUID
 

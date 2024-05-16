@@ -3,7 +3,7 @@ package app.vitune.android.models
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
-import app.vitune.providers.innertube.Innertube
+import app.vitune.android.lib.providers.innertube.Innertube
 
 data class Mood(
     val name: String,

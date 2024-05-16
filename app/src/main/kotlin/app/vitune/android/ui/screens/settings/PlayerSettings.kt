@@ -30,7 +30,7 @@ import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.toast
-import app.vitune.core.ui.utils.isAtLeastAndroid6
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid6
 
 @OptIn(UnstableApi::class)
 @Route

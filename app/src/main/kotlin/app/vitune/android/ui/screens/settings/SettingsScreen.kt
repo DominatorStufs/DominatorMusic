@@ -38,6 +38,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.compose.routing.RouteHandler
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.ui.components.themed.Header
 import app.vitune.android.ui.components.themed.NumberFieldDialog
 import app.vitune.android.ui.components.themed.Scaffold
@@ -49,8 +51,6 @@ import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.color
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.compose.routing.RouteHandler
-import app.vitune.core.ui.LocalAppearance
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 

@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.service.LoginRequiredException
 import app.vitune.android.service.PlayableFormatNotFoundException
 import app.vitune.android.service.UnplayableException
@@ -46,9 +48,7 @@ import app.vitune.android.utils.forceSeekToNext
 import app.vitune.android.utils.forceSeekToPrevious
 import app.vitune.android.utils.thumbnail
 import app.vitune.android.utils.windowState
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.px
+import app.vitune.android.lib.core.ui.utils.px
 import coil.compose.AsyncImage
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException

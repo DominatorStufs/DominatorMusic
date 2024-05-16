@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.primaryButton
 import app.vitune.android.utils.medium
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.primaryButton
-import app.vitune.core.ui.utils.roundedShape
+import app.vitune.android.lib.core.ui.utils.roundedShape
 
 @Composable
 fun SecondaryTextButton(

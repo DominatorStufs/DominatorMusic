@@ -14,18 +14,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.onOverlay
+import app.vitune.android.lib.core.ui.overlay
+import app.vitune.android.lib.core.ui.shimmer
 import app.vitune.android.ui.components.themed.TextPlaceholder
 import app.vitune.android.utils.color
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.onOverlay
-import app.vitune.core.ui.overlay
-import app.vitune.core.ui.shimmer
-import app.vitune.core.ui.utils.roundedShape
-import app.vitune.providers.innertube.Innertube
+import app.vitune.android.lib.core.ui.utils.roundedShape
+import app.vitune.android.lib.providers.innertube.Innertube
 import coil.compose.AsyncImage
 
 @Composable

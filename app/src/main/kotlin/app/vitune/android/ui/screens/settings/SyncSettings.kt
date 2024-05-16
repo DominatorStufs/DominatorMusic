@@ -25,6 +25,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import app.vitune.android.Database
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persistList
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.providers.piped.Piped
+import app.vitune.android.lib.providers.piped.models.Instance
 import app.vitune.android.models.PipedSession
 import app.vitune.android.transaction
 import app.vitune.android.ui.components.themed.CircularProgressIndicator
@@ -35,10 +39,6 @@ import app.vitune.android.ui.components.themed.TextField
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.center
 import app.vitune.android.utils.semiBold
-import app.vitune.compose.persist.persistList
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.providers.piped.Piped
-import app.vitune.providers.piped.models.Instance
 import io.ktor.http.Url
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch

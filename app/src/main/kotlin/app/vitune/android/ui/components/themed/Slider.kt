@@ -4,7 +4,7 @@ import androidx.annotation.IntRange
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import app.vitune.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.LocalAppearance
 
 @Composable
 fun Slider(

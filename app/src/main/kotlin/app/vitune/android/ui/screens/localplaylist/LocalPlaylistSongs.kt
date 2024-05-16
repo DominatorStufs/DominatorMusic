@@ -30,6 +30,10 @@ import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.compose.reordering.draggedItem
+import app.vitune.android.lib.compose.reordering.rememberReorderingState
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.Song
 import app.vitune.android.models.SongPlaylistMap
@@ -56,18 +60,14 @@ import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forcePlayFromBeginning
 import app.vitune.android.utils.launchYouTubeMusic
 import app.vitune.android.utils.toast
-import app.vitune.compose.reordering.animateItemPlacement
-import app.vitune.compose.reordering.draggedItem
-import app.vitune.compose.reordering.rememberReorderingState
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.models.bodies.BrowseBody
-import app.vitune.providers.innertube.requests.playlistPage
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.providers.innertube.Innertube
+import app.vitune.android.lib.providers.innertube.models.bodies.BrowseBody
+import app.vitune.android.lib.providers.innertube.requests.playlistPage
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import app.vitune.android.lib.compose.reordering.animateItemPlacement
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

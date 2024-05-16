@@ -28,6 +28,9 @@ import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.SongPlaylistMap
 import app.vitune.android.query
@@ -52,13 +55,10 @@ import app.vitune.android.utils.completed
 import app.vitune.android.utils.enqueue
 import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forcePlayFromBeginning
-import app.vitune.compose.persist.persist
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.models.bodies.BrowseBody
-import app.vitune.providers.innertube.requests.playlistPage
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.providers.innertube.Innertube
+import app.vitune.android.lib.providers.innertube.models.bodies.BrowseBody
+import app.vitune.android.lib.providers.innertube.requests.playlistPage
 import com.valentinilk.shimmer.shimmer
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers

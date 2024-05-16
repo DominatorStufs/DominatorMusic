@@ -41,6 +41,9 @@ import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Song
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.query
@@ -65,14 +68,11 @@ import app.vitune.android.utils.forcePlay
 import app.vitune.android.utils.rememberSnapLayoutInfoProvider
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.compose.persist.persist
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.models.NavigationEndpoint
-import app.vitune.providers.innertube.models.bodies.NextBody
-import app.vitune.providers.innertube.requests.relatedPage
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.providers.innertube.Innertube
+import app.vitune.android.lib.providers.innertube.models.NavigationEndpoint
+import app.vitune.android.lib.providers.innertube.models.bodies.NextBody
+import app.vitune.android.lib.providers.innertube.requests.relatedPage
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(ExperimentalFoundationApi::class)

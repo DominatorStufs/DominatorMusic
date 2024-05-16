@@ -24,14 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.providers.innertube.Innertube
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.utils.center
 import app.vitune.android.utils.secondary
-import app.vitune.compose.persist.persist
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.utils.plus
+import app.vitune.android.lib.providers.innertube.utils.plus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

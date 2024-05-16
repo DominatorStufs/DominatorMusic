@@ -45,6 +45,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.shimmer
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
@@ -57,13 +61,9 @@ import app.vitune.android.utils.color
 import app.vitune.android.utils.rememberSnapLayoutInfoProvider
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.compose.persist.persist
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.shimmer
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.requests.discoverPage
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.providers.innertube.Innertube
+import app.vitune.android.lib.providers.innertube.requests.discoverPage
 
 @OptIn(ExperimentalFoundationApi::class)
 @Route

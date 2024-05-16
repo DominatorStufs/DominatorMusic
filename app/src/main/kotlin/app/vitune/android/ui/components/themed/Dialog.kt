@@ -43,12 +43,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.utils.center
 import app.vitune.android.utils.drawCircle
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.roundedShape
+import app.vitune.android.lib.core.ui.utils.roundedShape
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.delay
 

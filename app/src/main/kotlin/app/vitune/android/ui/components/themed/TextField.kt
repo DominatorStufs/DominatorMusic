@@ -21,10 +21,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import app.vitune.android.lib.core.ui.Appearance
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.Appearance
-import app.vitune.core.ui.LocalAppearance
 
 @Composable
 fun ColumnScope.TextField(

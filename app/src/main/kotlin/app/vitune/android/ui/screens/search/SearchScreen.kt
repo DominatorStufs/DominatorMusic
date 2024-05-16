@@ -17,13 +17,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.PersistMapCleanup
+import app.vitune.android.lib.compose.routing.RouteHandler
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.ui.components.themed.Scaffold
 import app.vitune.android.ui.screens.GlobalRoutes
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.secondary
-import app.vitune.compose.persist.PersistMapCleanup
-import app.vitune.compose.routing.RouteHandler
-import app.vitune.core.ui.LocalAppearance
 
 @Route
 @Composable

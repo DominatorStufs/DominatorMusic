@@ -23,11 +23,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.utils.align
 import app.vitune.android.utils.disabled
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.LocalAppearance
 
 @Composable
 fun Attribution(

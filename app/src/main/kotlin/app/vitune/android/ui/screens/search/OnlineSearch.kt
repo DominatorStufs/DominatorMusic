@@ -45,6 +45,10 @@ import androidx.core.net.toUri
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.compose.persist.persistList
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.providers.innertube.Innertube
 import app.vitune.android.models.SearchQuery
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.query
@@ -56,12 +60,8 @@ import app.vitune.android.utils.center
 import app.vitune.android.utils.disabled
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.secondary
-import app.vitune.compose.persist.persist
-import app.vitune.compose.persist.persistList
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.models.bodies.SearchSuggestionsBody
-import app.vitune.providers.innertube.requests.searchSuggestions
+import app.vitune.android.lib.providers.innertube.models.bodies.SearchSuggestionsBody
+import app.vitune.android.lib.providers.innertube.requests.searchSuggestions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
 
@@ -81,7 +82,7 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + listOf("-Xcontext-receivers")
+        freeCompilerArgs += listOf("-Xcontext-receivers")
     }
 
     packaging {
@@ -105,16 +106,13 @@ ksp {
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
-    implementation(projects.compose.persist)
-    implementation(projects.compose.preferences)
-    implementation(projects.compose.routing)
-    implementation(projects.compose.reordering)
-
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.activity)
+    implementation(libs.compose.animation)
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
     implementation(libs.compose.ui.util)
+    implementation(libs.compose.ui.fonts)
     implementation(libs.compose.ripple)
     implementation(libs.compose.shimmer)
     implementation(libs.compose.coil)
@@ -123,27 +121,34 @@ dependencies {
 
     implementation(libs.palette)
     implementation(libs.monet)
-    runtimeOnly(projects.core.materialCompat)
 
     implementation(libs.exoplayer)
     implementation(libs.exoplayer.workmanager)
     implementation(libs.workmanager)
     implementation(libs.workmanager.ktx)
 
+    implementation(libs.core.ktx)
     implementation(libs.kotlin.coroutines)
     implementation(libs.kotlin.immutable)
+    implementation(libs.kotlin.datetime)
+    api(libs.kotlin.datetime)
 
     implementation(libs.room)
     ksp(libs.room.compiler)
 
-    implementation(projects.providers.github)
-    implementation(projects.providers.innertube)
-    implementation(projects.providers.kugou)
-    implementation(projects.providers.lrclib)
-    implementation(projects.providers.piped)
-    implementation(projects.providers.translate)
-    implementation(projects.core.data)
-    implementation(projects.core.ui)
+    implementation(libs.ktor.client.encoding)
+    implementation(libs.brotli)
+
+    implementation(libs.ktor.http)
+    implementation(libs.ktor.serialization.json)
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.serialization)
+
+    implementation(libs.ktor.client.okhttp)
+    api(libs.ktor.http)
 
     detektPlugins(libs.detekt.compose)
     detektPlugins(libs.detekt.formatting)

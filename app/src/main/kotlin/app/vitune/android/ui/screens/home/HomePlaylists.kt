@@ -33,6 +33,14 @@ import androidx.compose.ui.unit.dp
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.compose.persist.persistList
+import app.vitune.android.lib.core.data.enums.BuiltInPlaylist
+import app.vitune.android.lib.core.data.enums.PlaylistSortBy
+import app.vitune.android.lib.core.data.enums.SortOrder
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.providers.piped.Piped
 import app.vitune.android.models.PipedSession
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.PlaylistPreview
@@ -48,17 +56,9 @@ import app.vitune.android.ui.items.PlaylistItem
 import app.vitune.android.ui.screens.Route
 import app.vitune.android.ui.screens.settings.SettingsEntryGroupText
 import app.vitune.android.ui.screens.settings.SettingsGroupSpacer
-import app.vitune.compose.persist.persist
-import app.vitune.compose.persist.persistList
-import app.vitune.core.data.enums.BuiltInPlaylist
-import app.vitune.core.data.enums.PlaylistSortBy
-import app.vitune.core.data.enums.SortOrder
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.providers.piped.Piped
-import app.vitune.providers.piped.models.Session
+import app.vitune.android.lib.providers.piped.models.Session
 import kotlinx.coroutines.async
-import app.vitune.providers.piped.models.PlaylistPreview as PipedPlaylistPreview
+import app.vitune.android.lib.providers.piped.models.PlaylistPreview as PipedPlaylistPreview
 
 @OptIn(ExperimentalFoundationApi::class)
 @Route

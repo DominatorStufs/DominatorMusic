@@ -52,13 +52,13 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.ui.UiMedia
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.service.PlayerService
 import app.vitune.android.utils.formatAsDuration
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.roundedShape
+import app.vitune.android.lib.core.ui.utils.roundedShape
 import kotlin.math.PI
 import kotlin.math.sin
 

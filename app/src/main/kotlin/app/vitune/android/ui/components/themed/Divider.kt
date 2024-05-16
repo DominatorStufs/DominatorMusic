@@ -11,7 +11,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.vitune.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.LocalAppearance
 
 /**
  * A simple horizontal divider, derived from Material Design

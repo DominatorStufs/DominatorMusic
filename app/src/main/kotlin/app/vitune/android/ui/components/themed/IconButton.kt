@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import app.vitune.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.LocalAppearance
 
 @Composable
 fun HeaderIconButton(

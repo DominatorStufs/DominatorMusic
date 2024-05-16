@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.vitune.android.Database
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Song
 import app.vitune.android.preferences.OrderPreferences
 import app.vitune.android.service.LOCAL_KEY_PREFIX
@@ -37,9 +38,8 @@ import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.AudioMediaCursor
 import app.vitune.android.utils.hasPermission
 import app.vitune.android.utils.medium
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isAtLeastAndroid13
-import app.vitune.core.ui.utils.isCompositionLaunched
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid13
+import app.vitune.android.lib.core.ui.utils.isCompositionLaunched
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

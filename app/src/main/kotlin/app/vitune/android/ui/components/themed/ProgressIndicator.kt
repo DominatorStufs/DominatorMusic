@@ -4,7 +4,7 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import app.vitune.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.LocalAppearance
 
 @Composable
 fun CircularProgressIndicator(

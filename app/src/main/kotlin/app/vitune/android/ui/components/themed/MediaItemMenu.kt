@@ -55,6 +55,11 @@ import androidx.media3.common.MediaItem
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.core.data.enums.PlaylistSortBy
+import app.vitune.android.lib.core.data.enums.SortOrder
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.favoritesIcon
 import app.vitune.android.models.Info
 import app.vitune.android.models.Playlist
 import app.vitune.android.models.Song
@@ -77,13 +82,8 @@ import app.vitune.android.utils.launchYouTubeMusic
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.semiBold
 import app.vitune.android.utils.toast
-import app.vitune.core.data.enums.PlaylistSortBy
-import app.vitune.core.data.enums.SortOrder
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.favoritesIcon
-import app.vitune.core.ui.utils.roundedShape
-import app.vitune.providers.innertube.models.NavigationEndpoint
+import app.vitune.android.lib.core.ui.utils.roundedShape
+import app.vitune.android.lib.providers.innertube.models.NavigationEndpoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

@@ -22,12 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.onOverlay
+import app.vitune.android.lib.core.ui.overlay
 import app.vitune.android.utils.center
 import app.vitune.android.utils.color
 import app.vitune.android.utils.medium
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.onOverlay
-import app.vitune.core.ui.overlay
 
 @Composable
 fun PlaybackError(

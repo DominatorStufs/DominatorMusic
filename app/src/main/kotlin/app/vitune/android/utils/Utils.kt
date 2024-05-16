@@ -12,14 +12,14 @@ import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
+import app.vitune.android.lib.providers.innertube.Innertube
 import app.vitune.android.models.Song
 import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.service.LOCAL_KEY_PREFIX
 import app.vitune.android.service.isLocal
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.models.bodies.ContinuationBody
-import app.vitune.providers.innertube.requests.playlistPage
-import app.vitune.providers.piped.models.Playlist
+import app.vitune.android.lib.providers.innertube.models.bodies.ContinuationBody
+import app.vitune.android.lib.providers.innertube.requests.playlistPage
+import app.vitune.android.lib.providers.piped.models.Playlist
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
 

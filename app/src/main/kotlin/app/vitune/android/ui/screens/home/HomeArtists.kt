@@ -31,6 +31,11 @@ import androidx.compose.ui.unit.dp
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persistList
+import app.vitune.android.lib.core.data.enums.ArtistSortBy
+import app.vitune.android.lib.core.data.enums.SortOrder
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Artist
 import app.vitune.android.preferences.OrderPreferences
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -38,11 +43,6 @@ import app.vitune.android.ui.components.themed.Header
 import app.vitune.android.ui.components.themed.HeaderIconButton
 import app.vitune.android.ui.items.ArtistItem
 import app.vitune.android.ui.screens.Route
-import app.vitune.compose.persist.persistList
-import app.vitune.core.data.enums.ArtistSortBy
-import app.vitune.core.data.enums.SortOrder
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
 
 @OptIn(ExperimentalFoundationApi::class)
 @Route

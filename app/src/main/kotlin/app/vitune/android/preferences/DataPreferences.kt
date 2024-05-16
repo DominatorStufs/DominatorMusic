@@ -4,8 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import app.vitune.android.GlobalPreferencesHolder
 import app.vitune.android.R
-import app.vitune.core.data.enums.CoilDiskCacheSize
-import app.vitune.core.data.enums.ExoPlayerDiskCacheSize
+import app.vitune.android.lib.core.data.enums.CoilDiskCacheSize
+import app.vitune.android.lib.core.data.enums.ExoPlayerDiskCacheSize
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours

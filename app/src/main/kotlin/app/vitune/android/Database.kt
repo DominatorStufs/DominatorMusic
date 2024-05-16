@@ -52,11 +52,11 @@ import app.vitune.android.models.SongPlaylistMap
 import app.vitune.android.models.SongWithContentLength
 import app.vitune.android.models.SortedSongPlaylistMap
 import app.vitune.android.service.LOCAL_KEY_PREFIX
-import app.vitune.core.data.enums.AlbumSortBy
-import app.vitune.core.data.enums.ArtistSortBy
-import app.vitune.core.data.enums.PlaylistSortBy
-import app.vitune.core.data.enums.SongSortBy
-import app.vitune.core.data.enums.SortOrder
+import app.vitune.android.lib.core.data.enums.AlbumSortBy
+import app.vitune.android.lib.core.data.enums.ArtistSortBy
+import app.vitune.android.lib.core.data.enums.PlaylistSortBy
+import app.vitune.android.lib.core.data.enums.SongSortBy
+import app.vitune.android.lib.core.data.enums.SortOrder
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 

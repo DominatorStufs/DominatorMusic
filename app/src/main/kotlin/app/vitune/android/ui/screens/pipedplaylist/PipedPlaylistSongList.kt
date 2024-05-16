@@ -22,6 +22,9 @@ import androidx.compose.ui.res.stringResource
 import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.persist
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
@@ -37,13 +40,10 @@ import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.enqueue
 import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forcePlayFromBeginning
-import app.vitune.compose.persist.persist
-import app.vitune.core.ui.Dimensions
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.providers.piped.Piped
-import app.vitune.providers.piped.models.Playlist
-import app.vitune.providers.piped.models.Session
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.providers.piped.Piped
+import app.vitune.android.lib.providers.piped.models.Playlist
+import app.vitune.android.lib.providers.piped.models.Session
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

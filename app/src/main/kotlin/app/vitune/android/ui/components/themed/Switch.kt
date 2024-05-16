@@ -14,8 +14,8 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.unit.dp
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.utils.drawCircle
-import app.vitune.core.ui.LocalAppearance
 
 @Composable
 fun Switch(

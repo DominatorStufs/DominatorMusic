@@ -15,8 +15,8 @@ import androidx.core.app.PendingIntentCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import app.vitune.android.BuildConfig
-import app.vitune.core.ui.utils.isAtLeastAndroid11
-import app.vitune.core.ui.utils.isAtLeastAndroid6
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid11
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid6
 
 inline fun <reified T> Context.intent(): Intent = Intent(this@Context, T::class.java)
 

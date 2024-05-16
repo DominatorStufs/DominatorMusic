@@ -6,8 +6,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import app.vitune.core.ui.ColorPalette
-import app.vitune.core.ui.defaultLightPalette
+import app.vitune.android.lib.core.ui.ColorPalette
+import app.vitune.android.lib.core.ui.defaultLightPalette
 import com.kieronquinn.monetcompat.core.MonetCompat
 import kotlinx.coroutines.launch
 

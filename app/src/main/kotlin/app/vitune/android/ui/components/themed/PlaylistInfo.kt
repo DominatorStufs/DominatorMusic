@@ -8,10 +8,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.providers.innertube.Innertube
 import app.vitune.android.models.Album
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.providers.innertube.Innertube
 
 @Composable
 fun PlaylistInfo(

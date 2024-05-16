@@ -50,8 +50,8 @@ import app.vitune.android.utils.findActivity
 import app.vitune.android.utils.isIgnoringBatteryOptimizations
 import app.vitune.android.utils.smoothScrollToBottom
 import app.vitune.android.utils.toast
-import app.vitune.core.ui.utils.isAtLeastAndroid12
-import app.vitune.core.ui.utils.isAtLeastAndroid6
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid12
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid6
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch

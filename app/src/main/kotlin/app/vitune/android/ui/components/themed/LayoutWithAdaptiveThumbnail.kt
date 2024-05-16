@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.shimmer
 import app.vitune.android.utils.thumbnail
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.shimmer
-import app.vitune.core.ui.utils.isLandscape
-import app.vitune.core.ui.utils.px
+import app.vitune.android.lib.core.ui.utils.isLandscape
+import app.vitune.android.lib.core.ui.utils.px
 import coil.compose.AsyncImage
 import com.valentinilk.shimmer.shimmer
 

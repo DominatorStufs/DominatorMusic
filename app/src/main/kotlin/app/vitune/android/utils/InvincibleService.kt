@@ -10,7 +10,7 @@ import android.os.Binder
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.ContextCompat
-import app.vitune.core.ui.utils.isAtLeastAndroid12
+import app.vitune.android.lib.core.ui.utils.isAtLeastAndroid12
 
 // https://stackoverflow.com/q/53502244/16885569
 // I found four ways to make the system not kill the stopped foreground service: e.g. when

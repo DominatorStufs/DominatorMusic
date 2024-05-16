@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.service.isLocal
 import app.vitune.android.ui.modifiers.PinchDirection
 import app.vitune.android.ui.modifiers.onSwipe
@@ -28,8 +29,7 @@ import app.vitune.android.utils.forceSeekToNext
 import app.vitune.android.utils.forceSeekToPrevious
 import app.vitune.android.utils.thumbnail
 import app.vitune.android.utils.windowState
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.px
+import app.vitune.android.lib.core.ui.utils.px
 import coil.compose.AsyncImage
 
 @Composable

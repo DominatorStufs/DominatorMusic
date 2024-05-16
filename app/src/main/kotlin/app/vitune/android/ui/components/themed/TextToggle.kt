@@ -17,9 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.utils.medium
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.utils.roundedShape
+import app.vitune.android.lib.core.ui.utils.roundedShape
 
 @Composable
 fun TextToggle(

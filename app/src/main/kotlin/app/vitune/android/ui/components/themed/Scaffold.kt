@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
-import app.vitune.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.LocalAppearance
 
 @Composable
 fun Scaffold(

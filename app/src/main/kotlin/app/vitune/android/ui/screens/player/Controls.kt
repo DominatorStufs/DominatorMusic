@@ -47,6 +47,8 @@ import androidx.media3.common.Player
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.LocalAppearance
+import app.vitune.android.lib.core.ui.favoritesIcon
 import app.vitune.android.models.Info
 import app.vitune.android.models.Song
 import app.vitune.android.models.ui.UiMedia
@@ -64,10 +66,8 @@ import app.vitune.android.utils.forceSeekToNext
 import app.vitune.android.utils.forceSeekToPrevious
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
-import app.vitune.core.ui.LocalAppearance
-import app.vitune.core.ui.favoritesIcon
-import app.vitune.core.ui.utils.px
-import app.vitune.core.ui.utils.roundedShape
+import app.vitune.android.lib.core.ui.utils.px
+import app.vitune.android.lib.core.ui.utils.roundedShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch

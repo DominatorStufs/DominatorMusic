@@ -19,11 +19,11 @@ import androidx.media3.datasource.cache.CacheDataSource
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.core.ui.LocalAppearance
 import app.vitune.android.models.Format
 import app.vitune.android.service.PrecacheService
 import app.vitune.android.service.downloadState
 import app.vitune.android.ui.components.themed.HeaderIconButton
-import app.vitune.core.ui.LocalAppearance
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 

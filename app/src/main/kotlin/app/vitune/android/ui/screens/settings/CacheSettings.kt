@@ -17,10 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.core.data.enums.ExoPlayerDiskCacheSize
 import app.vitune.android.preferences.DataPreferences
 import app.vitune.android.ui.components.themed.LinearProgressIndicator
 import app.vitune.android.ui.screens.Route
-import app.vitune.core.data.enums.ExoPlayerDiskCacheSize
 import coil.Coil
 import coil.annotation.ExperimentalCoilApi
 

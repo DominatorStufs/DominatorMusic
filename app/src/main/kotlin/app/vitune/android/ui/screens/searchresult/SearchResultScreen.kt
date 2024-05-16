@@ -12,6 +12,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.lib.compose.persist.LocalPersistMap
+import app.vitune.android.lib.compose.persist.PersistMapCleanup
+import app.vitune.android.lib.compose.routing.RouteHandler
+import app.vitune.android.lib.core.ui.Dimensions
+import app.vitune.android.lib.providers.innertube.Innertube
 import app.vitune.android.preferences.UIStatePreferences
 import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.themed.Header
@@ -34,15 +39,10 @@ import app.vitune.android.ui.screens.artistRoute
 import app.vitune.android.ui.screens.playlistRoute
 import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.forcePlay
-import app.vitune.compose.persist.LocalPersistMap
-import app.vitune.compose.persist.PersistMapCleanup
-import app.vitune.compose.routing.RouteHandler
-import app.vitune.core.ui.Dimensions
-import app.vitune.providers.innertube.Innertube
-import app.vitune.providers.innertube.models.bodies.ContinuationBody
-import app.vitune.providers.innertube.models.bodies.SearchBody
-import app.vitune.providers.innertube.requests.searchPage
-import app.vitune.providers.innertube.utils.from
+import app.vitune.android.lib.providers.innertube.models.bodies.ContinuationBody
+import app.vitune.android.lib.providers.innertube.models.bodies.SearchBody
+import app.vitune.android.lib.providers.innertube.requests.searchPage
+import app.vitune.android.lib.providers.innertube.utils.from
 
 @OptIn(ExperimentalFoundationApi::class)
 @Route
