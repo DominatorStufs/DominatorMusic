@@ -138,7 +138,7 @@ fun Context.musicFilesAsFlow(): StateFlow<List<Song>> = flow {
                         add(
                             Song(
                                 id = "$LOCAL_KEY_PREFIX$id",
-                                title = name,
+                                title = title,
                                 artistsText = artist,
                                 durationText = duration.milliseconds.toComponents { minutes, seconds, _ ->
                                     "$minutes:${seconds.toString().padStart(2, '0')}"

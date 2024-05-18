@@ -532,7 +532,7 @@ interface Database {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(songArtistMap: SongArtistMap): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(song: Song): Long
 
     @Insert(onConflict = OnConflictStrategy.ABORT)

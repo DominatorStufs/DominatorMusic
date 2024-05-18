@@ -14,6 +14,7 @@ import android.provider.MediaStore.Audio.Media.ARTIST
 import android.provider.MediaStore.Audio.Media.DISPLAY_NAME
 import android.provider.MediaStore.Audio.Media.DURATION
 import android.provider.MediaStore.Audio.Media.IS_MUSIC
+import android.provider.MediaStore.Audio.Media.TITLE
 import android.provider.MediaStore.Audio.Media._ID
 import app.banafsh.android.lib.core.ui.utils.isAtLeastAndroid10
 import kotlin.properties.ReadOnlyProperty
@@ -162,7 +163,7 @@ class AudioMediaCursor(cursor: Cursor) : CursorDao(cursor) {
     companion object : CursorDaoCompanion<AudioMediaCursor>() {
         val ALBUM_URI_BASE: Uri = Uri.parse("content://media/external/audio/albumart")
 
-        override fun order(order: SortOrder) = "$DISPLAY_NAME ${order.sql}"
+        override fun order(order: SortOrder) = "$TITLE ${order.sql}"
         override fun new(cursor: Cursor) = AudioMediaCursor(cursor)
 
         override val uri by lazy {
@@ -177,7 +178,7 @@ class AudioMediaCursor(cursor: Cursor) : CursorDao(cursor) {
 
     val isMusic by boolean(IS_MUSIC)
     val id by long(_ID)
-    val name by string(DISPLAY_NAME)
+    val title by string(TITLE)
     val duration by int(DURATION)
     val artist by string(ARTIST)
     private val albumId by long(ALBUM_ID)
