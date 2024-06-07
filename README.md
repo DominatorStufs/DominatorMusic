@@ -33,18 +33,16 @@
 - Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`, etc.) with ViTune
 - Ridiculously lightweight APK
 
-## Installation
+## Downloads
 
 [<img src="https://github.com/machiav3lli/oandbackupx/blob/034b226cea5c1b30eb4f6a6f313e4dadcbb0ece4/badge_github.png"
 alt="Get it on GitHub"
 height="80"
 align="center">](https://github.com/25huizengek1/ViTune/releases/latest)
-
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"
 height="80"
 align="center">](https://repo.vitune.app/)
-
 [<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
 alt="Get it on Obtainium"
 height="54"
