@@ -1,0 +1,402 @@
+<resources>
+    <string name="format_minutes">%1$дм</string>
+    <string name="format_hours">%1$дч</string>
+    <string name="format_days">%1$дд</string>
+    <string name="format_time_left">Осталось %1$s</string>
+    <string name="format_db">%1$s дБ</string>
+    <string name="format_kbps">%1$s кбит/с</string>
+    <string name="format_ms">%1$s мс</string>
+    <string name="format_px">%1$спкс</string>
+
+    <string name="format_go_to_artist">Ещё от %1$s</string>
+    <string name="format_top_playlist">Лучшие %1$s</string>
+    <string name="format_my_top_playlist">Мои лучшие %1$s</string>
+    <string name="format_view_top_of_header">Просмотреть лучшие %1$s из…</string>
+    <string name="format_multiplier">%1$sx</string>
+
+    <string name="past_24_hours">Прошлые 24 часа</string>
+    <string name="past_week">На прошлой неделе</string>
+    <string name="past_month">Прошлый месяц</string>
+    <string name="past_year">Прошлый год</string>
+    <string name="all_time">Все время</string>
+
+    <string name="songs">Песни</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="albums">Альбомы</string>
+    <string name="artists">Художники</string>
+    <string name="singles">Одиночные игры</string>
+
+    <string name="favorites">Избранное</string>
+    <string name="offline">Не в сети</string>
+    <string name="overview">Обзор</string>
+    <string name="library">Библиотека</string>
+    <string name="discover">Обнаружить</string>
+    <string name="local">Местный</string>
+    <string name="quick_picks">Быстрый выбор</string>
+    <string name="mood">Настроение</string>
+    <string name="online">В сети</string>
+    <string name="videos">Видео</string>
+    <string name="about">О</string>
+    <string name="appearance">Появление</string>
+    <string name="colors">Цвета</string>
+    <string name="shapes">Формы</string>
+
+    <string name="skip_back">Перейти назад</string>
+    <string name="skip_forward">Перейти вперед</string>
+    <string name="play">Играть</string>
+    <string name="pause">Пауза</string>
+    <string name="like">Нравиться</string>
+    <string name="shuffle">Перетасовать</string>
+    <string name="sync">Синхронизировать</string>
+    <string name="start_radio">Запустить радио</string>
+    <string name="play_next">Играть дальше</string>
+    <string name="enqueue">очередь</string>
+
+    <string name="sleep_timer">Таймер сна</string>
+    <string name="sleep_timer_ended">Таймер сна закончился</string>
+    <string name="sleep_timer_until_song_end">Пока песня не закончится</string>
+    <string name="stop_sleep_timer_prompt">Вы хотите остановить таймер сна?</string>
+    <string name="equalizer">Эквалайзер</string>
+    <string name="set_sleep_timer">Установить таймер сна</string>
+
+    <string name="cancel">Отмена</string>
+    <string name="done">Сделанный</string>
+    <string name="confirm">Подтверждать</string>
+    <string name="no">Нет</string>
+    <string name="stop">Останавливаться</string>
+    <string name="set">Набор</string>
+    <string name="hide">Скрывать</string>
+    <string name="rename">Переименовать</string>
+    <string name="delete">Удалить</string>
+    <string name="reset">Перезагрузить</string>
+    <string name="clear">Прозрачный</string>
+    <string name="view_all">Посмотреть все</string>
+
+    <string name="on_label">на</string>
+    <string name="off_label">выключенный</string>
+    <string name="off_text">Выключенный</string>
+    <string name="unknown">Неизвестный</string>
+    <string name="now_playing">Сейчас играет</string>
+
+    <string name="enter_playlist_name_prompt">Введите название плейлиста</string>
+    <string name="new_playlist">Новый плейлист</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
+
+    <string name="go_to_album">Перейти в альбом</string>
+
+    <string name="watch_on_youtube">Смотреть на YouTube</string>
+    <string name="open_in_youtube_music">Открыть в YouTube Music</string>
+    <string name="watch_playlist_on_youtube">Посмотреть плейлист на YouTube</string>
+    <string name="youtube_music_not_installed">YouTube Music не установлен на вашем устройстве!</string>
+
+    <string name="remove_from_queue">Удалить из очереди</string>
+    <string name="remove_from_playlist">Удалить из плейлиста</string>
+
+    <string name="hide_from_quick_picks">Скрыть из раздела «Быстрый выбор»</string>
+    <string name="confirm_hide_song">Вы действительно хотите скрыть эту песню? Время воспроизведения и кэш будут удалены.\nЭто действие необратимо.</string>
+    <string name="confirm_delete_playlist">Вы действительно хотите удалить этот плейлист?</string>
+    <string name="confirm_delete_piped_session">Вы действительно хотите удалить этот сеанс Piped?</string>
+
+    <string name="other_versions">Другие версии</string>
+    <string name="no_alternative_version">У этого альбома нет альтернативной версии</string>
+
+    <string name="from_wikipedia">Из Википедии</string>
+    <string name="wikipedia_cc_by_sa">Из Википедии с указанием авторства Creative Commons CC-BY-SA 3.0.</string>
+    <string name="quote_open">«</string>
+    <string name="quote_close">»</string>
+
+    <string name="moods_and_genres">Настроения и жанры</string>
+    <string name="new_released_albums">Новые выпущенные альбомы</string>
+
+    <string name="artist_has_no_albums">Этот исполнитель еще не выпустил альбом</string>
+    <string name="artist_has_no_singles">Этот исполнитель еще не выпустил ни одного сингла</string>
+
+    <string name="error_message">произошла ошибка</string>
+    <string name="error_local_music_deleted">Этот локальный музыкальный файл больше не существует.</string>
+    <string name="error_network">Произошла сетевая ошибка</string>
+    <string name="error_unplayable">Не удалось найти воспроизводимый аудиоформат.</string>
+    <string name="error_source_deleted">Исходное видео этой песни удалено.</string>
+    <string name="error_server_restrictions">Эту песню невозможно воспроизвести из-за ограничений сервера.</string>
+    <string name="error_id_mismatch">Возвращенный идентификатор видео не соответствует запрошенному.</string>
+    <string name="error_unknown_playback">Произошла неизвестная ошибка воспроизведения.</string>
+    <string name="error_piped_link">Произошла неизвестная ошибка при связывании вашей учетной записи Piped. Пожалуйста, попробуйте еще раз.</string>
+    <string name="error_piped_instances_unavailable">Список конвейерных экземпляров в настоящее время недоступен.</string>
+    <string name="error_bassboost_init">Произошла ошибка при инициализации Bass Boost. Вероятно, ваше устройство его не поддерживает. Попробуйте изменить уровень усиления басов или повторите попытку.</string>
+    <string name="error_pre_cache">Во время предварительного кэширования произошла неизвестная ошибка. Пожалуйста, попробуйте еще раз.</string>
+    <string name="error_url">Невозможно открыть URL %1$s</string>
+
+    <string name="media_permission_declined">Разрешение отклонено. Предоставьте разрешения на использование мультимедиа в настройках вашего устройства.</string>
+    <string name="open_settings">Открыть настройки</string>
+    <string name="no_items_found">ничего не найдено</string>
+    <string name="no_search_results">Результатов не найдено. Пожалуйста, попробуйте другой запрос или категорию</string>
+
+    <string name="no_browser_installed">Не удалось найти приложение для работы в Интернете.</string>
+    <string name="no_equalizer_installed">Не удалось найти приложение для эквалайзера звука.</string>
+    <string name="no_file_chooser_installed">Не удалось найти приложение для создания документов</string>
+    <string name="no_battery_optimization_settings_found">Не удалось найти настройки оптимизации заряда батареи. Добавьте ViTune в белый список вручную.</string>
+
+    <string name="related_albums">Похожие альбомы</string>
+    <string name="similar_artists">Похожие артисты</string>
+    <string name="recommended_playlists">Плейлисты, которые могут вам понравиться</string>
+    <string name="format_subscribers">%s подписчиков</string>
+
+    <string name="enter_lyrics">Введите текст</string>
+    <string name="no_lyrics_found">Лирические треки не найдены</string>
+    <string name="choose_lyric_track">Выбрать лирик-трек</string>
+    <string name="synchronized_lyrics_not_available">Синхронизированные тексты для этой песни недоступны.</string>
+    <string name="lyrics_not_available">Текст этой песни недоступен</string>
+    <string name="invalid_synchronized_lyrics">Неверный синхронизированный текст. Загрузите или отредактируйте текст и повторите попытку.</string>
+    <string name="show_unsynchronized_lyrics">Показать несинхронизированные тексты песен</string>
+    <string name="show_synchronized_lyrics">Показать синхронизированные тексты песен</string>
+    <string name="provided_lyrics_by">Предоставлено lrclib.net и kugou.com</string>
+    <string name="edit_lyrics">Редактировать тексты песен</string>
+    <string name="search_lyrics_online">Искать тексты песен в Интернете</string>
+    <string name="refetch_lyrics">Получить текст еще раз</string>
+    <string name="pick_from_lrclib">Выберите тексты песен на lrclib.net.</string>
+    <string name="set_lyrics_start_offset">Установить начальное смещение</string>
+    <string name="set_lyrics_start_offset_description">Смещает синхронизированные тексты песен на текущее время воспроизведения.</string>
+
+    <string name="playback_speed">Скорость</string>
+    <string name="playback_pitch">Подача</string>
+    <string name="playback_settings">Скорость и шаг</string>
+    <string name="minimum_speed_value">Зачем тебе это делать?!</string>
+    <string name="volume_boost">Увеличение громкости</string>
+    <string name="queue_loop">Цикл очереди</string>
+    <string name="add_queue_to_playlist">Добавить очередь в плейлист</string>
+
+    <string name="id">Идентификатор</string>
+    <string name="itag">Итаг</string>
+    <string name="bitrate">Битрейт</string>
+    <string name="size">Размер</string>
+    <string name="cached">Кэшированный</string>
+    <string name="loudness">Громкость</string>
+
+    <string name="view_album">Посмотреть альбом</string>
+    <string name="view_playlist">Посмотреть плейлист</string>
+
+    <string name="search_placeholder">Введите имя</string>
+    <string name="format_version_credits">v%1$s от Huizengek и vfsfitvnm</string>
+    <string name="social">Социальное</string>
+    <string name="contact">Контакт</string>
+    <string name="github">GitHub</string>
+    <string name="view_source">Посмотреть исходный код</string>
+    <string name="report_bug">Сообщить о проблеме</string>
+    <string name="report_bug_description">Если вам нужна помощь с ошибкой, вы можете сообщить о проблеме на GitHub (нажмите, чтобы перенаправить)</string>
+    <string name="request_feature">Запросить функцию или предложить идею</string>
+    <string name="redirect_github">Вы будете перенаправлены на GitHub</string>
+
+    <string name="color_source">Источник акцентного цвета</string>
+    <string name="color_source_default">По умолчанию</string>
+    <string name="color_source_dynamic">Динамический</string>
+    <string name="color_source_material_you">Материальный ты</string>
+
+    <string name="darkness">Тьма</string>
+    <string name="darkness_normal">Нормальный</string>
+    <string name="darkness_pureblack">ЧистыйЧерный</string>
+    <string name="darkness_amoled">АМОЛЕД</string>
+
+    <string name="color_mode">Режим</string>
+    <string name="color_mode_light">Свет</string>
+    <string name="color_mode_dark">Темный</string>
+    <string name="color_mode_system">Система</string>
+
+    <string name="thumbnail_roundness">Округлость миниатюры</string>
+    <string name="thumbnail_roundness_none">Никто</string>
+    <string name="thumbnail_roundness_light">Свет</string>
+    <string name="thumbnail_roundness_medium">Середина</string>
+    <string name="thumbnail_roundness_heavy">Тяжелый</string>
+    <string name="thumbnail_roundness_heavier">Еще тяжелее</string>
+    <string name="thumbnail_roundness_heaviest">Самый тяжелый</string>
+
+    <string name="text">Текст</string>
+    <string name="font">Шрифт</string>
+    <string name="use_system_font">Использовать системный шрифт</string>
+    <string name="use_system_font_description">Используйте шрифт, примененный системой</string>
+    <string name="apply_font_padding">Применить отступы шрифта</string>
+    <string name="apply_font_padding_description">Добавить интервал вокруг текста</string>
+    <string name="language">Язык</string>
+
+    <string name="lockscreen">Экран блокировки</string>
+    <string name="show_song_cover">Показать обложку песни</string>
+    <string name="show_song_cover_description">Используйте обложку воспроизводимой песни в качестве обоев экрана блокировки.</string>
+
+    <string name="player">Игрок</string>
+    <string name="previous_button_while_collapsed">Кнопка «Предыдущая» в свернутом виде</string>
+    <string name="previous_button_while_collapsed_description">Показывает кнопку предыдущей песни, когда плеер свернут.</string>
+    <string name="swipe_horizontally_to_close">Проведите по горизонтали, чтобы закрыть</string>
+    <string name="swipe_horizontally_to_close_description">Закрывает плеер при смахивании влево/вправо по свернутому плееру. Полезно для пользователей, у которых включен режим работы одной рукой в ​​Android.</string>
+    <string name="show_like_button">Показать кнопку «Нравится»</string>
+    <string name="show_like_button_description">Показывать кнопку «Нравится» прямо в плеере</string>
+    <string name="swipe_to_remove_item">Проведите пальцем, чтобы удалить элемент</string>
+    <string name="swipe_to_remove_item_description">Проведите пальцем влево, чтобы удалить элемент из очереди.</string>
+
+    <string name="cache">Кэш</string>
+    <string name="cache_description">Когда в кеше заканчивается место, ресурсы, к которым не было доступа в течение длительного времени, очищаются.</string>
+    <string name="image_cache">Кэш изображений</string>
+    <string name="max_size">Максимальный размер</string>
+    <string name="format_cache_space_used">%1$s использовано</string>
+    <string name="format_cache_space_used_percentage">%1$s использовано (%2$s%%)</string>
+    <string name="song_cache">Кэш песен</string>
+    <string name="database">База данных</string>
+
+    <string name="cleanup">Очистка</string>
+    <string name="pause_playback_history">Пауза истории воспроизведения</string>
+    <string name="pause_playback_history_description">Останавливает использование событий воспроизведения для быстрого выбора.</string>
+    <string name="pause_playback_history_warning">Обратите внимание: это не повлияет на автономное кэширование!</string>
+    <string name="reset_quick_picks">Сбросить быстрый выбор</string>
+    <string name="quick_picks_empty">Быстрые выборы отменены.</string>
+    <string name="pause_playback_time">Время паузы воспроизведения</string>
+    <string name="format_pause_playback_time_description">Останавливает сохранение времени воспроизведения. Статистика в плейлисте «My Top %1$s» будет приостановлена!</string>
+
+    <string name="backup">Резервное копирование</string>
+    <string name="backup_description">Личные настройки (т. е. режим темы) и кэш исключены.</string>
+    <string name="backup_action_description">Экспортируйте базу данных во внешнее хранилище.</string>
+    <string name="restore">Восстановить</string>
+    <string name="restore_warning">Существующие данные будут перезаписаны.\nViTune автоматически закроется после восстановления базы данных.</string>
+    <string name="restore_description">Импортируйте базу данных из внешнего хранилища.</string>
+
+    <string name="other">Другой</string>
+    <string name="android_auto">Андроид Авто</string>
+    <string name="android_auto_description">Включить поддержку Android Auto</string>
+    <string name="android_auto_warning">Не забудьте включить «Неизвестные источники» в настройках разработчика Android Auto.</string>
+    <string name="search_history">История поиска</string>
+    <string name="pause_search_history">Приостановить историю поиска</string>
+    <string name="pause_search_history_description">Не сохранять новые поисковые запросы и не показывать историю.</string>
+    <string name="clear_search_history">Очистить историю поиска</string>
+    <string name="format_clear_search_history_amount">Удалить поисковые запросы %1$s</string>
+    <string name="empty_history">История пуста</string>
+    <string name="built_in_playlists">Встроенные плейлисты</string>
+    <string name="top_list_length">Длина верхнего списка</string>
+    <string name="top_list_length_description">Ограничивает длину плейлиста «My top x»</string>
+
+    <string name="service_lifetime">Срок службы</string>
+    <string name="service_lifetime_warning">Если применена оптимизация заряда батареи, уведомление о воспроизведении может внезапно исчезнуть во время паузы.</string>
+    <string name="service_lifetime_warning_android_12">Начиная с Android 12, для доступности опции Invincible Service требуется отключение оптимизации батареи.</string>
+    <string name="ignore_battery_optimizations">Игнорировать оптимизацию батареи</string>
+    <string name="ignoring_battery_optimizations">Ограничение уже снято</string>
+    <string name="ignore_battery_optimizations_action">Отключить фоновые ограничения</string>
+    <string name="invincible_service">Непобедимый сервис</string>
+    <string name="invincible_service_description">Должно поддерживать воспроизведение в 99,99% случаев, если отключения оптимизации батареи недостаточно.</string>
+
+    <string name="need_help">Нужна помощь?</string>
+    <string name="need_help_description">В большинстве случаев разработчик не виноват (даже после включения службы Invincible), что приложение перестает работать должным образом в фоновом режиме.\nПроверьте, не убивает ли производитель вашего устройства ваши приложения (нажмите, чтобы перенаправить)</string>
+    <string name="service_lifetime_report_issue">Если вы действительно считаете, что с самим приложением что-то не так, перейдите на вкладку «О программе».</string>
+    <string name="troubleshooting">Поиск неисправностей</string>
+    <string name="troubleshooting_warning">Внимание: используйте эти кнопки в крайнем случае, если воспроизведение звука не удалось.</string>
+    <string name="reload_app_internals">Перезагрузить внутренние компоненты приложения</string>
+    <string name="kill_app">Убить приложение</string>
+    <string name="show_troubleshoot_section">Показать раздел устранения неполадок</string>
+
+    <string name="persistent_queue">Постоянная очередь</string>
+    <string name="persistent_queue_description">Сохранение и восстановление воспроизводимых песен</string>
+    <string name="resume_playback">Возобновить воспроизведение</string>
+    <string name="resume_playback_description">Когда подключено проводное устройство или устройство Bluetooth</string>
+    <string name="stop_when_closed">Остановиться при закрытии</string>
+    <string name="stop_when_closed_description">Когда вы закрываете приложение, музыка перестает играть.</string>
+
+    <string name="audio">Аудио</string>
+    <string name="skip_silence">Пропустить тишину</string>
+    <string name="skip_silence_description">Пропускать тихие части во время воспроизведения</string>
+    <string name="minimum_silence_length">Минимальная продолжительность молчания</string>
+    <string name="minimum_silence_length_description">Минимальное время, в течение которого звук должен быть тихим, чтобы его можно было пропустить.</string>
+    <string name="minimum_silence_length_warning">Чтобы изменения вступили в силу, необходимо перезапустить плеер!</string>
+    <string name="restart_service">Перезапустить службу</string>
+    <string name="loudness_normalization">Нормализация громкости</string>
+    <string name="loudness_normalization_description">Отрегулируйте громкость до фиксированного уровня</string>
+    <string name="loudness_base_gain">Базовое усиление громкости</string>
+    <string name="loudness_base_gain_description">«Целевой» коэффициент нормализации громкости</string>
+    <string name="loudness_normalization_extreme">Обнаружено экстремальное значение громкости (%s), нормализация для этой песни отключена.</string>
+    <string name="bass_boost">Усиление басов</string>
+    <string name="bass_boost_description">Увеличьте низкие частоты, чтобы улучшить качество прослушивания</string>
+    <string name="bass_boost_level">Уровень усиления басов</string>
+    <string name="bass_boost_level_description">Уровень (0–1000) усиления низких частот; используйте на свой страх и риск!</string>
+    <string name="equalizer_description">Взаимодействие с системным эквалайзером</string>
+
+    <string name="filter_placeholder">Фильтр…</string>
+
+    <string name="last_interaction">Последняя игра</string>
+    <string name="trending">Тенденции</string>
+    <string name="quick_picks_source">Источник быстрого выбора</string>
+    <string name="quick_picks_cache">Кэшировать данные быстрого выбора</string>
+    <string name="quick_picks_cache_description">Сохраняет данные быстрого выбора на диск для доступа в автономном режиме.</string>
+
+    <string name="player_layout">Расположение проигрывателя</string>
+    <string name="classic_player_layout_name">Классический</string>
+    <string name="new_player_layout_name">Современный (новый)</string>
+
+    <string name="piped">Трубопроводный</string>
+    <string name="instance">Пример</string>
+    <string name="click_to_select">Нажмите, чтобы выбрать</string>
+    <string name="username">Имя пользователя</string>
+    <string name="password">Пароль</string>
+    <string name="login">Авторизоваться</string>
+    <string name="sync_description">Вы можете размещать плейлисты где угодно и синхронизировать их с ViTune. В настоящее время поддерживается только Piped.</string>
+    <string name="add_account">Добавить аккаунт</string>
+    <string name="add_account_description">Свяжите учетную запись Piped с вашим экземпляром, именем пользователя и паролем.</string>
+    <string name="learn_more">Узнать больше</string>
+    <string name="learn_more_description">Не знаете, что такое Piped, или у вас нет учетной записи? Нажмите здесь, чтобы перейти к их документам</string>
+    <string name="piped_sessions">Трубопроводные сеансы</string>
+    <string name="custom_instance">Использовать пользовательский экземпляр</string>
+    <string name="base_api_url">URL-адрес API экземпляра</string>
+    <string name="piped_session_created_successfully">Сессия по конвейеру создана успешно.</string>
+
+    <string name="seek_bar_style">Ищите стиль бара</string>
+    <string name="static_seek_bar_name">Статический</string>
+    <string name="wavy_seek_bar_name">волнистый</string>
+    <string name="seek_bar_quality">Качество волнистой полосы поиска</string>
+    <string name="seek_bar_quality_poor">Бедный</string>
+    <string name="seek_bar_quality_low">Низкий</string>
+    <string name="seek_bar_quality_medium">Середина</string>
+    <string name="seek_bar_quality_high">Высокий</string>
+    <string name="seek_bar_quality_great">Большой</string>
+    <string name="seek_bar_quality_subpixel">Субпиксель</string>
+
+    <string name="remove_from_blacklist">Удалить из черного списка</string>
+    <string name="add_to_blacklist">Добавить в черный список</string>
+    <string name="reset_blacklist">Сбросить черный список</string>
+    <string name="blacklist_empty">Черный список пуст</string>
+
+    <string name="pre_cache">Предварительный кэш</string>
+
+    <string name="swipe_to_hide_song">Проведите пальцем, чтобы скрыть песню</string>
+    <string name="swipe_to_hide_song_description">Когда вы проводите по песне влево, она удаляется из базы данных и кеша.</string>
+    <string name="swipe_to_hide_song_confirm">Подтвердите пролистывание, чтобы скрыть песню</string>
+    <string name="swipe_to_hide_song_confirm_description">Чтобы скрыть, сначала нужно подтвердить</string>
+
+    <string name="version">Версия</string>
+    <string name="check_new_version">Проверьте наличие обновлений</string>
+    <string name="current_version">Сейчас вы используете версию v%1$s.</string>
+    <string name="error_github">Произошла неизвестная ошибка при получении данных с GitHub.</string>
+    <string name="new_version_available">Доступна новая версия</string>
+    <string name="more_information">Больше информации</string>
+    <string name="up_to_date">Вы в настоящее время в курсе: обновлений нет.</string>
+
+    <string name="dynamic_thumbnails">Динамические миниатюры</string>
+    <string name="max_dynamic_thumbnail_size">Максимальный размер динамического эскиза</string>
+    <string name="max_dynamic_thumbnail_size_description">Максимальный размер миниатюры при использовании динамической миниатюры</string>
+
+    <string name="hourly">Ежечасно</string>
+    <string name="daily">Ежедневно</string>
+    <string name="weekly">Еженедельно</string>
+    <string name="version_check">Автоматически проверять наличие обновлений</string>
+
+    <string name="skip_on_error">Автопропуск</string>
+    <string name="skip_on_error_description">Пропускает текущую песню при возникновении ошибки.</string>
+    <string name="skip_on_error_notification">Пропущен %s из-за ошибки</string>
+    <string name="skip_on_error_notification_unknown_song">Пропущена текущая песня из-за ошибки</string>
+
+    <plurals name="format_reset_blacklist_description">
+        <item quantity="one">Remove %1$s song from the blacklist</item>
+        <item quantity="other">Remove all %1$s songs from the blacklist</item>
+    </plurals>
+
+    <plurals name="format_reset_quick_picks_amount">
+        <item quantity="one">Delete %1$s playback event</item>
+        <item quantity="other">Delete %1$s playback events</item>
+    </plurals>
+
+    <plurals name="song_count_plural">
+        <item quantity="one">%1$d song</item>
+        <item quantity="other">%1$d songs</item>
+    </plurals>
+</resources>
