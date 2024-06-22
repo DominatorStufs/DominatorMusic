@@ -21,10 +21,7 @@ jobs:
         java-version: '17'  # 更新到 Java 17
 
     - name: Build with Gradle
-      run: ./gradlew build
-
-    - name: Disable Detekt temporarily
-      run: ./gradlew assembleRelease -x detektCheck  # 在这里暂时禁用 Detekt 检查
+      run: ./gradlew build -x detektCheck
 
     - name: Package APK
       run: ./gradlew assembleRelease
