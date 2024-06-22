@@ -12,7 +12,7 @@
     <string name="format_go_to_artist">更多来自 %1$s</string>
     <string name="format_top_playlist">热门 %1$s</string>
     <string name="format_my_top_playlist">我的热门 %1$s</string>
-    <string name="format_view_top_of_header">查看热门 %1$s...</string>
+    <string name="format_view_top_of_header">查看热门 %1$s…</string>
     <string name="format_multiplier">%1$s 倍</string>
 
     <string name="past_24_hours">过去24小时</string>
@@ -165,14 +165,14 @@
     <string name="volume_boost">音量增强</string>
     <string name="queue_loop">队列循环</string>
     <string name="add_queue_to_playlist">将队列添加到播放列表</string>
-    
+
     <string name="id">编号</string>
     <string name="itag">标签</string>
     <string name="bitrate">比特率</string>
     <string name="size">大小</string>
     <string name="cached">已缓存</string>
     <string name="loudness">响度</string>
-    
+
     <string name="view_album">查看专辑</string>
     <string name="view_playlist">查看播放列表</string>
 
@@ -196,12 +196,12 @@
     <string name="darkness_normal">正常</string>
     <string name="darkness_pureblack">纯黑</string>
     <string name="darkness_amoled">AMOLED</string>
-    
+
     <string name="color_mode">模式</string>
     <string name="color_mode_light">浅色</string>
     <string name="color_mode_dark">深色</string>
     <string name="color_mode_system">系统</string>
-    
+
     <string name="thumbnail_roundness">缩略图圆角</string>
     <string name="thumbnail_roundness_none">无</string>
     <string name="thumbnail_roundness_light">轻微</string>
@@ -221,7 +221,7 @@
     <string name="lockscreen">锁屏</string>
     <string name="show_song_cover">显示歌曲封面</string>
     <string name="show_song_cover_description">使用播放中的歌曲封面作为锁屏壁纸</string>
-    
+
     <string name="player">播放器</string>
     <string name="previous_button_while_collapsed">折叠时显示上一曲按钮</string>
     <string name="previous_button_while_collapsed_description">播放器折叠时显示上一曲按钮</string>
@@ -233,7 +233,7 @@
     <string name="swipe_to_remove_item_description">向左滑动以从队列中移除项目</string>
     <string name="lyrics_keep_screen_awake">歌词时保持屏幕唤醒</string>
     <string name="lyrics_keep_screen_awake_description">歌词显示时保持屏幕唤醒</string>
-    
+
     <string name="cache">缓存</string>
     <string name="cache_description">当缓存空间耗尽时，最久未被访问的资源将被清除</string>
     <string name="image_cache">图片缓存</string>
@@ -323,7 +323,7 @@
     <string name="quick_picks_source">快速选择源</string>
     <string name="quick_picks_cache">缓存快速选择数据</string>
     <string name="quick_picks_cache_description">将快速选择数据保存到磁盘，以便离线访问</string>
-    
+
     <string name="player_layout">播放器布局</string>
     <string name="classic_player_layout_name">经典</string>
     <string name="new_player_layout_name">现代 (新)</string>
@@ -366,7 +366,7 @@
     <string name="swipe_to_hide_song_description">当你向左滑动一首歌曲时，它将从数据库和缓存中移除</string>
     <string name="swipe_to_hide_song_confirm">确认滑动隐藏歌曲</string>
     <string name="swipe_to_hide_song_confirm_description">在执行隐藏操作前，需要先确认</string>
-    
+
     <string name="version">版本</string>
     <string name="check_new_version">检查更新</string>
     <string name="current_version">当前运行版本为 v%1$s</string>
@@ -378,7 +378,7 @@
     <string name="dynamic_thumbnails">动态缩略图</string>
     <string name="max_dynamic_thumbnail_size">最大动态缩略图大小</string>
     <string name="max_dynamic_thumbnail_size_description">使用动态缩略图时的最大尺寸</string>
-    
+
     <string name="hourly">每小时</string>
     <string name="daily">每天</string>
     <string name="weekly">每周</string>
@@ -390,17 +390,14 @@
     <string name="skip_on_error_notification_unknown_song">由于错误，已跳过当前歌曲</string>
 
     <plurals name="format_reset_blacklist_description">
-        <item quantity="one">从黑名单中移除 %1$s 首歌曲</item>
         <item quantity="other">从黑名单中移除所有 %1$s 首歌曲</item>
     </plurals>
-    
+
     <plurals name="format_reset_quick_picks_amount">
-        <item quantity="one">删除 %1$s 次播放事件</item>
         <item quantity="other">删除 %1$s 次播放事件</item>
     </plurals>
-    
+
     <plurals name="song_count_plural">
-        <item quantity="one">%1$d 首歌曲</item>
         <item quantity="other">%1$d 首歌曲</item>
     </plurals>
 </resources>
