@@ -21,7 +21,7 @@ jobs:
         java-version: '17'  # 更新到 Java 17
 
     - name: Build with Gradle
-      run: ./gradlew build -x detektCheck
+      run: ./gradlew build -x detekt
 
     - name: Package APK
       run: ./gradlew assembleRelease
