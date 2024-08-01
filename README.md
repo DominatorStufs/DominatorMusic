@@ -32,6 +32,7 @@
 - Listen from your car using Android Auto
 - Open YouTube/YouTube Music links (`watch`, `playlist`, `channel`, etc.) with ViTune
 - Ridiculously lightweight APK
+- Edited by Shun.
 
 ## Installation
 
