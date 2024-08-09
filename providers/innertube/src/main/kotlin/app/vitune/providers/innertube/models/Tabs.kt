@@ -23,3 +23,9 @@ data class Tabs(
         }
     }
 }
+
+@Serializable
+data class TwoColumnBrowseResultsRenderer(
+    val tabs: List<Tabs.Tab>?,
+    val secondaryContents: Tabs.Tab.TabRenderer.Content?
+)

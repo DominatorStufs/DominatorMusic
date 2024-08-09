@@ -19,16 +19,18 @@ import app.vitune.android.ui.screens.builtInPlaylistRoute
 import app.vitune.android.ui.screens.builtinplaylist.BuiltInPlaylistScreen
 import app.vitune.android.ui.screens.localPlaylistRoute
 import app.vitune.android.ui.screens.localplaylist.LocalPlaylistScreen
+import app.vitune.android.ui.screens.mood.MoodScreen
+import app.vitune.android.ui.screens.mood.MoreAlbumsScreen
+import app.vitune.android.ui.screens.mood.MoreMoodsScreen
 import app.vitune.android.ui.screens.moodRoute
 import app.vitune.android.ui.screens.pipedPlaylistRoute
 import app.vitune.android.ui.screens.playlistRoute
 import app.vitune.android.ui.screens.search.SearchScreen
 import app.vitune.android.ui.screens.searchResultRoute
 import app.vitune.android.ui.screens.searchRoute
-import app.vitune.android.ui.screens.searchresult.SearchResultScreen
-import app.vitune.android.ui.screens.settings.SettingsScreen
 import app.vitune.android.ui.screens.settingsRoute
 import app.vitune.compose.persist.PersistMapCleanup
+import app.vitune.compose.routing.Route0
 import app.vitune.compose.routing.RouteHandler
 import app.vitune.compose.routing.defaultStacking
 import app.vitune.compose.routing.defaultStill
@@ -36,6 +38,9 @@ import app.vitune.compose.routing.defaultUnstacking
 import app.vitune.compose.routing.isStacking
 import app.vitune.compose.routing.isUnknown
 import app.vitune.compose.routing.isUnstacking
+
+private val moreMoodsRoute = Route0("moreMoodsRoute")
+private val moreAlbumsRoute = Route0("moreAlbumsRoute")
 
 @Route
 @Composable
@@ -62,23 +67,12 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
     ) {
         GlobalRoutes()
 
-        settingsRoute {
-            SettingsScreen()
-        }
-
         localPlaylistRoute { playlistId ->
             LocalPlaylistScreen(playlistId = playlistId)
         }
 
         builtInPlaylistRoute { builtInPlaylist ->
             BuiltInPlaylistScreen(builtInPlaylist = builtInPlaylist)
-        }
-
-        searchResultRoute { query ->
-            SearchResultScreen(
-                query = query,
-                onSearchAgain = { searchRoute(query) }
-            )
         }
 
         searchRoute { initialTextInput ->
@@ -94,6 +88,18 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
                 },
                 onViewPlaylist = onPlaylistUrl
             )
+        }
+
+        moodRoute { mood ->
+            MoodScreen(mood = mood)
+        }
+
+        moreMoodsRoute {
+            MoreMoodsScreen()
+        }
+
+        moreAlbumsRoute {
+            MoreAlbumsScreen()
         }
 
         NavHost {
@@ -132,7 +138,10 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
                         1 -> HomeDiscovery(
                             onMoodClick = { mood -> moodRoute(mood.toUiMood()) },
                             onNewReleaseAlbumClick = { albumRoute(it) },
-                            onSearchClick = onSearchClick
+                            onSearchClick = onSearchClick,
+                            onMoreMoodsClick = { moreMoodsRoute() },
+                            onMoreAlbumsClick = { moreAlbumsRoute() },
+                            onPlaylistClick = { playlistRoute(it, null, null, true) }
                         )
 
                         2 -> HomeSongs(

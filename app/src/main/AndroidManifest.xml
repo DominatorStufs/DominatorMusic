@@ -70,6 +70,16 @@
             </intent-filter>
 
             <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -124,6 +134,12 @@
                     tools:ignore="IntentFilterUniqueDataAttributes" />
 
                 <data
+                    android:host="music.youtube.com"
+                    android:pathPrefix="/search"
+                    android:scheme="https"
+                    tools:ignore="IntentFilterUniqueDataAttributes" />
+
+                <data
                     android:host="www.youtube.com"
                     android:pathPrefix="/channel"
                     android:scheme="https"
@@ -140,6 +156,11 @@
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -175,6 +196,7 @@
 
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </service>
 

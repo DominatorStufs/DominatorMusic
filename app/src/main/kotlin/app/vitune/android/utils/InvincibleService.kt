@@ -1,6 +1,5 @@
 package app.vitune.android.utils
 
-import android.app.Notification
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -23,7 +22,6 @@ abstract class InvincibleService : Service() {
     protected val handler = Handler(Looper.getMainLooper())
 
     protected abstract val isInvincibilityEnabled: Boolean
-
     protected abstract val notificationId: Int
 
     private var invincibility: Invincibility? = null
@@ -61,7 +59,10 @@ abstract class InvincibleService : Service() {
 
     protected abstract fun shouldBeInvincible(): Boolean
 
-    protected abstract fun notification(): Notification?
+    /**
+     * Should strictly be called on the main thread!
+     */
+    protected abstract fun startForeground()
 
     private inner class Invincibility : BroadcastReceiver(), Runnable {
         private var isStarted = false
@@ -70,9 +71,9 @@ abstract class InvincibleService : Service() {
         override fun onReceive(context: Context?, intent: Intent?) {
             when (intent?.action) {
                 Intent.ACTION_SCREEN_ON -> handler.post(this)
-                Intent.ACTION_SCREEN_OFF -> notification()?.let { notification ->
+                Intent.ACTION_SCREEN_OFF -> {
                     handler.removeCallbacks(this)
-                    startForeground(notificationId, notification)
+                    startForeground()
                 }
             }
         }
@@ -107,9 +108,8 @@ abstract class InvincibleService : Service() {
 
         override fun run() {
             if (!shouldBeInvincible() || !isAllowedToStartForegroundServices) return
-            val notification = notification() ?: return
 
-            startForeground(notificationId, notification)
+            startForeground()
             @Suppress("DEPRECATION")
             stopForeground(false)
 

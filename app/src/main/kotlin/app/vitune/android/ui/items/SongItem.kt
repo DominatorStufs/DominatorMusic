@@ -27,10 +27,10 @@ import androidx.media3.common.MediaItem
 import app.vitune.android.R
 import app.vitune.android.models.Song
 import app.vitune.android.ui.components.themed.TextPlaceholder
-import app.vitune.android.utils.SongBundleAccessor
 import app.vitune.android.utils.medium
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
+import app.vitune.core.ui.utils.songBundle
 import app.vitune.android.utils.thumbnail
 import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.shimmer
@@ -64,9 +64,7 @@ fun SongItem(
     trailingContent: (@Composable () -> Unit)? = null,
     showDuration: Boolean = true
 ) {
-    val extras = remember(song) {
-        song.mediaMetadata.extras?.let { SongBundleAccessor(it) }
-    }
+    val extras = remember(song) { song.mediaMetadata.extras?.songBundle }
 
     SongItem(
         modifier = modifier,
@@ -223,7 +221,11 @@ fun SongItem(
                         text = authors,
                         style = typography.xs.semiBold.secondary,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(
+                            weight = 1f,
+                            fill = false
+                        )
                     )
                 }
 

@@ -1,0 +1,12 @@
+* Added pre-cache button to Piped playlists
+* Removed fixed 1:1 thumbnail ratio, ViTune now animates between thumbnail aspect ratio and favors the screen's width
+* Fixed inconsistent bottom sheet state (when the player gets killed, for example)
+* Added 'keep screen awake' toggle in settings
+* Improve lyrics editing experience
+* Added search intents, ViTune now works together with third-party launchers using app search
+* Fixed literal 'null' in notifications
+* Added more content to discover tab
+* Tweaked player UI (QOL)
+* Added Chinese translations (not full Chinese support, as YouTube Music is unavailable in China)
+* Fixed playlists not working with the new layout in the official YouTube Music app
+* Fixed various subtle inconsistencies

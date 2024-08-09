@@ -108,6 +108,7 @@
 
     <string name="moods_and_genres">Moods and genres</string>
     <string name="new_released_albums">New released albums</string>
+    <string name="more">More</string>
 
     <string name="artist_has_no_albums">This artist hasn\'t released an album yet</string>
     <string name="artist_has_no_singles">This artist hasn\'t released a single yet</string>
@@ -118,7 +119,7 @@
     <string name="error_unplayable">Couldn\'t find a playable audio format</string>
     <string name="error_source_deleted">The original video source of this song has been deleted</string>
     <string name="error_server_restrictions">This song cannot be played due to server restrictions</string>
-    <string name="error_id_mismatch">The returned video id doesn\'t match the requested one</string>
+    <string name="error_id_mismatch">The returned video ID doesn\'t match the requested one</string>
     <string name="error_unknown_playback">An unknown playback error has occurred</string>
     <string name="error_piped_link">There was an unknown error linking your Piped account. Please try again.</string>
     <string name="error_piped_instances_unavailable">Piped instance list currently unavailable</string>
@@ -230,6 +231,8 @@
     <string name="show_like_button_description">Show the like button directly in the player</string>
     <string name="swipe_to_remove_item">Swipe to remove item</string>
     <string name="swipe_to_remove_item_description">Swipe left to remove an item from the queue</string>
+    <string name="lyrics_keep_screen_awake">Keep screen awake (lyrics)</string>
+    <string name="lyrics_keep_screen_awake_description">Keeps the screen awake while the lyrics are showing</string>
 
     <string name="cache">Cache</string>
     <string name="cache_description">When the cache runs out of space, the resources that haven\'t been accessed for the longest time are cleared</string>

@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -46,8 +47,10 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.coerceAtMost
@@ -83,6 +86,7 @@ import app.vitune.android.utils.seamlessPlay
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
 import app.vitune.android.utils.shouldBePlaying
+import app.vitune.core.ui.utils.songBundle
 import app.vitune.android.utils.thumbnail
 import app.vitune.compose.persist.PersistMapCleanup
 import app.vitune.compose.routing.OnGlobalRoute
@@ -114,75 +118,73 @@ fun Player(
 
     PersistMapCleanup(prefix = "queue/suggestions")
 
-    binder?.player ?: return
-
-    var nullableMediaItem by remember {
+    var mediaItem by remember(binder) {
         mutableStateOf(
-            value = binder.player.currentMediaItem,
+            value = binder?.player?.currentMediaItem,
             policy = neverEqualPolicy()
         )
     }
+    var shouldBePlaying by remember(binder) { mutableStateOf(binder?.player?.shouldBePlaying == true) }
 
-    var shouldBePlaying by remember {
-        mutableStateOf(binder.player.shouldBePlaying)
-    }
-
-    binder.player.DisposableListener {
+    binder?.player.DisposableListener {
         object : Player.Listener {
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                nullableMediaItem = mediaItem
+            override fun onMediaItemTransition(newMediaItem: MediaItem?, reason: Int) {
+                mediaItem = newMediaItem
             }
 
             override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                shouldBePlaying = binder.player.shouldBePlaying
+                shouldBePlaying = player.shouldBePlaying
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
-                shouldBePlaying = binder.player.shouldBePlaying
+                shouldBePlaying = player.shouldBePlaying
             }
         }
     }
 
-    val mediaItem = nullableMediaItem ?: return
-    val positionAndDuration by binder.player.positionAndDurationState()
+    val (position, duration) = binder?.player.positionAndDurationState()
+    val metadata = remember(mediaItem) { mediaItem?.mediaMetadata }
+    val extras = remember(metadata) { metadata?.extras?.songBundle }
 
     val horizontalBottomPaddingValues = windowInsets
         .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
         .asPaddingValues()
 
-    OnGlobalRoute {
-        layoutState.collapseSoft()
-    }
+    OnGlobalRoute { if (layoutState.expanded) layoutState.collapseSoft() }
 
     BottomSheet(
         state = layoutState,
         modifier = modifier,
-        onDismiss = { onDismiss(binder) },
+        onDismiss = {
+            binder?.let { onDismiss(it) }
+            layoutState.dismissSoft()
+        },
         collapsedContent = { innerModifier ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier
-                    .let {
-                        if (horizontalSwipeToClose) it.onSwipe(
+                    .let { modifier ->
+                        if (horizontalSwipeToClose) modifier.onSwipe(
                             animateOffset = true,
                             onSwipeOut = { animationJob ->
+                                binder?.let { onDismiss(it) }
                                 animationJob.join()
-                                layoutState.dismiss()
-                                onDismiss(binder)
+                                layoutState.dismissSoft()
                             }
-                        ) else it
+                        ) else modifier
                     }
+                    .fillMaxSize()
                     .clip(shape)
                     .background(colorPalette.background1)
-                    .fillMaxSize()
                     .drawBehind {
                         drawRect(
                             color = colorPalette.collapsedPlayerProgressBar,
                             topLeft = Offset.Zero,
                             size = Size(
-                                width = positionAndDuration.first.toFloat() /
-                                        positionAndDuration.second.absoluteValue * size.width,
+                                width = runCatching {
+                                    size.width * (position.toFloat() / duration.absoluteValue)
+                                }.getOrElse { 0f },
                                 height = size.height
                             )
                         )
@@ -197,7 +199,7 @@ fun Player(
                     modifier = Modifier.height(Dimensions.items.collapsedPlayerHeight)
                 ) {
                     AsyncImage(
-                        model = mediaItem.mediaMetadata.artworkUri.thumbnail(Dimensions.thumbnails.song.px),
+                        model = metadata?.artworkUri?.thumbnail(Dimensions.thumbnails.song.px),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -214,7 +216,7 @@ fun Player(
                         .weight(1f)
                 ) {
                     AnimatedContent(
-                        targetState = mediaItem.mediaMetadata.title?.toString().orEmpty(),
+                        targetState = metadata?.title?.toString().orEmpty(),
                         label = "",
                         transitionSpec = { fadeIn() togetherWith fadeOut() }
                     ) { text ->
@@ -225,18 +227,32 @@ fun Player(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    AnimatedVisibility(visible = mediaItem.mediaMetadata.artist != null) {
+                    AnimatedVisibility(visible = metadata?.artist != null) {
                         AnimatedContent(
-                            targetState = mediaItem.mediaMetadata.artist?.toString().orEmpty(),
+                            targetState = metadata?.artist?.toString().orEmpty(),
                             label = "",
                             transitionSpec = { fadeIn() togetherWith fadeOut() }
                         ) { text ->
-                            BasicText(
-                                text = text,
-                                style = typography.xs.semiBold.secondary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                BasicText(
+                                    text = text,
+                                    style = typography.xs.semiBold.secondary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+
+                                AnimatedVisibility(visible = extras?.explicit == true) {
+                                    Image(
+                                        painter = painterResource(R.drawable.explicit),
+                                        contentDescription = null,
+                                        colorFilter = ColorFilter.tint(colorPalette.text),
+                                        modifier = Modifier.size(15.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -252,7 +268,7 @@ fun Player(
                         IconButton(
                             icon = R.drawable.play_skip_back,
                             color = colorPalette.text,
-                            onClick = binder.player::forceSeekToPrevious,
+                            onClick = { binder?.player?.forceSeekToPrevious() },
                             modifier = Modifier
                                 .padding(horizontal = 4.dp, vertical = 8.dp)
                                 .size(20.dp)
@@ -263,9 +279,10 @@ fun Player(
                         modifier = Modifier
                             .clickable(
                                 onClick = {
-                                    if (shouldBePlaying) binder.player.pause() else {
-                                        if (binder.player.playbackState == Player.STATE_IDLE) binder.player.prepare()
-                                        binder.player.play()
+                                    if (shouldBePlaying) binder?.player?.pause()
+                                    else {
+                                        if (binder?.player?.playbackState == Player.STATE_IDLE) binder.player.prepare()
+                                        binder?.player?.play()
                                     }
                                 },
                                 indication = rememberRipple(bounded = false),
@@ -285,7 +302,7 @@ fun Player(
                     IconButton(
                         icon = R.drawable.play_skip_forward,
                         color = colorPalette.text,
-                        onClick = binder.player::forceSeekToNext,
+                        onClick = { binder?.player?.forceSeekToNext() },
                         modifier = Modifier
                             .padding(horizontal = 4.dp, vertical = 8.dp)
                             .size(20.dp)
@@ -342,10 +359,8 @@ fun Player(
         }
 
         val controlsContent: @Composable (modifier: Modifier) -> Unit = { innerModifier ->
-            val (position, duration) = positionAndDuration
-
             Controls(
-                media = mediaItem.toUiMedia(duration),
+                media = mediaItem?.toUiMedia(duration),
                 binder = binder,
                 shouldBePlaying = shouldBePlaying,
                 position = position,
@@ -437,10 +452,12 @@ fun Player(
 
         if (boostDialogOpen) {
             fun submit(state: Float) = transaction {
-                Database.setLoudnessBoost(
-                    songId = mediaItem.mediaId,
-                    loudnessBoost = state.takeUnless { it == 0f }
-                )
+                mediaItem?.mediaId?.let { mediaId ->
+                    Database.setLoudnessBoost(
+                        songId = mediaId,
+                        loudnessBoost = state.takeUnless { it == 0f }
+                    )
+                }
             }
 
             SliderDialog(
@@ -451,11 +468,13 @@ fun Player(
                     provideState = {
                         val state = remember { mutableFloatStateOf(0f) }
 
-                        LaunchedEffect(mediaItem.mediaId) {
-                            Database
-                                .loudnessBoost(mediaItem.mediaId)
-                                .distinctUntilChanged()
-                                .collect { state.floatValue = it ?: 0f }
+                        LaunchedEffect(mediaItem) {
+                            mediaItem?.mediaId?.let { mediaId ->
+                                Database
+                                    .loudnessBoost(mediaId)
+                                    .distinctUntilChanged()
+                                    .collect { state.floatValue = it ?: 0f }
+                            }
                         }
 
                         state
@@ -477,7 +496,7 @@ fun Player(
             }
         }
 
-        Queue(
+        if (binder != null) Queue(
             layoutState = playerBottomSheetState,
             binder = binder,
             beforeContent = {
@@ -495,16 +514,18 @@ fun Player(
                     icon = R.drawable.ellipsis_horizontal,
                     color = colorPalette.text,
                     onClick = {
-                        menuState.display {
-                            PlayerMenu(
-                                onDismiss = menuState::hide,
-                                mediaItem = mediaItem,
-                                binder = binder,
-                                onShowSpeedDialog = { audioDialogOpen = true },
-                                onShowNormalizationDialog = {
-                                    boostDialogOpen = true
-                                }.takeIf { volumeNormalization }
-                            )
+                        mediaItem?.let {
+                            menuState.display {
+                                PlayerMenu(
+                                    onDismiss = menuState::hide,
+                                    mediaItem = it,
+                                    binder = binder,
+                                    onShowSpeedDialog = { audioDialogOpen = true },
+                                    onShowNormalizationDialog = {
+                                        boostDialogOpen = true
+                                    }.takeIf { volumeNormalization }
+                                )
+                            }
                         }
                     },
                     modifier = Modifier

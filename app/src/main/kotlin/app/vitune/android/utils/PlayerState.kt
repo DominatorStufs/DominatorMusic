@@ -8,7 +8,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SnapshotMutationPolicy
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,39 +24,48 @@ import androidx.media3.common.Timeline
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.service.PlayerService
+import app.vitune.core.ui.utils.EqualizerIntentBundleAccessor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
-@Suppress("LambdaParameterInRestartableEffect") // Invalid: crossinline param
+@JvmInline
+value class PlayerScope internal constructor(val player: Player)
+
 @Composable
-inline fun Player.DisposableListener(
-    key: Any = this,
-    crossinline listenerProvider: () -> Player.Listener
-) = DisposableEffect(key) {
-    val listener = listenerProvider()
+fun Player?.DisposableListener(
+    key: Any? = Unit,
+    listenerProvider: PlayerScope.() -> Player.Listener
+) {
+    val currentListenerProvider by rememberUpdatedState(listenerProvider)
 
-    addListener(listener)
-    onDispose { removeListener(listener) }
+    DisposableEffect(key, currentListenerProvider, this) {
+        this@DisposableListener?.run {
+            val listener = PlayerScope(this).currentListenerProvider()
+
+            addListener(listener)
+            listener.onMediaItemTransition(
+                /* mediaItem = */ currentMediaItem,
+                /* reason = */ Player.MEDIA_ITEM_TRANSITION_REASON_AUTO
+            )
+            onDispose { removeListener(listener) }
+        } ?: onDispose { }
+    }
 }
 
 @Composable
-fun Player.positionAndDurationState(): State<Pair<Long, Long>> {
-    val state = remember { mutableStateOf(currentPosition to duration) }
+fun Player?.positionAndDurationState(
+    delay: Duration = 500.milliseconds
+): Pair<Long, Long> {
+    var state by remember {
+        mutableStateOf(this?.let { currentPosition to duration } ?: (0L to 1L))
+    }
 
-    LaunchedEffect(this) {
-        var isSeeking = false
-
-        val listener = object : Player.Listener {
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                if (playbackState == Player.STATE_READY) {
-                    isSeeking = false
-                }
-            }
-
+    DisposableListener {
+        object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                state.value = currentPosition to state.value.second
+                state = player.currentPosition to state.second
             }
 
             override fun onPositionDiscontinuity(
@@ -62,27 +73,18 @@ fun Player.positionAndDurationState(): State<Pair<Long, Long>> {
                 newPosition: Player.PositionInfo,
                 reason: Int
             ) {
-                if (reason == Player.DISCONTINUITY_REASON_SEEK) {
-                    isSeeking = true
-                    state.value = currentPosition to duration
-                }
+                if (reason != Player.DISCONTINUITY_REASON_SEEK) return
+                state = player.currentPosition to player.duration
             }
         }
+    }
 
-        addListener(listener)
-
-        val pollJob = launch {
-            while (isActive) {
-                delay(500)
-                if (!isSeeking) state.value = currentPosition to duration
+    LaunchedEffect(this) {
+        while (isActive) {
+            delay(delay)
+            this@positionAndDurationState?.run {
+                state = currentPosition to duration
             }
-        }
-
-        try {
-            suspendCancellableCoroutine<Nothing> { }
-        } finally {
-            pollJob.cancel()
-            removeListener(listener)
         }
     }
 
@@ -95,11 +97,20 @@ typealias WindowState = Pair<Timeline.Window?, PlaybackException?>
 fun windowState(
     binder: PlayerService.Binder? = LocalPlayerServiceBinder.current
 ): WindowState {
-    val player = binder?.player ?: return null to null
-    var window by remember { mutableStateOf(player.currentWindow) }
-    var error by remember { mutableStateOf<PlaybackException?>(player.playerError) }
+    var window by remember { mutableStateOf(binder?.player?.currentWindow) }
+    var error by remember { mutableStateOf<PlaybackException?>(binder?.player?.playerError) }
+    val state by remember {
+        derivedStateOf(
+            policy = object : SnapshotMutationPolicy<WindowState> {
+                override fun equivalent(a: WindowState, b: WindowState) =
+                    a.first === b.first && a.second == b.second
+            }
+        ) {
+            window to error
+        }
+    }
 
-    player.DisposableListener {
+    binder?.player.DisposableListener {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 window = player.currentWindow
@@ -115,7 +126,7 @@ fun windowState(
         }
     }
 
-    return window to error
+    return state
 }
 
 @Composable
@@ -131,9 +142,11 @@ fun rememberEqualizerLauncher(
         try {
             launcher.launch(
                 Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL).apply {
-                    putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId())
-                    putExtra(AudioEffect.EXTRA_PACKAGE_NAME, context.packageName)
-                    putExtra(AudioEffect.EXTRA_CONTENT_TYPE, contentType)
+                    replaceExtras(EqualizerIntentBundleAccessor.bundle {
+                        audioSessionId()?.let { audioSession = it }
+                        packageName = context.packageName
+                        this.contentType = contentType
+                    })
                 }
             )
         } catch (e: ActivityNotFoundException) {

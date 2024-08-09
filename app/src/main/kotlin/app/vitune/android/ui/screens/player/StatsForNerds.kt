@@ -57,30 +57,37 @@ fun StatsForNerds(
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
+) = AnimatedVisibility(
+    visible = isDisplayed,
+    enter = fadeIn(),
+    exit = fadeOut()
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val context = LocalContext.current
-    val binder = LocalPlayerServiceBinder.current ?: return
+    val binder = LocalPlayerServiceBinder.current
 
-    AnimatedVisibility(
-        visible = isDisplayed,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        var cachedBytes by remember(mediaId) {
-            mutableLongStateOf(binder.cache.getCachedBytes(mediaId, 0, -1))
-        }
+    var cachedBytes by remember(binder, mediaId) {
+        mutableLongStateOf(binder?.cache?.getCachedBytes(mediaId, 0, -1) ?: 0L)
+    }
 
-        var format by remember { mutableStateOf<Format?>(null) }
+    var format by remember { mutableStateOf<Format?>(null) }
 
-        LaunchedEffect(mediaId) {
-            Database.format(mediaId).distinctUntilChanged().collectLatest { currentFormat ->
-                if (currentFormat?.itag == null) binder.player.currentMediaItem
+    LaunchedEffect(binder, mediaId) {
+        val currentBinder = binder ?: return@LaunchedEffect
+
+        Database
+            .format(mediaId)
+            .distinctUntilChanged()
+            .collectLatest { currentFormat ->
+                if (currentFormat?.itag != null) format = currentFormat
+                else currentBinder.player.currentMediaItem
                     ?.takeIf { it.mediaId == mediaId }
                     ?.let { mediaItem ->
                         withContext(Dispatchers.IO) {
                             delay(2000)
-                            Innertube.player(PlayerBody(videoId = mediaId))
+
+                            Innertube
+                                .player(PlayerBody(videoId = mediaId))
                                 ?.onSuccess { response ->
                                     response.streamingData?.highestQualityFormat?.let { format ->
                                         Database.insert(mediaItem)
@@ -98,95 +105,94 @@ fun StatsForNerds(
                                     }
                                 }
                         }
-                    } else format = currentFormat
+                    }
             }
+    }
+
+    DisposableEffect(binder, mediaId) {
+        val currentBinder = binder ?: return@DisposableEffect onDispose { }
+
+        val listener = object : Cache.Listener {
+            override fun onSpanAdded(cache: Cache, span: CacheSpan) {
+                cachedBytes += span.length
+            }
+
+            override fun onSpanRemoved(cache: Cache, span: CacheSpan) {
+                cachedBytes -= span.length
+            }
+
+            override fun onSpanTouched(cache: Cache, oldSpan: CacheSpan, newSpan: CacheSpan) = Unit
         }
 
-        DisposableEffect(mediaId) {
-            val listener = object : Cache.Listener {
-                override fun onSpanAdded(cache: Cache, span: CacheSpan) {
-                    cachedBytes += span.length
-                }
+        currentBinder.cache.addListener(mediaId, listener)
 
-                override fun onSpanRemoved(cache: Cache, span: CacheSpan) {
-                    cachedBytes -= span.length
-                }
-
-                override fun onSpanTouched(cache: Cache, oldSpan: CacheSpan, newSpan: CacheSpan) =
-                    Unit
-            }
-
-            binder.cache.addListener(mediaId, listener)
-
-            onDispose {
-                binder.cache.removeListener(mediaId, listener)
-            }
+        onDispose {
+            currentBinder.cache.removeListener(mediaId, listener)
         }
+    }
 
-        Box(
-            modifier = modifier
-                .pointerInput(Unit) {
-                    detectTapGestures(onTap = { onDismiss() })
-                }
-                .background(colorPalette.overlay)
-                .fillMaxSize()
+    Box(
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { onDismiss() })
+            }
+            .background(colorPalette.overlay)
+            .fillMaxSize()
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(all = 16.dp)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(all = 16.dp)
-            ) {
-                @Composable
-                fun Text(text: String) = BasicText(
-                    text = text,
-                    maxLines = 1,
-                    style = typography.xs.medium.color(colorPalette.onOverlay)
+            @Composable
+            fun Text(text: String) = BasicText(
+                text = text,
+                maxLines = 1,
+                style = typography.xs.medium.color(colorPalette.onOverlay)
+            )
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text(text = stringResource(R.string.id))
+                Text(text = stringResource(R.string.itag))
+                Text(text = stringResource(R.string.bitrate))
+                Text(text = stringResource(R.string.size))
+                Text(text = stringResource(R.string.cached))
+                Text(text = stringResource(R.string.loudness))
+            }
+
+            Column {
+                Text(text = mediaId)
+                Text(text = format?.itag?.toString() ?: stringResource(R.string.unknown))
+                Text(
+                    text = when (val rate = format?.bitrate) {
+                        null, 0L -> stringResource(R.string.unknown)
+                        else -> stringResource(R.string.format_kbps, rate / 1000)
+                    }
                 )
+                Text(
+                    text = when (val length = format?.contentLength) {
+                        null, 0L -> stringResource(R.string.unknown)
+                        else -> Formatter.formatShortFileSize(context, length)
+                    }
+                )
+                Text(
+                    text = buildString {
+                        append(Formatter.formatShortFileSize(context, cachedBytes))
 
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(text = stringResource(R.string.id))
-                    Text(text = stringResource(R.string.itag))
-                    Text(text = stringResource(R.string.bitrate))
-                    Text(text = stringResource(R.string.size))
-                    Text(text = stringResource(R.string.cached))
-                    Text(text = stringResource(R.string.loudness))
-                }
-
-                Column {
-                    Text(text = mediaId)
-                    Text(text = format?.itag?.toString() ?: stringResource(R.string.unknown))
-                    Text(
-                        text = format?.bitrate?.let {
-                            stringResource(
-                                R.string.format_kbps,
-                                it / 1000
-                            )
-                        } ?: stringResource(R.string.unknown)
-                    )
-                    Text(
-                        text = format?.contentLength
-                            ?.let { Formatter.formatShortFileSize(context, it) }
-                            ?: stringResource(R.string.unknown)
-                    )
-                    Text(
-                        text = buildString {
-                            append(Formatter.formatShortFileSize(context, cachedBytes))
-
-                            format?.contentLength?.let {
-                                append(" (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)")
-                            }
+                        format?.contentLength?.let {
+                            append(" (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)")
                         }
-                    )
-                    Text(
-                        text = format?.loudnessDb?.let {
-                            stringResource(
-                                R.string.format_db,
-                                "%.2f".format(it)
-                            )
-                        } ?: stringResource(R.string.unknown)
-                    )
-                }
+                    }
+                )
+                Text(
+                    text = format?.loudnessDb?.let {
+                        stringResource(
+                            R.string.format_db,
+                            "%.2f".format(it)
+                        )
+                    } ?: stringResource(R.string.unknown)
+                )
             }
         }
     }

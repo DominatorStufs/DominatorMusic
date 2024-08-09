@@ -1,5 +1,6 @@
 package app.vitune.android.ui.screens.localplaylist
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -11,12 +12,14 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,6 +39,7 @@ import app.vitune.android.models.SongPlaylistMap
 import app.vitune.android.query
 import app.vitune.android.transaction
 import app.vitune.android.ui.components.LocalMenuState
+import app.vitune.android.ui.components.themed.CircularProgressIndicator
 import app.vitune.android.ui.components.themed.ConfirmationDialog
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
@@ -142,6 +146,8 @@ fun LocalPlaylistSongs(
                     key = "header",
                     contentType = 0
                 ) {
+                    var loading by remember { mutableStateOf(false) }
+
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Header(
                             title = playlist.name,
@@ -156,6 +162,10 @@ fun LocalPlaylistSongs(
                             )
 
                             Spacer(modifier = Modifier.weight(1f))
+
+                            AnimatedVisibility(loading) {
+                                CircularProgressIndicator(modifier = Modifier.size(18.dp))
+                            }
 
                             PlaylistDownloadIcon(
                                 songs = songs.map { it.asMediaItem }.toImmutableList()
@@ -174,6 +184,7 @@ fun LocalPlaylistSongs(
                                                     onClick = {
                                                         menuState.hide()
                                                         transaction {
+                                                            loading = true
                                                             runBlocking(Dispatchers.IO) {
                                                                 Innertube.playlistPage(
                                                                     BrowseBody(browseId = browseId)
@@ -194,6 +205,7 @@ fun LocalPlaylistSongs(
                                                                     }
                                                                     ?.let(Database::insertSongPlaylistMaps)
                                                             }
+                                                            loading = false
                                                         }
                                                     }
                                                 )

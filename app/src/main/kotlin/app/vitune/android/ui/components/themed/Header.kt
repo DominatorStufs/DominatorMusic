@@ -75,6 +75,7 @@ fun HeaderPlaceholder(modifier: Modifier = Modifier) = Box(
         .fillMaxWidth()
 ) {
     val (colorPalette, typography) = LocalAppearance.current
+    val text = remember { List(Random.nextInt(4, 16)) { " " }.joinToString(separator = "") }
 
     Box(
         modifier = Modifier
@@ -82,7 +83,7 @@ fun HeaderPlaceholder(modifier: Modifier = Modifier) = Box(
             .fillMaxWidth(remember { 0.25f + Random.nextFloat() * 0.5f })
     ) {
         BasicText(
-            text = "        ",
+            text = text,
             style = typography.xxl.medium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis

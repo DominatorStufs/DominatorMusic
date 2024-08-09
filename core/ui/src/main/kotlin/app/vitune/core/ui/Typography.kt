@@ -2,6 +2,7 @@ package app.vitune.core.ui
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.saveable.Saver
@@ -62,7 +63,14 @@ private val googleFontsProvider = GoogleFont.Provider(
 @Composable
 fun googleFontsAvailable(): Boolean {
     val context = LocalContext.current
-    return googleFontsProvider.isAvailableOnDevice(context.applicationContext)
+
+    return runCatching {
+        googleFontsProvider.isAvailableOnDevice(context.applicationContext)
+    }.getOrElse {
+        it.printStackTrace()
+        if (it is IllegalStateException) Log.e("Typography", "Google Fonts certificates don't match. Is the user using a VPN?")
+        false
+    }
 }
 
 private val poppinsFonts = listOf(

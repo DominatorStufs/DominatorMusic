@@ -9,15 +9,15 @@ android {
     val appId = "${project.group}.android"
 
     namespace = appId
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = appId
 
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
 
-        versionCode = System.getenv("ANDROID_VERSION_CODE")?.toIntOrNull() ?: 6
+        versionCode = System.getenv("ANDROID_VERSION_CODE")?.toIntOrNull() ?: 7
         versionName = project.version.toString()
 
         multiDexEnabled = true
@@ -137,6 +137,7 @@ dependencies {
     implementation(libs.exoplayer)
     implementation(libs.exoplayer.workmanager)
     implementation(libs.media3.session)
+    implementation(libs.media)
 
     implementation(libs.workmanager)
     implementation(libs.workmanager.ktx)

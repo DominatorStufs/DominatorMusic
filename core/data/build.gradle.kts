@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "app.vitune.core.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 21
@@ -21,6 +21,8 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.core.ktx)
+
     detektPlugins(libs.detekt.compose)
     detektPlugins(libs.detekt.formatting)
 }

@@ -170,10 +170,6 @@ fun Queue(
         }
     }
 
-    LaunchedEffect(Unit) {
-        lazyListState.animateScrollToItem(mediaItemIndex.coerceAtLeast(0))
-    }
-
     LaunchedEffect(mediaItemIndex, shouldLoadSuggestions) {
         if (shouldLoadSuggestions) withContext(Dispatchers.IO) {
             suggestions = runCatching {
@@ -248,6 +244,10 @@ fun Queue(
             targetState = if (reorderingState.isDragging) -1L else mediaItemIndex,
             label = ""
         )
+
+        LaunchedEffect(Unit) {
+            lazyListState.scrollToItem(mediaItemIndex.coerceAtLeast(0))
+        }
 
         Column {
             Box(

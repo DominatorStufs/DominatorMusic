@@ -91,7 +91,7 @@ fun PlayerSettings() = with(PlayerPreferences) {
                             changed = true
                         },
                         toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
-                        range = 1.00f..2000.000f
+                        range = 1f..2000f
                     )
 
                     AnimatedVisibility(visible = changed) {
@@ -134,7 +134,8 @@ fun PlayerSettings() = with(PlayerPreferences) {
                     onSlide = { newValue = it },
                     onSlideComplete = { volumeNormalizationBaseGain = newValue },
                     toDisplay = { stringResource(R.string.format_db, "%.2f".format(it)) },
-                    range = -20.00f..20.00f
+                    range = -20f..20f,
+                    steps = 79
                 )
             }
 

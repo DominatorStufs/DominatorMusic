@@ -49,6 +49,7 @@ import app.vitune.android.ui.screens.Route
 import app.vitune.android.utils.color
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
+import app.vitune.compose.persist.PersistMapCleanup
 import app.vitune.compose.routing.RouteHandler
 import app.vitune.core.ui.LocalAppearance
 import kotlinx.collections.immutable.ImmutableList
@@ -58,8 +59,9 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun SettingsScreen() {
     val saveableStateHolder = rememberSaveableStateHolder()
-
     val (tabIndex, onTabChanged) = rememberSaveable { mutableIntStateOf(0) }
+
+    PersistMapCleanup("settings/")
 
     RouteHandler(listenToGlobalEmitter = true) {
         GlobalRoutes()

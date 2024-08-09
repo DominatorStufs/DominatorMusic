@@ -1,16 +1,16 @@
 [versions]
-kotlin = "2.0.0"
-ksp = "2.0.0-1.0.21"
+kotlin = "2.0.10"
+ksp = "2.0.10-1.0.24"
 
 jvm = "17"
-agp = "8.6.0-alpha02"
+agp = "8.6.0-rc01"
 
 room = "2.6.1"
-media3 = "1.3.1"
-ktor = "2.3.11"
+media3 = "1.4.0"
+ktor = "2.3.12"
 detekt = "1.23.6"
-workmanager = "2.9.0"
-credentials = "1.3.0-alpha04"
+workmanager = "2.9.1"
+credentials = "1.5.0-alpha04"
 
 [plugins]
 android_application = { id = "com.android.application", version.ref = "agp" }
@@ -30,16 +30,16 @@ kotlin_coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", 
 kotlin_datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.0" }
 kotlin_immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version = "0.3.7" }
 
-compose_bom = { module = "androidx.compose:compose-bom", version = "2024.05.00" }
+compose_bom = { module = "androidx.compose:compose-bom", version = "2024.06.00" }
 compose_animation = { module = "androidx.compose.animation:animation" }
-compose_foundation = { module = "androidx.compose.foundation:foundation", version = "1.6.7" }
+compose_foundation = { module = "androidx.compose.foundation:foundation", version = "1.6.8" }
 compose_ui = { module = "androidx.compose.ui:ui" }
 compose_ui_util = { module = "androidx.compose.ui:ui-util" }
 compose_ui_fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 compose_ripple = { module = "androidx.compose.material:material-ripple" }
 compose_material3 = { module = "androidx.compose.material3:material3", version = "1.2.1" }
 
-compose_activity = { module = "androidx.activity:activity-compose", version = "1.9.0" }
+compose_activity = { module = "androidx.activity:activity-compose", version = "1.9.1" }
 compose_shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version = "1.3.0" }
 compose_coil = { module = "io.coil-kt:coil-compose", version = "2.6.0" }
 compose_lottie = { module = "com.airbnb.android:lottie-compose", version = "6.4.1" }
@@ -50,6 +50,7 @@ room_compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 exoplayer_workmanager = { module = "androidx.media3:media3-exoplayer-workmanager", version.ref = "media3" }
 media3_session = { module = "androidx.media3:media3-session", version.ref = "media3" }
+media = { module = "androidx.media:media", version = "1.7.0" }
 
 workmanager = { module = "androidx.work:work-runtime", version.ref = "workmanager" }
 workmanager_ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
@@ -74,5 +75,5 @@ monet = { module = "com.github.KieronQuinn:MonetCompat", version = "0.4.1" }
 
 desugaring = { module = "com.android.tools:desugar_jdk_libs", version = "2.0.4" }
 
-detekt_compose = { module = "io.nlopez.compose.rules:detekt", version = "0.4.2" }
+detekt_compose = { module = "io.nlopez.compose.rules:detekt", version = "0.4.5" }
 detekt_formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }

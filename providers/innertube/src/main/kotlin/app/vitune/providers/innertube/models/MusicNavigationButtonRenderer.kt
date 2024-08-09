@@ -9,6 +9,9 @@ data class MusicNavigationButtonRenderer(
     val iconStyle: IconStyle?,
     val clickCommand: NavigationEndpoint
 ) {
+    val isMood: Boolean
+        get() = clickCommand.browseEndpoint?.browseId == "FEmusic_moods_and_genres_category"
+
     @Serializable
     data class Solid(
         val leftStripeColor: Long

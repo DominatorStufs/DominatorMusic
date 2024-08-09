@@ -218,8 +218,14 @@ object Innertube {
 
     data class DiscoverPage(
         val newReleaseAlbums: List<AlbumItem>,
-        val moods: List<Mood.Item>
-    )
+        val moods: List<Mood.Item>,
+        val trending: Trending
+    ) {
+        data class Trending(
+            val songs: List<SongItem>,
+            val endpoint: NavigationEndpoint.Endpoint.Browse?
+        )
+    }
 
     data class Mood(
         val title: String,
@@ -229,7 +235,13 @@ object Innertube {
             val title: String,
             val stripeColor: Long,
             val endpoint: NavigationEndpoint.Endpoint.Browse
-        )
+        ) : Innertube.Item() {
+            override val thumbnail get() = null
+            override val key
+                get() = "${endpoint.browseId.orEmpty()}${endpoint.params?.let { "/$it" }.orEmpty()}"
+
+            companion object
+        }
     }
 
     @Suppress("ReturnCount")

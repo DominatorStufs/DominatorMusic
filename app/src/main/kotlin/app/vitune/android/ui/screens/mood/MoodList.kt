@@ -48,7 +48,7 @@ import app.vitune.providers.innertube.requests.BrowseResult
 import app.vitune.providers.innertube.requests.browse
 import com.valentinilk.shimmer.shimmer
 
-internal const val DEFAULT_BROWSE_ID = "FEmusic_moods_and_genres_category"
+private const val DEFAULT_BROWSE_ID = "FEmusic_moods_and_genres_category"
 
 @Composable
 fun MoodList(
@@ -60,7 +60,7 @@ fun MoodList(
 
     val browseId = mood.browseId ?: DEFAULT_BROWSE_ID
     var moodPage by persist<Result<BrowseResult>>(
-        tag = "playlist/$browseId${mood.params?.let { "/$it" }.orEmpty()}"
+        tag = "playlist/mood/$browseId${mood.params?.let { "/$it" }.orEmpty()}"
     )
 
     LaunchedEffect(Unit) {
@@ -75,6 +75,10 @@ fun MoodList(
         .only(WindowInsetsSides.End)
         .asPaddingValues()
 
+    val contentPadding = windowInsets
+        .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
+        .asPaddingValues()
+
     val sectionTextModifier = Modifier
         .padding(horizontal = 16.dp)
         .padding(top = 24.dp, bottom = 8.dp)
@@ -83,8 +87,7 @@ fun MoodList(
     moodPage?.getOrNull()?.let { moodResult ->
         LazyColumn(
             state = lazyListState,
-            contentPadding = LocalPlayerAwareWindowInsets.current
-                .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+            contentPadding = contentPadding,
             modifier = Modifier
                 .background(colorPalette.background0)
                 .fillMaxSize()
@@ -101,7 +104,7 @@ fun MoodList(
             moodResult.items.forEach { item ->
                 item {
                     BasicText(
-                        text = item.title,
+                        text = item.title.orEmpty(),
                         style = typography.m.semiBold,
                         modifier = sectionTextModifier
                     )
@@ -168,7 +171,7 @@ fun MoodList(
                 .align(Alignment.CenterHorizontally)
                 .padding(all = 16.dp)
         )
-    } ?: ShimmerHost {
+    } ?: ShimmerHost(modifier = Modifier.padding(contentPadding)) {
         HeaderPlaceholder(modifier = Modifier.shimmer())
         repeat(4) {
             TextPlaceholder(modifier = sectionTextModifier)

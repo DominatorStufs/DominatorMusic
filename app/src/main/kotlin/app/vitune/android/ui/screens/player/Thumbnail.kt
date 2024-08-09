@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.
 import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.Companion.Right
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -14,12 +16,13 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -27,9 +30,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.C
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
@@ -60,24 +65,28 @@ fun Thumbnail(
     modifier: Modifier = Modifier
 ) {
     val binder = LocalPlayerServiceBinder.current
-    val player = binder?.player ?: return
-
     val (colorPalette, _, _, thumbnailShape) = LocalAppearance.current
-    val thumbnailSize = Dimensions.thumbnails.player.song
 
-    val (nullableWindow, error) = windowState()
-    val window = nullableWindow ?: return
+    val (window, error) = windowState()
 
     AnimatedContent(
         targetState = window,
         transitionSpec = {
             val duration = 500
+            val initial = initialState
+            val target = targetState
+
+            if (initial == null || target == null) return@AnimatedContent ContentTransform(
+                targetContentEnter = fadeIn(tween(duration)),
+                initialContentExit = fadeOut(tween(duration)),
+                sizeTransform = null
+            )
+
             val sizeTransform = SizeTransform(clip = false) { _, _ ->
                 tween(durationMillis = duration, delayMillis = duration)
             }
 
-            val direction =
-                if (targetState.firstPeriodIndex > initialState.firstPeriodIndex) Left else Right
+            val direction = if (target.firstPeriodIndex < initial.firstPeriodIndex) Right else Left
 
             ContentTransform(
                 targetContentEnter = slideIntoContainer(direction, tween(duration)) +
@@ -91,11 +100,11 @@ fun Thumbnail(
         },
         modifier = modifier.onSwipe(
             onSwipeLeft = {
-                binder.player.forceSeekToNext()
+                binder?.player?.forceSeekToNext()
             },
             onSwipeRight = {
-                binder.player.seekToDefaultPosition()
-                binder.player.forceSeekToPrevious()
+                binder?.player?.seekToDefaultPosition()
+                binder?.player?.forceSeekToPrevious()
             }
         ),
         contentAlignment = Alignment.Center,
@@ -103,22 +112,25 @@ fun Thumbnail(
     ) { currentWindow ->
         val shadowElevation by animateDpAsState(
             targetValue = if (window == currentWindow) 8.dp else 0.dp,
-            animationSpec = tween(500),
+            animationSpec = tween(
+                durationMillis = 500,
+                delayMillis = 500,
+                easing = LinearEasing
+            ),
             label = ""
         )
         val blurRadius by animateDpAsState(
             targetValue = if (
-                (isShowingLyrics && !currentWindow.mediaItem.isLocal) ||
+                (isShowingLyrics && currentWindow?.mediaItem?.isLocal == false) ||
                 error != null || isShowingStatsForNerds
             ) 8.dp else 0.dp,
             animationSpec = tween(500),
             label = ""
         )
 
-        Box(
+        if (currentWindow != null) Box(
             modifier = Modifier
-                .aspectRatio(1f)
-                .size(thumbnailSize)
+                .fillMaxWidth()
                 .shadow(
                     elevation = shadowElevation,
                     shape = thumbnailShape,
@@ -126,11 +138,14 @@ fun Thumbnail(
                 )
                 .clip(thumbnailShape)
         ) {
-            if (currentWindow.mediaItem.mediaMetadata.artworkUri != null) AsyncImage(
-                model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail((thumbnailSize - 64.dp).px),
+            var height by remember { mutableIntStateOf(0) }
+
+            AsyncImage(
+                model = currentWindow.mediaItem.mediaMetadata.artworkUri
+                    ?.thumbnail((Dimensions.thumbnails.player.song - 64.dp).px),
                 error = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = null,
-                contentScale = ContentScale.Crop,
+                contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .pointerInput(Unit) {
                         detectTapGestures(
@@ -138,19 +153,15 @@ fun Thumbnail(
                             onLongPress = { onShowStatsForNerds(true) }
                         )
                     }
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .animateContentSize()
                     .background(colorPalette.background0)
                     .let {
                         if (blurRadius == 0.dp) it else it.blur(radius = blurRadius)
                     }
-            ) else Icon(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                modifier = Modifier
-                    .pointerInput(Unit) {
-                        detectTapGestures(onLongPress = { onShowStatsForNerds(true) })
+                    .onGloballyPositioned {
+                        height = it.size.height
                     }
-                    .fillMaxSize()
             )
 
             if (!currentWindow.mediaItem.isLocal) Lyrics(
@@ -158,16 +169,17 @@ fun Thumbnail(
                 isDisplayed = isShowingLyrics && error == null,
                 onDismiss = { onShowLyrics(false) },
                 ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
-                height = thumbnailSize,
                 mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
-                durationProvider = player::getDuration,
-                onOpenDialog = onOpenDialog
+                durationProvider = { binder?.player?.duration ?: C.TIME_UNSET },
+                onOpenDialog = onOpenDialog,
+                modifier = Modifier.height(height.px.dp)
             )
 
             StatsForNerds(
                 mediaId = currentWindow.mediaItem.mediaId,
                 isDisplayed = isShowingStatsForNerds && error == null,
-                onDismiss = { onShowStatsForNerds(false) }
+                onDismiss = { onShowStatsForNerds(false) },
+                modifier = Modifier.height(height.px.dp)
             )
 
             PlaybackError(
@@ -185,7 +197,7 @@ fun Thumbnail(
                         else -> stringResource(R.string.error_unknown_playback)
                     }
                 },
-                onDismiss = player::prepare
+                onDismiss = { binder?.player?.prepare() }
             )
         }
     }

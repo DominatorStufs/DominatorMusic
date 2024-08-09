@@ -160,37 +160,58 @@ fun ConfirmationDialog(
     cancelText: String = stringResource(R.string.cancel),
     confirmText: String = stringResource(R.string.confirm),
     onCancel: () -> Unit = onDismiss
+) = DefaultDialog(
+    onDismiss = onDismiss,
+    modifier = modifier
+) {
+    ConfirmationDialogBody(
+        text = text,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
+        cancelText = cancelText,
+        confirmText = confirmText,
+        onCancel = onCancel
+    )
+}
+
+@Suppress("ModifierMissing", "UnusedReceiverParameter")
+@Composable
+fun ColumnScope.ConfirmationDialogBody(
+    text: String,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    cancelText: String = stringResource(R.string.cancel),
+    confirmText: String = stringResource(R.string.confirm),
+    onCancel: () -> Unit = onDismiss
 ) {
     val (_, typography) = LocalAppearance.current
 
-    DefaultDialog(
-        onDismiss = onDismiss,
-        modifier = modifier
+    BasicText(
+        text = text,
+        style = typography.xs.medium.center,
+        modifier = Modifier.padding(all = 16.dp)
+    )
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        BasicText(
-            text = text,
-            style = typography.xs.medium.center,
-            modifier = Modifier.padding(all = 16.dp)
+        DialogTextButton(
+            text = cancelText,
+            onClick = {
+                onCancel()
+                onDismiss()
+            }
         )
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            DialogTextButton(
-                text = cancelText,
-                onClick = onCancel
-            )
-
-            DialogTextButton(
-                text = confirmText,
-                primary = true,
-                onClick = {
-                    onConfirm()
-                    onDismiss()
-                }
-            )
-        }
+        DialogTextButton(
+            text = confirmText,
+            primary = true,
+            onClick = {
+                onConfirm()
+                onDismiss()
+            }
+        )
     }
 }
 

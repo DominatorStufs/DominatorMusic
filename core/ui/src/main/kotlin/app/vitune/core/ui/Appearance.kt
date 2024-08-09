@@ -125,7 +125,10 @@ fun Activity.setSystemBarAppearance(isDark: Boolean) {
 
     val color = (if (isDark) Color.Transparent else Color.Black.copy(alpha = 0.2f)).toArgb()
 
+    // TODO: Android now expects a background behind the system bars as well
+    @Suppress("DEPRECATION")
     if (!isAtLeastAndroid6) window.statusBarColor = color
+    @Suppress("DEPRECATION")
     if (!isAtLeastAndroid8) window.navigationBarColor = color
 }
 

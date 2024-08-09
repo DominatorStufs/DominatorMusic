@@ -39,4 +39,5 @@ object AppearancePreferences : GlobalPreferencesHolder() {
     var swipeToHideSong by boolean(false)
     var swipeToHideSongConfirm by boolean(true)
     var maxThumbnailSize by int(1920)
+    var lyricsKeepScreenAwake by boolean(false)
 }

@@ -4,9 +4,10 @@ import androidx.compose.runtime.Composable
 import app.vitune.android.models.Mood
 import app.vitune.android.ui.screens.album.AlbumScreen
 import app.vitune.android.ui.screens.artist.ArtistScreen
-import app.vitune.android.ui.screens.mood.MoodScreen
 import app.vitune.android.ui.screens.pipedplaylist.PipedPlaylistScreen
 import app.vitune.android.ui.screens.playlist.PlaylistScreen
+import app.vitune.android.ui.screens.searchresult.SearchResultScreen
+import app.vitune.android.ui.screens.settings.SettingsScreen
 import app.vitune.compose.routing.Route0
 import app.vitune.compose.routing.Route1
 import app.vitune.compose.routing.Route3
@@ -65,7 +66,14 @@ fun RouteHandlerScope.GlobalRoutes() {
         )
     }
 
-    moodRoute { mood ->
-        MoodScreen(mood = mood)
+    settingsRoute {
+        SettingsScreen()
+    }
+
+    searchResultRoute { query ->
+        SearchResultScreen(
+            query = query,
+            onSearchAgain = { searchRoute(query) }
+        )
     }
 }

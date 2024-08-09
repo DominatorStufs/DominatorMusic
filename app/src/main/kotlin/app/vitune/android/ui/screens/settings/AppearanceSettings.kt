@@ -180,6 +180,13 @@ fun AppearanceSettings() = with(AppearancePreferences) {
                 isChecked = PlayerPreferences.horizontalSwipeToRemoveItem,
                 onCheckedChange = { PlayerPreferences.horizontalSwipeToRemoveItem = it }
             )
+
+            SwitchSettingsEntry(
+                title = stringResource(R.string.lyrics_keep_screen_awake),
+                text = stringResource(R.string.lyrics_keep_screen_awake_description),
+                isChecked = lyricsKeepScreenAwake,
+                onCheckedChange = { lyricsKeepScreenAwake = it }
+            )
         }
         SettingsGroup(title = stringResource(R.string.songs)) {
             SwitchSettingsEntry(

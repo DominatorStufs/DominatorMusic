@@ -3,7 +3,9 @@ package app.vitune.android.ui.screens.home
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -44,16 +46,24 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import app.vitune.android.LocalPlayerAwareWindowInsets
+import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
+import app.vitune.android.ui.components.FadingRow
+import app.vitune.android.ui.components.LocalMenuState
 import app.vitune.android.ui.components.ShimmerHost
 import app.vitune.android.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.vitune.android.ui.components.themed.Header
+import app.vitune.android.ui.components.themed.NonQueuedMediaItemMenu
+import app.vitune.android.ui.components.themed.SecondaryTextButton
 import app.vitune.android.ui.components.themed.TextPlaceholder
 import app.vitune.android.ui.items.AlbumItem
 import app.vitune.android.ui.items.AlbumItemPlaceholder
+import app.vitune.android.ui.items.SongItem
 import app.vitune.android.ui.screens.Route
+import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.center
 import app.vitune.android.utils.color
+import app.vitune.android.utils.forcePlay
 import app.vitune.android.utils.rememberSnapLayoutInfoProvider
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
@@ -63,7 +73,10 @@ import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.shimmer
 import app.vitune.core.ui.utils.isLandscape
 import app.vitune.providers.innertube.Innertube
+import app.vitune.providers.innertube.models.NavigationEndpoint
 import app.vitune.providers.innertube.requests.discoverPage
+
+// TODO: a lot of duplicate code all around the codebase, especially for discover
 
 @OptIn(ExperimentalFoundationApi::class)
 @Route
@@ -71,15 +84,22 @@ import app.vitune.providers.innertube.requests.discoverPage
 fun HomeDiscovery(
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onNewReleaseAlbumClick: (String) -> Unit,
-    onSearchClick: () -> Unit
+    onSearchClick: () -> Unit,
+    onMoreMoodsClick: () -> Unit,
+    onMoreAlbumsClick: () -> Unit,
+    onPlaylistClick: (browseId: String) -> Unit
 ) {
     val (colorPalette, typography) = LocalAppearance.current
     val windowInsets = LocalPlayerAwareWindowInsets.current
+    val menuState = LocalMenuState.current
+    val binder = LocalPlayerServiceBinder.current
 
     val scrollState = rememberScrollState()
-    val lazyGridState = rememberLazyGridState()
+    val moodGridState = rememberLazyGridState()
 
-    val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
+    val endPaddingValues = windowInsets
+        .only(WindowInsetsSides.End)
+        .asPaddingValues()
 
     val sectionTextModifier = Modifier
         .padding(horizontal = 16.dp)
@@ -89,21 +109,18 @@ fun HomeDiscovery(
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discovery")
 
     LaunchedEffect(Unit) {
-        if (discoverPage?.isSuccess != true)
-        discoverPage = Innertube.discoverPage()
+        if (discoverPage?.isSuccess != true) discoverPage = Innertube.discoverPage()
     }
 
     BoxWithConstraints {
-        val moodItemWidthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.75f
-
-        val snapLayoutInfoProvider = rememberSnapLayoutInfoProvider(
-            lazyGridState = lazyGridState,
+        val widthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.75f
+        val moodSnapLayoutInfoProvider = rememberSnapLayoutInfoProvider(
+            lazyGridState = moodGridState,
             positionInLayout = { layoutSize, itemSize ->
-                layoutSize * moodItemWidthFactor / 2f - itemSize / 2f
+                layoutSize * widthFactor / 2f - itemSize / 2f
             }
         )
-
-        val itemWidth = maxWidth * moodItemWidthFactor
+        val itemWidth = maxWidth * widthFactor
 
         Column(
             modifier = Modifier
@@ -123,16 +140,35 @@ fun HomeDiscovery(
 
             discoverPage?.getOrNull()?.let { page ->
                 if (page.moods.isNotEmpty()) {
-                    BasicText(
-                        text = stringResource(R.string.moods_and_genres),
-                        style = typography.m.semiBold,
-                        modifier = sectionTextModifier
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FadingRow(
+                            modifier = Modifier.weight(
+                                weight = 1f,
+                                fill = false
+                            )
+                        ) {
+                            BasicText(
+                                text = stringResource(R.string.moods_and_genres),
+                                style = typography.m.semiBold,
+                                modifier = sectionTextModifier
+                            )
+                        }
+
+                        SecondaryTextButton(
+                            text = stringResource(R.string.more),
+                            onClick = onMoreMoodsClick,
+                            modifier = sectionTextModifier
+                        )
+                    }
 
                     LazyHorizontalGrid(
-                        state = lazyGridState,
+                        state = moodGridState,
                         rows = GridCells.Fixed(4),
-                        flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                        flingBehavior = rememberSnapFlingBehavior(moodSnapLayoutInfoProvider),
                         contentPadding = endPaddingValues,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -154,11 +190,30 @@ fun HomeDiscovery(
                 }
 
                 if (page.newReleaseAlbums.isNotEmpty()) {
-                    BasicText(
-                        text = stringResource(R.string.new_released_albums),
-                        style = typography.m.semiBold,
-                        modifier = sectionTextModifier
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FadingRow(
+                            modifier = Modifier.weight(
+                                weight = 1f,
+                                fill = false
+                            )
+                        ) {
+                            BasicText(
+                                text = stringResource(R.string.new_released_albums),
+                                style = typography.m.semiBold,
+                                modifier = sectionTextModifier
+                            )
+                        }
+
+                        SecondaryTextButton(
+                            text = stringResource(R.string.more),
+                            onClick = onMoreAlbumsClick,
+                            modifier = sectionTextModifier
+                        )
+                    }
 
                     LazyRow(contentPadding = endPaddingValues) {
                         items(items = page.newReleaseAlbums, key = { it.key }) {
@@ -167,6 +222,85 @@ fun HomeDiscovery(
                                 thumbnailSize = Dimensions.thumbnails.album,
                                 alternative = true,
                                 modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) })
+                            )
+                        }
+                    }
+                }
+
+                if (page.trending.songs.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        FadingRow(
+                            modifier = Modifier.weight(
+                                weight = 1f,
+                                fill = false
+                            )
+                        ) {
+                            BasicText(
+                                text = stringResource(R.string.trending),
+                                style = typography.m.semiBold,
+                                modifier = sectionTextModifier
+                            )
+                        }
+
+                        page.trending.endpoint?.browseId?.let { browseId ->
+                            SecondaryTextButton(
+                                text = stringResource(R.string.more),
+                                onClick = { onPlaylistClick(browseId) },
+                                modifier = sectionTextModifier
+                            )
+                        }
+                    }
+
+                    val trendingGridState = rememberLazyGridState()
+                    val trendingSnapLayoutInfoProvider = rememberSnapLayoutInfoProvider(
+                        lazyGridState = trendingGridState,
+                        positionInLayout = { layoutSize, itemSize ->
+                            (layoutSize * widthFactor / 2f - itemSize / 2f)
+                        }
+                    )
+
+                    LazyHorizontalGrid(
+                        state = trendingGridState,
+                        rows = GridCells.Fixed(4),
+                        flingBehavior = rememberSnapFlingBehavior(trendingSnapLayoutInfoProvider),
+                        contentPadding = endPaddingValues,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height((Dimensions.thumbnails.song + Dimensions.items.verticalPadding * 2) * 4)
+                    ) {
+                        items(
+                            items = page.trending.songs,
+                            key = Innertube.SongItem::key
+                        ) { song ->
+                            SongItem(
+                                song = song,
+                                thumbnailSize = Dimensions.thumbnails.song,
+                                modifier = Modifier
+                                    .combinedClickable(
+                                        onLongClick = {
+                                            menuState.display {
+                                                NonQueuedMediaItemMenu(
+                                                    onDismiss = menuState::hide,
+                                                    mediaItem = song.asMediaItem
+                                                )
+                                            }
+                                        },
+                                        onClick = {
+                                            val mediaItem = song.asMediaItem
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlay(mediaItem)
+                                            binder?.setupRadio(
+                                                NavigationEndpoint.Endpoint.Watch(videoId = mediaItem.mediaId)
+                                            )
+                                        }
+                                    )
+                                    .animateItemPlacement()
+                                    .width(itemWidth),
+                                showDuration = false
                             )
                         }
                     }
@@ -182,9 +316,9 @@ fun HomeDiscovery(
             } ?: ShimmerHost {
                 TextPlaceholder(modifier = sectionTextModifier)
                 LazyHorizontalGrid(
-                    state = lazyGridState,
+                    state = moodGridState,
                     rows = GridCells.Fixed(4),
-                    flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
+                    flingBehavior = rememberSnapFlingBehavior(moodSnapLayoutInfoProvider),
                     contentPadding = endPaddingValues,
                     modifier = Modifier
                         .fillMaxWidth()

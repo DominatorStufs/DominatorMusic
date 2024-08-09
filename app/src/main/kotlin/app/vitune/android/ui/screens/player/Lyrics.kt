@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -16,7 +17,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -48,9 +50,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
@@ -58,6 +60,7 @@ import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.R
 import app.vitune.android.models.Lyrics
+import app.vitune.android.preferences.AppearancePreferences
 import app.vitune.android.preferences.PlayerPreferences
 import app.vitune.android.query
 import app.vitune.android.transaction
@@ -105,7 +108,6 @@ fun Lyrics(
     mediaId: String,
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
-    height: Dp,
     mediaMetadataProvider: () -> MediaMetadata,
     durationProvider: () -> Long,
     ensureSongInserted: () -> Unit,
@@ -115,7 +117,9 @@ fun Lyrics(
     shouldShowSynchronizedLyrics: Boolean = PlayerPreferences.isShowingSynchronizedLyrics,
     setShouldShowSynchronizedLyrics: (Boolean) -> Unit = {
         PlayerPreferences.isShowingSynchronizedLyrics = it
-    }
+    },
+    shouldKeepScreenAwake: Boolean = AppearancePreferences.lyricsKeepScreenAwake,
+    shouldUpdateLyrics: Boolean = true
 ) = AnimatedVisibility(
     visible = isDisplayed,
     enter = fadeIn(),
@@ -130,6 +134,7 @@ fun Lyrics(
     val menuState = LocalMenuState.current
     val binder = LocalPlayerServiceBinder.current
     val density = LocalDensity.current
+    val view = LocalView.current
 
     var lyrics by remember { mutableStateOf<Lyrics?>(null) }
 
@@ -146,6 +151,13 @@ fun Lyrics(
         if (showSynchronizedLyrics) lyrics?.synced else lyrics?.fixed
     }
 
+    if (shouldKeepScreenAwake) DisposableEffect(Unit) {
+        view.keepScreenOn = true
+        onDispose {
+            view.keepScreenOn = false
+        }
+    }
+
     LaunchedEffect(mediaId, shouldShowSynchronizedLyrics) {
         runCatching {
             withContext(Dispatchers.IO) {
@@ -154,19 +166,25 @@ fun Lyrics(
                     .distinctUntilChanged()
                     .cancellable()
                     .collect { currentLyrics ->
-                        val mediaMetadata = currentMediaMetadataProvider()
-                        var duration = withContext(Dispatchers.Main) { currentDurationProvider() }
+                        if (
+                            !shouldUpdateLyrics ||
+                            (currentLyrics?.fixed != null && currentLyrics.synced != null)
+                        ) lyrics = currentLyrics
+                        else {
+                            val mediaMetadata = currentMediaMetadataProvider()
+                            var duration =
+                                withContext(Dispatchers.Main) { currentDurationProvider() }
 
-                        while (duration == C.TIME_UNSET) {
-                            delay(100)
-                            duration = withContext(Dispatchers.Main) { currentDurationProvider() }
-                        }
+                            while (duration == C.TIME_UNSET) {
+                                delay(100)
+                                duration =
+                                    withContext(Dispatchers.Main) { currentDurationProvider() }
+                            }
 
-                        val album = mediaMetadata.albumTitle?.toString()
-                        val artist = mediaMetadata.artist?.toString().orEmpty()
-                        val title = mediaMetadata.title?.toString().orEmpty()
+                            val album = mediaMetadata.albumTitle?.toString()
+                            val artist = mediaMetadata.artist?.toString().orEmpty()
+                            val title = mediaMetadata.title?.toString().orEmpty()
 
-                        if (currentLyrics?.fixed == null || currentLyrics.synced == null) {
                             lyrics = null
                             isError = false
 
@@ -214,12 +232,11 @@ fun Lyrics(
                                     }
                                 }
                             }
-                        } else lyrics = currentLyrics
+                        }
 
-                        if (
+                        isError =
                             (shouldShowSynchronizedLyrics && lyrics?.synced?.isBlank() == true) ||
-                            (!shouldShowSynchronizedLyrics && lyrics?.fixed?.isBlank() == true)
-                        ) isError = true
+                                    (!shouldShowSynchronizedLyrics && lyrics?.fixed?.isBlank() == true)
                     }
             }
         }.exceptionOrNull()
@@ -228,7 +245,7 @@ fun Lyrics(
 
     if (isEditing) TextFieldDialog(
         hintText = stringResource(R.string.enter_lyrics),
-        initialTextInput = text.orEmpty(),
+        initialTextInput = (if (shouldShowSynchronizedLyrics) lyrics?.synced else lyrics?.fixed).orEmpty(),
         singleLine = false,
         maxLines = 10,
         isTextInputValid = { true },
@@ -335,7 +352,7 @@ fun Lyrics(
         }
     }
 
-    Box(
+    BoxWithConstraints(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .pointerInput(Unit) {
@@ -344,6 +361,11 @@ fun Lyrics(
             .fillMaxSize()
             .background(colorPalette.overlay)
     ) {
+        val animatedHeight by animateDpAsState(
+            targetValue = maxHeight,
+            label = ""
+        )
+
         AnimatedVisibility(
             visible = isError,
             enter = slideInVertically { -it },
@@ -400,9 +422,9 @@ fun Lyrics(
                     }
                 }
 
-                LaunchedEffect(synchronizedLyrics, density) {
+                LaunchedEffect(synchronizedLyrics, density, animatedHeight) {
                     val currentSynchronizedLyrics = synchronizedLyrics ?: return@LaunchedEffect
-                    val centerOffset = with(density) { (-height / 3).roundToPx() }
+                    val centerOffset = with(density) { (-animatedHeight / 3).roundToPx() }
 
                     lazyListState.animateScrollToItem(
                         index = currentSynchronizedLyrics.index + 1,
@@ -430,7 +452,7 @@ fun Lyrics(
                         .fillMaxWidth()
                 ) {
                     item(key = "header", contentType = 0) {
-                        Spacer(modifier = Modifier.height(height))
+                        Spacer(modifier = Modifier.height(maxHeight))
                     }
                     itemsIndexed(
                         items = synchronizedLyrics.sentences.values.toImmutableList()
@@ -445,7 +467,7 @@ fun Lyrics(
                         )
                     }
                     item(key = "footer", contentType = 0) {
-                        Spacer(modifier = Modifier.height(height))
+                        Spacer(modifier = Modifier.height(maxHeight))
                     }
                 }
             } else BasicText(
@@ -455,7 +477,7 @@ fun Lyrics(
                     .verticalFadingEdge()
                     .verticalScroll(rememberScrollState())
                     .fillMaxWidth()
-                    .padding(vertical = height / 4, horizontal = 32.dp)
+                    .padding(vertical = maxHeight / 4, horizontal = 32.dp)
             )
         }
 

@@ -9,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +27,7 @@ import app.vitune.android.service.isLocal
 import app.vitune.android.ui.modifiers.PinchDirection
 import app.vitune.android.ui.modifiers.onSwipe
 import app.vitune.android.ui.modifiers.pinchToToggle
+import app.vitune.android.utils.FullScreenState
 import app.vitune.android.utils.forceSeekToNext
 import app.vitune.android.utils.forceSeekToPrevious
 import app.vitune.android.utils.thumbnail
@@ -40,6 +42,8 @@ fun LyricsDialog(
     modifier: Modifier = Modifier
 ) = Dialog(onDismissRequest = onDismiss) {
     val currentOnDismiss by rememberUpdatedState(onDismiss)
+
+    FullScreenState(shown = false)
 
     val (colorPalette, _, _, thumbnailShape) = LocalAppearance.current
 
@@ -101,10 +105,8 @@ fun LyricsDialog(
                     }
                 )
         ) {
-            val thumbnailHeight = maxHeight
-
             if (currentWindow.mediaItem.mediaMetadata.artworkUri != null) AsyncImage(
-                model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail((thumbnailHeight - 64.dp).px),
+                model = currentWindow.mediaItem.mediaMetadata.artworkUri.thumbnail((maxHeight - 64.dp).px),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -117,11 +119,13 @@ fun LyricsDialog(
                 mediaId = currentWindow.mediaItem.mediaId,
                 isDisplayed = true,
                 onDismiss = { },
-                height = thumbnailHeight,
                 mediaMetadataProvider = currentWindow.mediaItem::mediaMetadata,
                 durationProvider = player::getDuration,
                 ensureSongInserted = { Database.insert(currentWindow.mediaItem) },
-                onMenuLaunch = onDismiss
+                onMenuLaunch = onDismiss,
+                modifier = Modifier.height(maxHeight),
+                shouldKeepScreenAwake = false, // otherwise the keepScreenOn flag resets after dialog closes
+                shouldUpdateLyrics = false
             )
         }
     }

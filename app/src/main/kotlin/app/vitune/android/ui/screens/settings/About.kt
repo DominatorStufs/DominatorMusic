@@ -1,8 +1,6 @@
 package app.vitune.android.ui.screens.settings
 
 import android.Manifest
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -28,7 +26,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationCompat
-import androidx.core.content.getSystemService
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -39,8 +36,7 @@ import androidx.work.WorkerParameters
 import app.vitune.android.BuildConfig
 import app.vitune.android.R
 import app.vitune.android.preferences.DataPreferences
-import app.vitune.android.service.VERSION_NOTIFICATION_CHANNEL_ID
-import app.vitune.android.service.VERSION_NOTIFICATION_ID
+import app.vitune.android.service.ServiceNotifications
 import app.vitune.android.ui.components.themed.CircularProgressIndicator
 import app.vitune.android.ui.components.themed.DefaultDialog
 import app.vitune.android.ui.components.themed.SecondaryTextButton
@@ -54,7 +50,6 @@ import app.vitune.core.data.utils.Version
 import app.vitune.core.data.utils.version
 import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.utils.isAtLeastAndroid13
-import app.vitune.core.ui.utils.isAtLeastAndroid8
 import app.vitune.core.ui.utils.isCompositionLaunched
 import app.vitune.providers.github.GitHub
 import app.vitune.providers.github.models.Release
@@ -70,17 +65,6 @@ private const val REPO_NAME = "ViTune"
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 private val permission = Manifest.permission.POST_NOTIFICATIONS
-
-@get:RequiresApi(Build.VERSION_CODES.O)
-private val Context.notificationChannel
-    get() = NotificationChannel(
-        /* id = */ VERSION_NOTIFICATION_CHANNEL_ID,
-        /* name = */ getString(R.string.version_check),
-        /* importance = */ NotificationManager.IMPORTANCE_HIGH
-    ).apply {
-        enableVibration(true)
-        enableLights(true)
-    }
 
 class VersionCheckWorker(
     context: Context,
@@ -120,9 +104,6 @@ class VersionCheckWorker(
     override suspend fun doWork(): Result = with(applicationContext) {
         if (isAtLeastAndroid13 && !hasPermission(permission)) return Result.retry()
 
-        val notificationManager = getSystemService<NotificationManager>() ?: return Result.success()
-        if (isAtLeastAndroid8) notificationManager.createNotificationChannel(notificationChannel)
-
         val result = withContext(Dispatchers.IO) {
             VERSION_NAME.version
                 .getNewerVersion()
@@ -130,10 +111,8 @@ class VersionCheckWorker(
         }
 
         result?.getOrNull()?.let { release ->
-            notificationManager.notify(
-                /* id = */ VERSION_NOTIFICATION_ID,
-                /* notification = */ NotificationCompat
-                    .Builder(this, VERSION_NOTIFICATION_CHANNEL_ID)
+            ServiceNotifications.version.sendNotification(applicationContext) {
+                this
                     .setSmallIcon(R.drawable.download)
                     .setContentTitle(getString(R.string.new_version_available))
                     .setContentText(getString(R.string.redirect_github))
@@ -154,8 +133,7 @@ class VersionCheckWorker(
                         )
                     }
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .build()
-            )
+            }
         }
 
         return when {

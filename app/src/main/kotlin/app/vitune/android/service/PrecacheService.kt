@@ -66,9 +66,9 @@ private const val DOWNLOAD_WORK_NAME = "precacher-work"
 
 @OptIn(UnstableApi::class)
 class PrecacheService : DownloadService(
-    /* foregroundNotificationId             = */ DOWNLOAD_NOTIFICATION_ID,
+    /* foregroundNotificationId             = */ ServiceNotifications.download.notificationId!!,
     /* foregroundNotificationUpdateInterval = */ DOWNLOAD_NOTIFICATION_UPDATE_INTERVAL,
-    /* channelId                            = */ DOWNLOAD_NOTIFICATION_CHANNEL_ID,
+    /* channelId                            = */ ServiceNotifications.download.id,
     /* channelNameResourceId                = */ R.string.pre_cache,
     /* channelDescriptionResourceId         = */ 0
 ) {
@@ -77,8 +77,8 @@ class PrecacheService : DownloadService(
 
     private val downloadNotificationHelper by lazy {
         DownloadNotificationHelper(
-            this,
-            DOWNLOAD_NOTIFICATION_CHANNEL_ID
+            /* context = */ this,
+            /* channelId = */ ServiceNotifications.download.id
         )
     }
 
@@ -208,8 +208,8 @@ class PrecacheService : DownloadService(
         notMetRequirements: Int
     ) = NotificationCompat
         .Builder(
-            this,
-            downloadNotificationHelper.buildProgressNotification(
+            /* context = */ this,
+            /* notification = */ downloadNotificationHelper.buildProgressNotification(
                 /* context            = */ this,
                 /* smallIcon          = */ R.drawable.download,
                 /* contentIntent      = */ null,
@@ -218,7 +218,7 @@ class PrecacheService : DownloadService(
                 /* notMetRequirements = */ notMetRequirements
             )
         )
-        .setChannelId(DOWNLOAD_NOTIFICATION_CHANNEL_ID)
+        .setChannelId(ServiceNotifications.download.id)
         .addAction(
             NotificationCompat.Action.Builder(
                 /* icon = */ R.drawable.close,

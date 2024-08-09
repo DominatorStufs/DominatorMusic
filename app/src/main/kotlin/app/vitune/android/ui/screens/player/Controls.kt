@@ -77,8 +77,8 @@ private const val FORWARD_BACKWARD_OFFSET = 16f
 
 @Composable
 fun Controls(
-    media: UiMedia,
-    binder: PlayerService.Binder,
+    media: UiMedia?,
+    binder: PlayerService.Binder?,
     shouldBePlaying: Boolean,
     position: Long,
     modifier: Modifier = Modifier,
@@ -87,7 +87,8 @@ fun Controls(
     var likedAt by remember { mutableStateOf<Long?>(null) }
 
     LaunchedEffect(media) {
-        Database
+        if (media == null) likedAt = null
+        else Database
             .likedAt(media.id)
             .distinctUntilChanged()
             .collect { likedAt = it }
@@ -104,7 +105,7 @@ fun Controls(
         targetValueByState = { if (it) 16.dp else 32.dp }
     )
 
-    when (layout) {
+    if (media != null && binder != null) when (layout) {
         PlayerPreferences.PlayerLayout.Classic -> ClassicControls(
             media = media,
             binder = binder,

@@ -28,6 +28,7 @@ import app.vitune.android.utils.forcePlayAtIndex
 import app.vitune.android.utils.forceSeekToNext
 import app.vitune.android.utils.forceSeekToPrevious
 import app.vitune.android.utils.intent
+import app.vitune.core.data.utils.CallValidator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.cancellable
@@ -45,6 +46,10 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
     private var lastSongs = emptyList<Song>()
 
     private var bound = false
+
+    private val callValidator by lazy {
+        CallValidator(applicationContext, R.xml.allowed_media_browser_callers)
+    }
 
     override fun onDestroy() {
         if (bound) unbindService(this)
@@ -64,9 +69,7 @@ class PlayerMediaBrowserService : MediaBrowserService(), ServiceConnection {
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ) = if (clientUid == Process.myUid() || clientUid == Process.SYSTEM_UID ||
-        clientPackageName == "com.google.android.projection.gearhead"
-    ) {
+    ) = if (callValidator.canCall(clientPackageName, clientUid)) {
         bindService(intent<PlayerService>(), this, Context.BIND_AUTO_CREATE)
         BrowserRoot(
             MediaId.ROOT.id,
