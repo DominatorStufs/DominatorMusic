@@ -35,8 +35,9 @@ import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
@@ -96,7 +97,7 @@ import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.SystemBarAppearance
 import app.vitune.core.ui.amoled
 import app.vitune.core.ui.appearance
-import app.vitune.core.ui.rippleTheme
+import app.vitune.core.ui.rippleConfiguration
 import app.vitune.core.ui.shimmerTheme
 import app.vitune.core.ui.utils.activityIntentBundle
 import app.vitune.core.ui.utils.isAtLeastAndroid12
@@ -211,7 +212,7 @@ class MainActivity : ComponentActivity(), MonetColorsChangedListener {
     }
 
     @Suppress("CyclomaticComplexMethod")
-    @OptIn(ExperimentalLayoutApi::class)
+    @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
     fun setContent() = setContent {
         AppWrapper {
             val density = LocalDensity.current
@@ -251,8 +252,8 @@ class MainActivity : ComponentActivity(), MonetColorsChangedListener {
             }
 
             CompositionLocalProvider(
-                LocalIndication provides rememberRipple(),
-                LocalRippleTheme provides rippleTheme(),
+                LocalIndication provides ripple(),
+                LocalRippleConfiguration provides rippleConfiguration(),
                 LocalShimmerTheme provides shimmerTheme(),
                 LocalPlayerAwareWindowInsets provides playerAwareWindowInsets,
                 LocalLayoutDirection provides LayoutDirection.Ltr,

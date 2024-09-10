@@ -123,7 +123,7 @@ fun LocalSongSearch(
                                 )
                             }
                         )
-                        .animateItemPlacement(),
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null),
                     song = song,
                     thumbnailSize = Dimensions.thumbnails.song
                 )

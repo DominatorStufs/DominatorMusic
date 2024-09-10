@@ -3,7 +3,6 @@ package app.vitune.android.ui.screens.home
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -40,7 +39,6 @@ import app.vitune.core.data.enums.SortOrder
 import app.vitune.core.ui.Dimensions
 import app.vitune.core.ui.LocalAppearance
 
-@OptIn(ExperimentalFoundationApi::class)
 @Route
 @Composable
 fun HomeAlbums(
@@ -115,7 +113,7 @@ fun HomeAlbums(
                     thumbnailSize = Dimensions.thumbnails.album,
                     modifier = Modifier
                         .clickable(onClick = { onAlbumClick(album) })
-                        .animateItemPlacement()
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
             }
         }

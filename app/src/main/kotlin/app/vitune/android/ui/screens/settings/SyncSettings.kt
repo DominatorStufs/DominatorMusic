@@ -182,7 +182,7 @@ fun SyncSettings(
                         hintText = stringResource(R.string.password),
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Password
                         ),
                         modifier = Modifier

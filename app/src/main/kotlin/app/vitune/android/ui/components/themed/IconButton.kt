@@ -7,7 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -23,7 +23,7 @@ fun HeaderIconButton(
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    indication: Indication? = rememberRipple(bounded = false)
+    indication: Indication? = ripple(bounded = false)
 ) {
     val (colorPalette) = LocalAppearance.current
 
@@ -44,7 +44,7 @@ fun HeaderIconButton(
     color: Color,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    indication: Indication? = rememberRipple(bounded = false)
+    indication: Indication? = ripple(bounded = false)
 ) = IconButton(
     icon = icon,
     color = color,
@@ -62,7 +62,7 @@ fun IconButton(
     @DrawableRes icon: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    indication: Indication? = rememberRipple(bounded = false)
+    indication: Indication? = ripple(bounded = false)
 ) {
     val (colorPalette) = LocalAppearance.current
 
@@ -83,7 +83,7 @@ fun IconButton(
     color: Color,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    indication: Indication? = rememberRipple(bounded = false)
+    indication: Indication? = ripple(bounded = false)
 ) = Image(
     painter = painterResource(icon),
     contentDescription = null,

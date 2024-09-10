@@ -24,7 +24,6 @@ import androidx.compose.ui.window.Dialog
 import app.vitune.android.Database
 import app.vitune.android.LocalPlayerServiceBinder
 import app.vitune.android.preferences.PlayerPreferences
-import app.vitune.android.service.isLocal
 import app.vitune.android.ui.modifiers.PinchDirection
 import app.vitune.android.ui.modifiers.onSwipe
 import app.vitune.android.ui.modifiers.pinchToToggle

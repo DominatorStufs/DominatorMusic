@@ -190,7 +190,7 @@ class BottomSheetState internal constructor(
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 if (expanded && available.y < 0) isTopReached = false
 
-                return if (isTopReached && available.y < 0 && source == NestedScrollSource.Drag) {
+                return if (isTopReached && available.y < 0 && source == NestedScrollSource.UserInput) {
                     dispatchRawDelta(available.y)
                     available
                 } else Offset.Zero
@@ -203,7 +203,7 @@ class BottomSheetState internal constructor(
             ): Offset {
                 if (!isTopReached) isTopReached = consumed.y == 0f && available.y > 0
 
-                return if (isTopReached && source == NestedScrollSource.Drag) {
+                return if (isTopReached && source == NestedScrollSource.UserInput) {
                     dispatchRawDelta(available.y)
                     available
                 } else Offset.Zero

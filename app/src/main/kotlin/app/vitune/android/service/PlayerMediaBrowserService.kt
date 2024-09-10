@@ -8,7 +8,6 @@ import android.media.session.MediaSession
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.os.Process
 import android.service.media.MediaBrowserService
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn

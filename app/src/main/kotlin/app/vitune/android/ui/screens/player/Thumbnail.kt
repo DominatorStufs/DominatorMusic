@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection.
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.SeekableTransitionState
 import androidx.compose.animation.core.Spring
@@ -68,7 +67,6 @@ import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
 
-@OptIn(ExperimentalTransitionApi::class)
 @Composable
 fun Thumbnail(
     isShowingLyrics: Boolean,
@@ -86,9 +84,7 @@ fun Thumbnail(
     val (window, error) = windowState()
 
     val coroutineScope = rememberCoroutineScope()
-    val transitionState = remember {
-        SeekableTransitionState(initialState = false, targetState = true)
-    }
+    val transitionState = remember { SeekableTransitionState(false) }
     val transition = rememberTransition(transitionState)
     val opacity by transition.animateFloat(label = "") { if (it) 1f else 0f }
     val scale by transition.animateFloat(
@@ -181,8 +177,8 @@ fun Thumbnail(
 
                                 coroutineScope.launch {
                                     val spec = tween<Float>(durationMillis = 500)
-                                    transitionState.animateToTargetState(spec)
-                                    transitionState.animateToCurrentState(spec)
+                                    transitionState.animateTo(true, spec)
+                                    transitionState.animateTo(false, spec)
                                 }
                             }
                         )

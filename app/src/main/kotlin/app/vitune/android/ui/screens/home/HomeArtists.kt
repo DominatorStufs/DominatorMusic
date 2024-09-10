@@ -3,7 +3,6 @@ package app.vitune.android.ui.screens.home
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,7 +43,6 @@ import app.vitune.core.ui.Dimensions
 import app.vitune.core.ui.LocalAppearance
 import kotlinx.collections.immutable.toImmutableList
 
-@OptIn(ExperimentalFoundationApi::class)
 @Route
 @Composable
 fun HomeArtistList(
@@ -120,7 +118,7 @@ fun HomeArtistList(
                     alternative = true,
                     modifier = Modifier
                         .clickable(onClick = { onArtistClick(artist) })
-                        .animateItemPlacement()
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
             }
         }

@@ -113,7 +113,6 @@ enum class Language(val code: String) {
     Yoruba(code = "yo"),
     Zulu(code = "zu");
 
-    @OptIn(ExperimentalStdlibApi::class)
     companion object {
         val nameLut = enumEntries<Language>().associateBy { it.name }
         val codeLut = enumEntries<Language>().associateBy { it.code }

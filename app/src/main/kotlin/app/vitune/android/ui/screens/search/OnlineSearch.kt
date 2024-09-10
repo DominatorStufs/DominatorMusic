@@ -20,7 +20,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -106,7 +106,6 @@ fun OnlineSearch(
         }.getOrNull()
     }
 
-    val rippleIndication = rememberRipple(bounded = false)
     val focusRequester = remember { FocusRequester() }
     val lazyListState = rememberLazyListState()
 
@@ -201,7 +200,7 @@ fun OnlineSearch(
                     colorFilter = ColorFilter.disabled,
                     modifier = Modifier
                         .clickable(
-                            indication = rippleIndication,
+                            indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 query {
@@ -219,7 +218,7 @@ fun OnlineSearch(
                     colorFilter = ColorFilter.disabled,
                     modifier = Modifier
                         .clickable(
-                            indication = rippleIndication,
+                            indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 onTextFieldValueChange(
@@ -270,7 +269,7 @@ fun OnlineSearch(
                         colorFilter = ColorFilter.disabled,
                         modifier = Modifier
                             .clickable(
-                                indication = rippleIndication,
+                                indication = ripple(bounded = false),
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
                                     onTextFieldValueChange(

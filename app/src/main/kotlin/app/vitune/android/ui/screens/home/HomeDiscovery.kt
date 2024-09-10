@@ -64,7 +64,7 @@ import app.vitune.android.utils.asMediaItem
 import app.vitune.android.utils.center
 import app.vitune.android.utils.color
 import app.vitune.android.utils.forcePlay
-import app.vitune.android.utils.rememberSnapLayoutInfoProvider
+import app.vitune.android.utils.rememberSnapLayoutInfo
 import app.vitune.android.utils.secondary
 import app.vitune.android.utils.semiBold
 import app.vitune.compose.persist.persist
@@ -114,7 +114,7 @@ fun HomeDiscovery(
 
     BoxWithConstraints {
         val widthFactor = if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.75f
-        val moodSnapLayoutInfoProvider = rememberSnapLayoutInfoProvider(
+        val moodSnapLayoutInfoProvider = rememberSnapLayoutInfo(
             lazyGridState = moodGridState,
             positionInLayout = { layoutSize, itemSize ->
                 layoutSize * widthFactor / 2f - itemSize / 2f
@@ -256,7 +256,7 @@ fun HomeDiscovery(
                     }
 
                     val trendingGridState = rememberLazyGridState()
-                    val trendingSnapLayoutInfoProvider = rememberSnapLayoutInfoProvider(
+                    val trendingSnapLayoutInfoProvider = rememberSnapLayoutInfo(
                         lazyGridState = trendingGridState,
                         positionInLayout = { layoutSize, itemSize ->
                             (layoutSize * widthFactor / 2f - itemSize / 2f)
@@ -298,7 +298,7 @@ fun HomeDiscovery(
                                             )
                                         }
                                     )
-                                    .animateItemPlacement()
+                                    .animateItem(fadeInSpec = null, fadeOutSpec = null)
                                     .width(itemWidth),
                                 showDuration = false
                             )

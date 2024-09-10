@@ -2,7 +2,6 @@ package app.vitune.android.ui.components.themed
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.slideInVertically
@@ -80,7 +79,6 @@ fun BoxScope.FloatingActionsContainerWithScrollToTop(
     modifier = modifier
 )
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun BoxScope.FloatingActions(
     state: ScrollingInfo?,
@@ -95,7 +93,11 @@ private fun BoxScope.FloatingActions(
     modifier = modifier
         .align(Alignment.BottomEnd)
         .padding(end = 16.dp)
-        .padding(insets.only(WindowInsetsSides.End).asPaddingValues())
+        .padding(
+            insets
+                .only(WindowInsetsSides.End)
+                .asPaddingValues()
+        )
 ) {
     val transition = updateTransition(state, "")
     val bottomPaddingValues = insets.only(WindowInsetsSides.Bottom).asPaddingValues()
