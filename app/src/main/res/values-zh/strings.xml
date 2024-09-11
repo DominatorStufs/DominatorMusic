@@ -29,6 +29,7 @@
 
     <string name="favorites">收藏</string>
     <string name="offline">离线</string>
+    <string name="history">历史</string>
     <string name="overview">概览</string>
     <string name="library">库</string>
     <string name="discover">发现</string>
@@ -233,6 +234,8 @@
     <string name="swipe_to_remove_item_description">向左滑动以从队列中移除项目</string>
     <string name="lyrics_keep_screen_awake">歌词时保持屏幕唤醒</string>
     <string name="lyrics_keep_screen_awake_description">歌词显示时保持屏幕唤醒</string>
+    <string name="lyrics_show_system_bars">显示系统栏（歌词）</string>
+    <string name="lyrics_show_system_bars_description">关闭此选项可启用系统级全屏</string>
 
     <string name="cache">缓存</string>
     <string name="cache_description">当缓存空间耗尽时，最久未被访问的资源将被清除</string>
@@ -314,8 +317,10 @@
     <string name="bass_boost_description">增强低频以改善听觉体验</string>
     <string name="bass_boost_level">低音增强级别</string>
     <string name="bass_boost_level_description">增强低频的级别 (0–1000)，使用需谨慎！</string>
+    <string name="audio_focus">音频焦点</string>
+    <string name="audio_focus_description">播放器是否应请求系统级的音频（媒体）焦点</string>
+    
     <string name="equalizer_description">与系统均衡器交互</string>
-
     <string name="filter_placeholder">过滤器…</string>
 
     <string name="last_interaction">最近播放</string>
