@@ -24,11 +24,11 @@ val defaultStill = ContentTransform(
     targetContentZIndex = 1f
 )
 
-val TransitionScope<Route?>.isStacking: Boolean
+val TransitionScope<*>.isStacking: Boolean
     get() = initialState == null && targetState != null
 
-val TransitionScope<Route?>.isUnstacking: Boolean
+val TransitionScope<*>.isUnstacking: Boolean
     get() = initialState != null && targetState == null
 
-val TransitionScope<Route?>.isStill: Boolean
+val TransitionScope<*>.isStill: Boolean
     get() = initialState == null && targetState == null

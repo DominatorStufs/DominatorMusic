@@ -179,13 +179,14 @@ fun Player(
 
     OnGlobalRoute { if (layoutState.expanded) layoutState.collapseSoft() }
 
-    BottomSheet(
+    if (mediaItem != null) BottomSheet(
         state = layoutState,
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         onDismiss = {
             binder?.let { onDismiss(it) }
             layoutState.dismissSoft()
         },
+        backHandlerEnabled = !menuState.isDisplayed,
         collapsedContent = { innerModifier ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),

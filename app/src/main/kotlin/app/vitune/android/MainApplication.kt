@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -173,7 +172,6 @@ class MainActivity : ComponentActivity(), MonetColorsChangedListener {
         }
 
         intent?.let { handleIntent(it) }
-        intent = null
         addOnNewIntentListener(::handleIntent)
     }
 
@@ -299,9 +297,7 @@ class MainActivity : ComponentActivity(), MonetColorsChangedListener {
                 }
 
                 BottomSheetMenu(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .imePadding()
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 )
             }
 
@@ -392,7 +388,14 @@ class MainActivity : ComponentActivity(), MonetColorsChangedListener {
                         ?.let { page ->
                             page.songsPage?.items?.firstOrNull()?.album?.endpoint?.browseId
                                 ?.let { albumRoute.ensureGlobal(it) }
-                        } ?: withContext(Dispatchers.Main) { toast(getString(R.string.error_url, uri)) }
+                        } ?: withContext(Dispatchers.Main) {
+                        toast(
+                            getString(
+                                R.string.error_url,
+                                uri
+                            )
+                        )
+                    }
                     else playlistRoute.ensureGlobal(
                         p0 = browseId,
                         p1 = uri.getQueryParameter("params"),

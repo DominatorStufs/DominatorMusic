@@ -105,7 +105,7 @@ fun ArtistScreen(browseId: String) {
     RouteHandler {
         GlobalRoutes()
 
-        NavHost {
+        Content {
             val thumbnailContent = adaptiveThumbnailContent(
                 isLoading = artist?.timestamp == null,
                 url = artist?.thumbnailUrl,

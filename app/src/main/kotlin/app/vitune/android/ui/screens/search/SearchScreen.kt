@@ -53,7 +53,7 @@ fun SearchScreen(
     RouteHandler {
         GlobalRoutes()
 
-        NavHost {
+        Content {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
                 Box {
                     AnimatedVisibility(

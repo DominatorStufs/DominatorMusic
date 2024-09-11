@@ -83,6 +83,7 @@ import app.vitune.core.data.enums.SortOrder
 import app.vitune.core.ui.Dimensions
 import app.vitune.core.ui.LocalAppearance
 import app.vitune.core.ui.favoritesIcon
+import app.vitune.core.ui.utils.px
 import app.vitune.core.ui.utils.roundedShape
 import app.vitune.providers.innertube.models.NavigationEndpoint
 import kotlinx.coroutines.Dispatchers
@@ -287,7 +288,6 @@ fun MediaItemMenu(
     val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
 
     var isViewingPlaylists by remember { mutableStateOf(false) }
-    var width by remember { mutableStateOf(0.dp) }
     var height by remember { mutableStateOf(0.dp) }
     var likedAt by remember { mutableStateOf<Long?>(null) }
     var isBlacklisted by remember { mutableStateOf(false) }
@@ -406,8 +406,7 @@ fun MediaItemMenu(
             }
         } else Menu(
             modifier = modifier.onPlaced {
-                width = with(density) { it.size.width.toDp() }
-                height = with(density) { it.size.height.toDp() }
+                height = it.size.height.px.dp(density)
             }
         ) {
             Row(
@@ -445,7 +444,10 @@ fun MediaItemMenu(
                     if (!isLocal) IconButton(
                         icon = R.drawable.share_social,
                         color = colorPalette.text,
-                        onClick = onShare,
+                        onClick = {
+                            onDismiss()
+                            onShare()
+                        },
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(17.dp)

@@ -19,14 +19,14 @@ fun MoreMoodsScreen() {
 
     PersistMapCleanup(prefix = "more_moods/")
 
-    RouteHandler(listenToGlobalEmitter = true) {
+    RouteHandler {
         GlobalRoutes()
 
         moodRoute { mood ->
             MoodScreen(mood = mood)
         }
 
-        NavHost {
+        Content {
             Scaffold(
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,

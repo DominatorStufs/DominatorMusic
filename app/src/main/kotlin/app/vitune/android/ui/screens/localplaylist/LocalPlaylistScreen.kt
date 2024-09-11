@@ -33,7 +33,7 @@ fun LocalPlaylistScreen(playlistId: Long) {
     RouteHandler {
         GlobalRoutes()
 
-        NavHost {
+        Content {
             var playlist by persist<Playlist?>("localPlaylist/$playlistId/playlist")
             var songs by persistList<Song>("localPlaylist/$playlistId/songs")
 

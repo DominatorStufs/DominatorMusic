@@ -25,7 +25,7 @@ fun BuiltInPlaylistScreen(builtInPlaylist: BuiltInPlaylist) {
     RouteHandler {
         GlobalRoutes()
 
-        NavHost {
+        Content {
             Scaffold(
                 topIconButtonId = R.drawable.chevron_back,
                 onTopIconButtonClick = pop,

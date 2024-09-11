@@ -80,7 +80,7 @@ fun HomeScreen(onPlaylistUrl: (String) -> Unit) {
             MoreAlbumsScreen()
         }
 
-        NavHost {
+        Content {
             Scaffold(
                 topIconButtonId = R.drawable.settings,
                 onTopIconButtonClick = { settingsRoute() },

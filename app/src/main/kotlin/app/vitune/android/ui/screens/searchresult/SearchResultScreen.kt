@@ -59,7 +59,7 @@ fun SearchResultScreen(query: String, onSearchAgain: () -> Unit) {
     RouteHandler {
         GlobalRoutes()
 
-        NavHost {
+        Content {
             val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
                 Header(
                     title = query,

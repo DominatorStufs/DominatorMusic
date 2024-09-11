@@ -1,24 +1,35 @@
 package app.vitune.android.ui.components
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import app.vitune.android.LocalPlayerAwareWindowInsets
 import app.vitune.android.ui.modifiers.pressable
 
 val LocalMenuState = staticCompositionLocalOf { MenuState() }
@@ -41,32 +52,64 @@ class MenuState {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomSheetMenu(
     modifier: Modifier = Modifier,
     state: MenuState = LocalMenuState.current
-) {
+) = BoxWithConstraints(modifier = modifier) {
+    val windowInsets = LocalPlayerAwareWindowInsets.current
+
+    val height = maxHeight - 256.dp
+
+    val bottomSheetState = rememberBottomSheetState(
+        dismissedBound = -windowInsets
+            .only(WindowInsetsSides.Bottom)
+            .asPaddingValues()
+            .calculateBottomPadding(),
+        expandedBound = height
+    )
+
+    LaunchedEffect(state.isDisplayed) {
+        if (state.isDisplayed) bottomSheetState.expandSoft()
+        else bottomSheetState.dismissSoft()
+    }
+
+    LaunchedEffect(bottomSheetState.collapsed) {
+        if (bottomSheetState.collapsed) state.hide()
+    }
+
     AnimatedVisibility(
         visible = state.isDisplayed,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        BackHandler(onBack = state::hide)
-
         Spacer(
             modifier = Modifier
                 .pressable(onRelease = state::hide)
-                .background(Color.Black.copy(alpha = 0.5f))
+                .alpha(bottomSheetState.progress * 0.5f)
+                .background(Color.Black)
                 .fillMaxSize()
         )
     }
 
-    AnimatedVisibility(
-        visible = state.isDisplayed,
-        enter = slideInVertically { it },
-        exit = slideOutVertically { it },
-        modifier = modifier.padding(top = 48.dp)
-    ) {
-        state.content()
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        if (!bottomSheetState.dismissed) BottomSheet( // This way the back gesture gets handled correctly
+            state = bottomSheetState,
+            collapsedContent = { },
+            onDismiss = { state.hide() },
+            indication = null,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Bottom,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .sizeIn(maxHeight = height)
+                    .nestedScroll(bottomSheetState.preUpPostDownNestedScrollConnection)
+            ) {
+                state.content()
+            }
+        }
     }
 }

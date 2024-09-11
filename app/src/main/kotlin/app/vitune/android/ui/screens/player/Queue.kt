@@ -210,7 +210,7 @@ fun Queue(
 
     BottomSheet(
         state = layoutState,
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         collapsedContent = { innerModifier ->
             Row(
                 modifier = Modifier

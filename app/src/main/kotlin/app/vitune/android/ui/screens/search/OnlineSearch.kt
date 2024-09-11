@@ -172,7 +172,7 @@ fun OnlineSearch(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .clickable(onClick = { onSearch(searchQuery.query) })
+                    .clickable { onSearch(searchQuery.query) }
                     .fillMaxWidth()
                     .padding(all = 16.dp)
             ) {
@@ -241,7 +241,7 @@ fun OnlineSearch(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable(onClick = { onSearch(suggestion) })
+                        .clickable { onSearch(suggestion) }
                         .fillMaxWidth()
                         .padding(all = 16.dp)
                 ) {
