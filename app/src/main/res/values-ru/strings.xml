@@ -322,11 +322,11 @@
     <string name="bass_boost_description">Усиление низких частот для улучшения прослушивания</string>
     <string name="bass_boost_level">Уровень усиления басов</string>
     <string name="bass_boost_level_description">Уровень (0–1000) усиления низких частот; используйте на свой страх и риск!</string>
+    <string name="sponsor_block">Sponsorblock</string>
+    <string name="sponsor_block_description">Пропускает рекламный контент или контент не в тему используя Sponsorblock API</string>
     <string name="reverb">Реверберация</string>
     <string name="audio_focus">Фокус аудио</string>
     <string name="audio_focus_description">Нужно ли плееру запрашивать системный медиафокус</string>
-    <string name="sponsor_block">Sponsorblock</string>
-    <string name="sponsor_block_description">Пропускает рекламный контент или контент не в тему используя Sponsorblock API</string>
     <string name="equalizer_description">Открыть встроенный эквалайзер</string>
 
     <string name="filter_placeholder">Фильтр…</string>
