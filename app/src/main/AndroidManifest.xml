@@ -54,6 +54,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.ViTune.NoActionBar"
+        android:appCategory="audio"
         tools:ignore="UnusedAttribute">
 
         <activity
@@ -67,7 +68,10 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MUSIC_PLAYER" /> <!-- Not a real action, but apparently some apps query for this -->
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.APP_MUSIC" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
@@ -82,7 +86,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
