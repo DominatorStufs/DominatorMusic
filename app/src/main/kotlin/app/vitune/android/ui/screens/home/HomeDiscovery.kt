@@ -79,7 +79,9 @@ import app.vitune.core.ui.utils.isLandscape
 import app.vitune.providers.innertube.Innertube
 import app.vitune.providers.innertube.models.NavigationEndpoint
 import app.vitune.providers.innertube.requests.discoverPage
-import java.util.Calendar
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 // TODO: a lot of duplicate code all around the codebase, especially for discover
 
@@ -112,7 +114,7 @@ fun HomeDiscovery(
         .padding(top = 24.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
-    val isDecember = Calendar.getInstance().get(Calendar.MONTH) == 4
+    val isDecember = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).month.value == 12;
     val showRetrospective = isDecember || DataPreferences.showRetrospectiveAllYear
 
     var discoverPage by persist<Result<Innertube.DiscoverPage>>("home/discovery")
@@ -151,7 +153,7 @@ fun HomeDiscovery(
             discoverPage?.getOrNull()?.let { page ->
                 if(showRetrospective){
                     RetrospectiveButton(
-                        title = "${Calendar.getInstance().get(Calendar.YEAR)} ${stringResource(R.string.retrospective)}",
+                        title = "${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year} ${stringResource(R.string.retrospective)}",
                         onClick = { onRetrospectiveClick() },
                         modifier = Modifier
                             .width(fullWidth)
