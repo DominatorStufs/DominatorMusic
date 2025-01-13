@@ -9,7 +9,7 @@ room = "2.6.1"
 media3 = "1.4.1"
 ktor = "3.0.0"
 detekt = "1.23.6"
-workmanager = "2.9.1"
+workmanager = "2.10.0"
 credentials = "1.5.0-alpha06"
 coil = "3.0.0-rc01"
 
