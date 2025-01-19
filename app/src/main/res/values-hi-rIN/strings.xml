@@ -3,7 +3,7 @@
     <string name="format_minutes">%1$dm</string>
     <string name="format_hours">%1$dh</string>
     <string name="format_days">%1$dd</string>
-    <string name="format_time_left">%1$s बचा है</string>
+    <string name="format_time_left">%1$s बचे है</string>
     <string name="format_db">%1$s dB</string>
     <string name="format_kbps">%1$s kbps</string>
     <string name="format_ms">%1$s ms</string>
