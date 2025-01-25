@@ -17,7 +17,7 @@
 
     <string name="past_24_hours">पिछले 24 घंटे</string>
     <string name="past_week">पिछले सप्ताह</string>
-    <string name="past_month">पिछले महीना</string>
+    <string name="past_month">पिछले महीने</string>
     <string name="past_year">पिछले वर्ष</string>
     <string name="all_time">पूरे समय</string>
 
@@ -39,14 +39,14 @@
     <string name="online">ऑनलाइन</string>
     <string name="videos">वीडियो</string>
     <string name="about">के बारे में</string>
-    <string name="appearance">उपस्थिति</string>
+    <string name="appearance">दिखावट</string>
     <string name="colors">रंग</string>
     <string name="shapes">आकार</string>
 
     <string name="skip_back">वापस जाएं</string>
     <string name="skip_forward">आगे बढ़ो</string>
     <string name="play">बजाओ</string>
-    <string name="pause">विश्राम</string>
+    <string name="pause">रोकें</string>
     <string name="like">पसंद</string>
     <string name="shuffle">मिश्रण</string>
     <string name="sync">सिंक</string>
@@ -61,7 +61,7 @@
     <string name="equalizer">इक्वलाइज़र</string>
     <string name="set_sleep_timer">स्लीप टाइमर सेट करें</string>
 
-    <string name="cancel">रद्द</string>
+    <string name="cancel">रद्द करें</string>
     <string name="done">हो गया</string>
     <string name="confirm">पुष्टि</string>
     <string name="no">नहीं</string>
@@ -114,18 +114,18 @@
     <string name="artist_has_no_albums">इस कलाकार ने अभी तक कोई एल्बम रिलीज़ नहीं किया है</string>
     <string name="artist_has_no_singles">इस कलाकार ने अभी तक कोई सिंगल्स रिलीज़ नहीं किया है</string>
 
-    <string name="error_message">एक गलती हुई है</string>
+    <string name="error_message">एक दोष हुआ है</string>
     <string name="error_local_music_deleted">यह स्थानीय संगीत फ़ाइल अब मौजूद नहीं है</string>
-    <string name="error_network">नेटवर्क त्रुटि उत्पन्न हुई है</string>
+    <string name="error_network">नेटवर्क दोष उत्पन्न हुआ है</string>
     <string name="error_unplayable">कोई बजाने योग्य ऑडियो प्रारूप नहीं मिल सका</string>
     <string name="error_source_deleted">इस गीत का मूल वीडियो स्रोत हटा दिया गया है</string>
     <string name="error_server_restrictions">सर्वर प्रतिबंधों के कारण यह गाना नहीं चलाया जा सकता</string>
     <string name="error_id_mismatch">लौटाया गया वीडियो आईडी अनुरोधित वीडियो आईडी से मेल नहीं खाता</string>
-    <string name="error_unknown_playback">एक अज्ञात प्लेबैक त्रुटि हुई है</string>
-    <string name="error_piped_link">आपके Piped खाते को लिंक करते समय कोई अज्ञात त्रुटि हुई। कृपया पुनः प्रयास करें।</string>
+    <string name="error_unknown_playback">एक अज्ञात प्लेबैक दोष हुआ है</string>
+    <string name="error_piped_link">आपके Piped खाते को लिंक करते समय कोई अज्ञात दोष हुआ है। कृपया पुनः प्रयास करें।</string>
     <string name="error_piped_instances_unavailable">Piped इंस्टेंस सूची वर्तमान में अनुपलब्ध है</string>
-    <string name="error_bassboost_init">बास बूस्ट आरंभ करने में त्रुटि हुई। संभवतः आपका डिवाइस इसका समर्थन नहीं करता है। बास बूस्ट स्तर को बदलने का प्रयास करें या पुनः प्रयास करें।</string>
-    <string name="error_pre_cache">प्री-कैशिंग के दौरान एक अज्ञात त्रुटि हुई। कृपया पुनः प्रयास करें।</string>
+    <string name="error_bassboost_init">बास बूस्ट आरंभ करने में दोष हुआ है। संभवतः आपका डिवाइस इसका समर्थन नहीं करता है। बास बूस्ट स्तर को बदलने का प्रयास करें या पुनः प्रयास करें।</string>
+    <string name="error_pre_cache">प्री-कैशिंग के दौरान एक अज्ञात दोष हुआ है। कृपया पुनः प्रयास करें।</string>
     <string name="error_url">यूआरएल नहीं खोला जा सका %1$s</string>
 
     <string name="media_permission_declined">अनुमति अस्वीकृत, कृपया अपने डिवाइस की सेटिंग में मीडिया अनुमति प्रदान करें।</string>
@@ -317,7 +317,7 @@
     <string name="audio">ऑडियो</string>
     <string name="skip_silence">मौन भागों को छोड़ें</string>
     <string name="skip_silence_description">प्लेबैक के दौरान मौन भागों को छोड़ें</string>
-    <string name="minimum_silence_length">न्यूनतम मौन अवधिन्यूनतम मौन अवधि</string>
+    <string name="minimum_silence_length">न्यूनतम मौन अवधि</string>
     <string name="minimum_silence_length_description">ऑडियो को छोड़ने के लिए न्यूनतम समय तक मौन रहना आवश्यक है</string>
     <string name="minimum_silence_length_warning">परिवर्तनों को प्रभावी बनाने के लिए प्लेयर को पुनः प्रारंभ करना होगा!</string>
     <string name="restart_service">सेवा पुनः आरंभ करें</string>
@@ -393,7 +393,7 @@
     <string name="version">संस्करण</string>
     <string name="check_new_version">अद्यतन के लिए जाँच</string>
     <string name="current_version">आप वर्तमान में संस्करण v%1$s चला रहे हैं</string>
-    <string name="error_github">GitHub से डेटा प्राप्त करते समय एक अज्ञात त्रुटि हुई</string>
+    <string name="error_github">GitHub से डेटा प्राप्त करते समय एक अज्ञात दोष हुआ है</string>
     <string name="new_version_available">एक नया संस्करण उपलब्ध है</string>
     <string name="more_information">अधिक जानकारी</string>
     <string name="up_to_date">आप वर्तमान में अद्यतित हैं: कोई अद्यतन उपलब्ध नहीं है</string>
@@ -408,9 +408,9 @@
     <string name="version_check">अद्यतन के लिए स्वचालित रूप से जाँच करें</string>
 
     <string name="skip_on_error">स्वचालित छोड़ें</string>
-    <string name="skip_on_error_description">जब कोई त्रुटि होती है तो वर्तमान गीत को छोड़ देता है।</string>
-    <string name="skip_on_error_notification">त्रुटि के कारण %s छोड़ा गया</string>
-    <string name="skip_on_error_notification_unknown_song">किसी त्रुटि के कारण वर्तमान गीत को छोड़ दिया गया</string>
+    <string name="skip_on_error_description">जब कोई दोष होता है तो वर्तमान गीत को छोड़ देता है।</string>
+    <string name="skip_on_error_notification">दोष के कारण %s छोड़ा गया</string>
+    <string name="skip_on_error_notification_unknown_song">किसी दोष के कारण वर्तमान गीत को छोड़ दिया गया</string>
     <string name="reverb_small_room">छोटा कमरा</string>
     <string name="reverb_medium_room">मध्यम कमरा</string>
     <string name="reverb_large_room">बड़ा कमरा</string>
