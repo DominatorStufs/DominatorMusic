@@ -239,6 +239,8 @@
     <string name="lyrics_show_system_bars_description">La désactivation de cette option permet d\'activer le mode plein écran à l\'échelle du système</string>
     <string name="pip">IDI</string>
     <string name="pip_description">Passe automatiquement en mode Image dans l\'image lors du passage en arrière-plan</string>
+    <string name="auto_open_player">Ouvrir le lecteur</string>
+    <string name="auto_open_player_description">Développer automatiquement le lecteur en appuyant sur un titre</string>
 
     <string name="cache">Cache</string>
     <string name="cache_description">Lorsque le cache manque d\'espace, les ressources qui n\'ont pas été consultées depuis longtemps sont effacées.</string>
