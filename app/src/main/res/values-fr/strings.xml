@@ -122,7 +122,7 @@
     <string name="error_server_restrictions">Ce titre ne peut pas être joué en raison de restrictions du serveur</string>
     <string name="error_id_mismatch">L\'ID vidéo renvoyé ne correspond pas à celui demandé</string>
     <string name="error_unknown_playback">Une erreur de lecture inconnue s\'est produite</string>
-    <string name="error_piped_link">Une erreur inconnue s\'est produite lors de la connexion de votre compte Piped. Veuillez réessayer.</string>
+    <string name="error_piped_link">Une erreur inconnue s\'est produite lors de la liaison de votre compte Piped. Veuillez réessayer.</string>
     <string name="error_piped_instances_unavailable">La liste des instances Piped n\'est actuellement pas disponible.</string>
     <string name="error_bassboost_init">Une erreur s\'est produite lors de l\'initialisation de Bass Boost. Votre appareil ne le prend probablement pas en charge. Essayez de modifier le niveau d\'amplification des basses ou réessayez.</string>
     <string name="error_pre_cache">Une erreur inconnue s\'est produite lors de la pré-mise en cache. Veuillez réessayer.</string>
@@ -191,7 +191,7 @@
 
     <string name="color_source">Source de couleur d\'accentuation</string>
     <string name="color_source_default">Défaut</string>
-    <string name="color_source_dynamic">Dynamic</string>
+    <string name="color_source_dynamic">Dynamique</string>
     <string name="color_source_material_you">Votre Appareil</string>
 
     <string name="darkness">Obscurité</string>
@@ -361,10 +361,10 @@
     <string name="base_api_url">Instance URL API</string>
     <string name="piped_session_created_successfully">Session Piped créée avec succès</string>
 
-    <string name="seek_bar_style">Style de barre de recherche</string>
+    <string name="seek_bar_style">Style de barre de progression</string>
     <string name="static_seek_bar_name">Statique</string>
     <string name="wavy_seek_bar_name">Ondulé</string>
-    <string name="seek_bar_quality">Qualité de la barre de recherche ondulée</string>
+    <string name="seek_bar_quality">Qualité de la barre de progression ondulée</string>
     <string name="seek_bar_quality_poor">Pauvre</string>
     <string name="seek_bar_quality_low">Basse</string>
     <string name="seek_bar_quality_medium">Moyenne</string>
