@@ -22,7 +22,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "vitune"
+rootProject.name = "DominatorMusic"
 
 include(":app")
 include(":core:data")
