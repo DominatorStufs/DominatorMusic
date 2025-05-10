@@ -8,7 +8,7 @@ body:
         Thank you for filling out this issue template. If you meant to submit a suggestion, feature request, etc., please fill out the [appropriate template](https://github.com/25huizengek1/ViTune/issues/new/choose).
         Please do not submit a bug report for a network issue, unless it's an issue specific to ViTune.
 
-        ## ⚠️ Make sure you are able to reproduce the bug with the [latest version](https://github.com/25huizengek1/ViTune/releases/latest).
+        ## ⚠️ Make sure you are able to reproduce the bug with the [latest version](https://github.com/DominatorStufs/DominatorMusic/releases).
         ## ⚠️ Make sure there is no issue about this bug already.
 
   - type: textarea
