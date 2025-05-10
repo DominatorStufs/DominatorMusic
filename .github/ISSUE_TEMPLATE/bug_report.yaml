@@ -62,7 +62,7 @@ body:
         If your bug includes a crash, please use include logs in your issue.
 
         To capture logs, you can use `adb logcat`, or, if you have root access on your device or installed [Shizuku](https://shizuku.rikka.app), you can use a logger of your choice, for example: [LogFox](https://github.com/F0x1d/LogFox) to record logs.
-        If you can, please filter on ViTune (`app.vitune.android`/`app.vitune.android.nightly`) to unclutter the logs a bit.
+        If you can, please filter on DominatorMusic🎶 to unclutter the logs a bit.
 
         When submitting these logs here, please upload them as a file or upload them on [Pastebin](https://pastebin.com/). This way the issue ticket won't end up looking like a total mess.
 
