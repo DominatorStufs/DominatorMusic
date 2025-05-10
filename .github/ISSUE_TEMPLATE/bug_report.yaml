@@ -67,11 +67,11 @@ body:
         When submitting these logs here, please upload them as a file or upload them on [Pastebin](https://pastebin.com/). This way the issue ticket won't end up looking like a total mess.
 
   - type: input
-    id: vitune-version
+    id: DominatorMusic-version
     attributes:
-      label: ViTune version
+      label: DominatorMusic🎶 version
       placeholder: |
-        Example: "v1.1.3"
+        Example: "v0.8A"
     validations:
       required: true
 
@@ -117,7 +117,7 @@ body:
     attributes:
       label: Upstream reproducibility
       placeholder: |
-        If this issue is also reproducible with [vfsfitvnm/ViMusic](https://github.com/vfsfitvnm/ViMusic), please provide relevant information.
+        If this issue is also reproducible with [DominatorStufs/DominatorMusic](https://github.com/DominatorStufs/DominatorMusic), please provide relevant information.
 
         If you are unsure, leave this field empty.
 
