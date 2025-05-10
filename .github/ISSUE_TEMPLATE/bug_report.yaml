@@ -122,8 +122,8 @@ body:
         If you are unsure, leave this field empty.
 
         Examples:
-          "This issue has been reported in vfsfitvnm#xxxx"
-          "In ViMusic, click on (...) and the exact same issue occurs."
+          "This issue has been reported in DominatorMusic🎶#xxxx"
+          "In DominatorMusic🎶, click on (...) and the exact same issue occurs."
 
   - type: textarea
     id: additional-information
