@@ -4,6 +4,8 @@
     <p>An Android application for seamless music streaming</p>
 </div>
 
+##I was previously maintaining two apps, but now I will focus only on DollBloom🌸 to make it better and more amazing ❤️.
+
 ---
 
 <p align="center">
