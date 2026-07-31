@@ -11,11 +11,9 @@ I was previously maintaining two apps, but now I will focus only on DollBloomðŸŒ
   <img src="https://img.shields.io/github/downloads/DominatorStufs/DominatorMusic/total?color=5C7AEA&style=for-the-badge" alt="Downloads"/><img src="https://img.shields.io/github/v/release/DominatorStufs/DominatorMusic?color=4ADE80&style=for-the-badge" alt="Release"/><img src="https://img.shields.io/github/stars/DominatorStufs/DominatorMusic?color=F59E0B&style=for-the-badge" alt="Stars"/><img src="https://img.shields.io/github/license/DominatorStufs/DominatorMusic?color=10B981&style=for-the-badge" alt="License"/>
   <br/>
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white"/><img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"/><img src="https://img.shields.io/badge/UI-Jetpack_Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white"/><img src="https://img.shields.io/badge/Design-M3_Expressive-FF4081?style=for-the-badge&logo=materialdesign&logoColor=white"/>
-  
   <br/><br/>
-  
-  <a href="upi://pay?pa=dpdangergameryt@oksbi&pn=DP%20Danger%20Gamer%20YT&cu=INR" target="_blank">
-    <img src="https://img.shields.io/badge/Donate%20via%20UPI-GPay%20%7C%20PhonePe%20%7C%20Paytm-34A853?style=for-the-badge&logo=googlepay&logoColor=white" alt="Donate via UPI"/>
+  <a href="upi://pay?pa=dpdangergameryt@oksbi&pn=DP%20Danger%20Gamer%20YT&cu=INR">
+    <img src="https://img.shields.io/badge/Google%20Pay-UPI%20Support-34A853?style=for-the-badge&logo=googlepay&logoColor=white" alt="Support via UPI"/>
   </a>
 </p>
 ---
