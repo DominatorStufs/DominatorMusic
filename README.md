@@ -40,16 +40,6 @@ alt="Get it on GitHub"
 height="80"
 align="center">](https://github.com/DominatorStufs/DominatorMusic/releases/latest)
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-alt="Get it on F-Droid"
-height="80"
-align="center">](soon)
-
-[<img src="https://github.com/ImranR98/Obtainium/blob/main/assets/graphics/badge_obtainium.png"
-alt="Get it on Obtainium"
-height="54"
-align="center">](soon)
-
 ## Acknowledgments
 
 - [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A Python
