@@ -71,3 +71,4 @@ are owned by the respective owners.
 °vimusic
 °viTune
 °OutterTune
+°SpatialFlow
