@@ -19,7 +19,7 @@ I was previously maintaining two apps, but now I will focus only on DollBloomðŸŒ
 ---
 
 <p align="center">
-  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="30%" />
+  <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" width="30%" />
   <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="30%" />
   <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="30%" />
 
