@@ -16,6 +16,7 @@ I was previously maintaining two apps, but now I will focus only on DollBloomðŸŒ
     <img src="https://img.shields.io/badge/Google%20Pay-UPI%20Support-34A853?style=for-the-badge&logo=googlepay&logoColor=white" alt="Support via UPI"/>
   </a>
 </p>
+
 ---
 
 <p align="center">
